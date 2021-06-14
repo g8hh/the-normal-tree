@@ -185,6 +185,11 @@ addLayer("F", {
             effectDescription: "Gain 100% of Number on prestige per second.",
             done() { return player.F.points.gte(6)}
         },
+        8: {
+            requirementDescription: "8 factors",
+            effectDescription: "Unlock 1 more challenge",
+            done() { return player.F.points.gte(8)}
+        },
     },
     upgrades: {
         rows: 2,
@@ -202,11 +207,18 @@ addLayer("F", {
     },
     challenges: {
         11: {
-            name: "Root",
+            name: "/ factor",
             challengeDescription: "Number and point gain /5",
             goal: new Decimal(1000000),
             rewardDescription(){return "Number and Point x3"},
           unlocked(){return hasMilestone('F', 2)},
+        },
+        12: {
+            name: "Root factor",
+            challengeDescription: "point ^0.5",
+            goal: new Decimal(1000000),
+            rewardDescription(){return "Number and Point x3"},
+          unlocked(){return hasMilestone('F', 8)},
         },
     },
 
