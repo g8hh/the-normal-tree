@@ -21,7 +21,8 @@ let changelog = `<h1>Changelog:</h1><br>
 
 <h3>v0.0.2</h3><br>
 		- Added more things.<br>
-		- Endgame: 8 factors.
+		- Endgame: 8 factors.<br>
+
 		<h3>v0.0.1</h3><br>
 		- Added Number and Factors.<br>
 		- Endgame: 4 factors.`
@@ -70,7 +71,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.F.points.gte(new Decimal("4"))
+	return player.F.points.gte(new Decimal("8"))
 }
 
 
