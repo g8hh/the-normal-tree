@@ -13,12 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.2",
-	name: "Second",
+	num: "0.0.3",
+	name: "Third",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 
+<h3>v0.0.3</h3><br>
+		- Added more things.<br>
+		- Endgame: 15 factors.<br>
 <h3>v0.0.2</h3><br>
 		- Added more things.<br>
 		- Endgame: 8 factors.<br>
@@ -50,14 +53,16 @@ function getPointGen() {
 
 
 	let gain = new Decimal(1)
+	if (hasChallenge('F', 12)) gain = gain.times(3)
 	if (inChallenge('F', 11)) gain = gain.times(0.2)
+	if (inChallenge('F', 13)) gain = gain.times(0.2)
 	if (hasChallenge('F', 11)) gain = gain.times(3)
 	if (hasUpgrade('N', 11)) gain = gain.times(3)
 	if (hasUpgrade('N', 12)) gain = gain.times(upgradeEffect('N', 12))
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
-	if (hasUpgrade('F',11)) mult = mult.times(upgradeEffect('F', 11))
-	if (inChallenge('F', 11)) gain = gain.times(player.getPointGen.power(-0.5))
+	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
+
 
 	return gain
 }
@@ -72,7 +77,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.F.points.gte(new Decimal("8"))
+	return player.F.points.gte(new Decimal("15"))
 }
 
 

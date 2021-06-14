@@ -16,7 +16,11 @@ addLayer("N", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasChallenge('F', 11)) mult = mult.times(3)
+        if (hasUpgrade('F',12)) mult = mult.times(upgradeEffect('F', 12))
         if (inChallenge('F', 11)) mult = mult.times(0.2)
+        if (inChallenge('F', 13)) mult = mult.times(0.2)
+        if (hasChallenge('F', 12)) mult = mult.times(3)
+        if (hasUpgrade('F',12)) mult = mult.times(upgradeEffect('F', 11))
        if (hasUpgrade('N',14)) mult = mult.times(upgradeEffect('N', 14))
        if (hasUpgrade('F',11)) mult = mult.times(upgradeEffect('F', 11))
         if (hasMilestone('F', 1)) mult = mult.times(player.F.points.add(1))
@@ -48,6 +52,8 @@ addLayer("N", {
             description:"Numbers boost point gain.",
             cost: new Decimal(5),
             effect() {
+                if (inChallenge("F",12)) return 1
+                if (inChallenge("F",13)) return 1
                 if (player.N.points >=52281977629) return 5000000
                 if(hasUpgrade("N",22)) return player.N.points.pow(0.625).add(1)
                 if (player.N.points >=4641588) return 100000
@@ -65,6 +71,8 @@ addLayer("N", {
             description: "Points boost points gain.",
             cost: new Decimal(25),
             effect() {
+        if (player.points >= 4.6050394e+15) return 50000
+        if(hasUpgrade("N",23)) return player.points.pow(0.3).add(1)
         if(hasUpgrade("N",15)) return 30
         else return player.points.pow(0.25).add(1)
 
@@ -119,6 +127,16 @@ addLayer("N", {
     
             unlocked(){
                 return hasMilestone('F', 4)
+            },
+            
+        },
+        23: {
+            title: "8",
+            description: "Remove the first hardcap of '3'.",
+            cost: new Decimal(1e15),
+    
+            unlocked(){
+                return hasChallenge('F', 13)
             },
             
         },
@@ -190,6 +208,11 @@ addLayer("F", {
             effectDescription: "Unlock 1 more challenge",
             done() { return player.F.points.gte(8)}
         },
+        12: {
+            requirementDescription: "12 factors",
+            effectDescription: "Unlock 1 more challenge",
+            done() { return player.F.points.gte(12)}
+        },
     },
     upgrades: {
         rows: 2,
@@ -204,7 +227,20 @@ addLayer("F", {
                     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
             cost: new Decimal(5),
         },
+        12: {
+            title: "Factor Beta",
+            description: "Number boost itself gain.",
+            effect() {
+                return player.N.points.pow(0.15).add(1)
+        
+                    },
+                    effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+            cost: new Decimal(9),
+            unlocked(){
+                return hasUpgrade("F", 11)
+            },
     },
+},
     challenges: {
         11: {
             name: "/ factor",
@@ -214,11 +250,22 @@ addLayer("F", {
           unlocked(){return hasMilestone('F', 2)},
         },
         12: {
-            name: "Root factor",
-            challengeDescription: "point ^0.5",
-            goal: new Decimal(1000000),
+            name: "No upgrade factor",
+            challengeDescription: "'2' is no effect",
+            canComplete(){return player.N.points.gte("100000000")},
+            goalDescription: "100,000,000 Numbers",
             rewardDescription(){return "Number and Point x3"},
           unlocked(){return hasMilestone('F', 8)},
+          
+        },
+        13: {
+            name: "2 in 1",
+            challengeDescription: "You trap in / and No upgrade factor.",
+            canComplete(){return player.N.points.gte("3.14e9")},
+            goalDescription: "3.14e9 Numbers",
+            rewardDescription(){return "Unlock one number upgrade."},
+          unlocked(){return hasMilestone('F', 12)},
+          
         },
     },
 
