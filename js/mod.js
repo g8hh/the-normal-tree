@@ -20,10 +20,11 @@ let VERSION = {
 let changelog = `<h1>Changelog:</h1><br>
 
 <h3>v0.0.4</h3><br>
+- Added Power factor.<br>
 - Added 2 Numbers Upgrade.<br>
 - Added 2 Factors Challenge.<br>
 - Added 1 Factors Upgrade.<br>
-- Endgame: Complete Factor challenge 5<br>	
+- Endgame: 1 Power factor<br>	
 <h3>v0.0.3</h3><br>
 - Added 1 Numbers Upgrade.<br>
 - Added 2 Factors Milestone.<br>
@@ -75,8 +76,6 @@ function getPointGen() {
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
 	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
-
-
 	return gain
 }
 

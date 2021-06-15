@@ -183,6 +183,48 @@ addLayer("N", {
     passiveGeneration(){return hasMilestone('F',6) && (!inChallenge('F',22))  ? 1 : 0},
     layerShown(){return true}
 })
+addLayer("PF", {
+    name: "Power Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "PF", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#FF0000",
+    requires: new Decimal(1e30), // Can be a function that takes requirement increases into account
+    resource: "Power Factors", // Name of prestige currency
+    baseResource: "Numbers", // Name of resource prestige is based on
+    baseAmount() {return player.N.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    base:1e7,
+    exponent: 1.25,
+    branches:["N"],
+     // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        
+
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 1, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "p", description: "P: Reset for Power factors", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.PF.unlocked) doReset("PF") },
+        unlocked() {return hasChallenge('N', 22)} // Determines if you can use the hotkey, optional
+    },
+    ],
+    milestones: {
+        1: {
+            requirementDescription: "1 Power factor",
+            effectDescription: "Power factor boost power point gain. (not yet)",
+            done() { return player.PF.points.gte(1) }
+        },
+    },
+})
 addLayer("F", {
     name: "Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "F", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -212,7 +254,7 @@ addLayer("F", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "f", description: "f: Reset for Factors", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        {key: "f", description: "F: Reset for Factors", onPress(){if (canReset(this.layer)) doReset(this.layer)},
         onPress() { if (player.F.unlocked) doReset("F") },
         unlocked() {return hasUpgrade('N', 15)} // Determines if you can use the hotkey, optional
     },
@@ -335,11 +377,24 @@ addLayer("F", {
             challengeDescription: "Factor milestone 5 and upgrades is no effect.",
             canComplete(){return player.N.points.gte("1e20")},
             goalDescription: "1e20 Numbers",
-            rewardDescription(){return "Unlock a new layer(not yet)."},
+            rewardDescription(){return "NO"},
           unlocked(){return hasUpgrade('F', 13)},
           
         },
     },
 
     layerShown(){return true}
+})
+addLayer("Hardcap", {
+	startData() { return {unlocked: true}},
+	color: "#ff8888",
+	symbol: "H",
+	row: "side",
+	position: -1,
+	layerShown() { return true },
+	tooltip: "Hardcap",
+    tabFormat: [
+		"blank", "blank", "blank",
+        ["raw-html", "<h1><a href=https://docs.google.com/document/d/1oT5siVj4lT8nnmHjPmAiSQL1NVSmNXQT8bpgUUqjBkM/edit target=_blank>Hardcap table</a></h1>"],
+	],
 })
