@@ -13,22 +13,35 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.3",
-	name: "Third",
+	num: "0.0.4",
+	name: "Fourth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 
+<h3>v0.0.4</h3><br>
+- Added 2 Numbers Upgrade.<br>
+- Added 2 Factors Challenge.<br>
+- Added 1 Factors Upgrade.<br>
+- Endgame: Complete Factor challenge 5		
 <h3>v0.0.3</h3><br>
-		- Added more things.<br>
-		- Endgame: 15 factors.<br>
+- Added 1 Numbers Upgrade.<br>
+- Added 2 Factors Milestone.<br>
+- Added 1 Factors Challenge.<br>
+- Added 1 Factors Upgrade.<br>
+- Endgame: 15 factors.		
 <h3>v0.0.2</h3><br>
-		- Added more things.<br>
-		- Endgame: 8 factors.<br>
+- Added 1 Numbers Upgrade.<br>
+- Added 3 Factors Milestone.<br>
+- Added 1 Factors Challenge.<br>
+- Added 1 Factors Upgrade.<br>
+- Endgame: 8 factors.
 
-		<h3>v0.0.1</h3><br>
-		- Added Number and Factors.<br>
-		- Endgame: 4 factors.`
+<h3>v0.0.1</h3><br>
+- Added 6 Numbers Upgrade.<br>
+- Added 2 Factors Milestone.<br>
+- Added 1 Factors Challenge.<br>
+- Endgame: 4 factors.`
 
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
@@ -77,7 +90,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.F.points.gte(new Decimal("15"))
+	return hasChallenge('F',22)
 }
 
 

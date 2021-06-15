@@ -35,10 +35,17 @@ addLayer("N", {
 
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "N", description: "N: Reset for Numbers", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        {key: "n", description: "N: Reset for Numbers", onPress(){if (canReset(this.layer)) doReset(this.layer)},
         onPress() { if (player.N.unlocked) doReset("N") },
     },
     ],
+    
+
+    doReset(resettingLayer) {
+        let keep = [];
+        if (hasChallenge("F", 21) && resettingLayer=="F") keep.push("upgrades")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
     upgrades: {
         rows: 2,
         cols: 5,
@@ -52,6 +59,10 @@ addLayer("N", {
             description:"Numbers boost point gain.",
             cost: new Decimal(5),
             effect() {
+                if (player.N.points >=1e24) return 1e15
+            
+                if(hasUpgrade("N",24)) return player.N.points.pow(0.625).add(1)
+                if (inChallenge("F",21)) return 1000
                 if (inChallenge("F",12)) return 1
                 if (inChallenge("F",13)) return 1
                 if (player.N.points >=52281977629) return 5000000
@@ -71,7 +82,8 @@ addLayer("N", {
             description: "Points boost points gain.",
             cost: new Decimal(25),
             effect() {
-        if (player.points >= 4.6050394e+15) return 50000
+                if (inChallenge("F",21)) return 30
+        if (player.points >= 4.60e15) return 50000
         if(hasUpgrade("N",23)) return player.points.pow(0.3).add(1)
         if(hasUpgrade("N",15)) return 30
         else return player.points.pow(0.25).add(1)
@@ -87,6 +99,9 @@ addLayer("N", {
             description: "Points boost Numbers gain.",
             cost: new Decimal(125),
             effect() {
+                if (player.points >= 4.64e26) return 1e8
+                if(hasUpgrade("N",25)) return player.points.pow(0.3).add(1)
+                if (inChallenge("F",21)) return 20
                 if (player.points >= 471556031) return 400
                 if(hasUpgrade("N",21)) return player.points.pow(0.3).add(1)
                 if(hasUpgrade("N",15)) return 20
@@ -140,8 +155,32 @@ addLayer("N", {
             },
             
         },
+        24: {
+            title: "9",
+            description: "Remove the third hardcap of '2'.You can buy this upgrade while you are in Factor Challenge 4.",
+            cost(){ 
+                if(player.F.activeChallenge!=21)return new Decimal(Infinity);
+                return new Decimal(3.14e12);
+            },
+            unlocked(){
+                {return hasUpgrade('F', 13)}
+            },
+            
+        },
+        25: {
+            title: "0",
+            description: "Remove the second hardcap of '4'.You can buy this upgrade while you are in Factor Challenge 4.",
+            cost(){ 
+                if(player.F.activeChallenge!=22)return new Decimal(Infinity);
+                return new Decimal(3.14e13);
+            },
+            unlocked(){
+                {return hasUpgrade('F', 13)}
+            },
+            
+        },
     },
-    passiveGeneration(){return hasMilestone('F',6) ? 1 : 0},
+    passiveGeneration(){return hasMilestone('F',6) && (!inChallenge('F',22))  ? 1 : 0},
     layerShown(){return true}
 })
 addLayer("F", {
@@ -172,11 +211,15 @@ addLayer("F", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "F", description: "F: Reset for Factors", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        {key: "f", description: "f: Reset for Factors", onPress(){if (canReset(this.layer)) doReset(this.layer)},
         onPress() { if (player.F.unlocked) doReset("F") },
         unlocked() {return hasUpgrade('N', 15)} // Determines if you can use the hotkey, optional
     },
     ],
+    canBuyMax(){
+        return hasChallenge('F',21) 
+    },
+ 
     milestones: {
         1: {
             requirementDescription: "1 factor",
@@ -221,6 +264,7 @@ addLayer("F", {
             title: "Factor Alpha",
             description: "Boost points and numbers base on factor.",
             effect() {
+                if (inChallenge('F',22)) return 1 
                 return player.F.points.pow(0.4).add(1)
         
                     },
@@ -231,6 +275,7 @@ addLayer("F", {
             title: "Factor Beta",
             description: "Number boost itself gain.",
             effect() {
+                if (inChallenge('F',22)) return 1 
                 return player.N.points.pow(0.15).add(1)
         
                     },
@@ -240,6 +285,14 @@ addLayer("F", {
                 return hasUpgrade("F", 11)
             },
     },
+    13: {
+        title: "Factor Gamma",
+        description: "Unlock 2 Number upgrade and 2 challenge, you can buy max factors.",
+        cost: new Decimal(15),
+        unlocked(){
+            return hasUpgrade("F", 12)
+        },
+},
 },
     challenges: {
         11: {
@@ -265,6 +318,24 @@ addLayer("F", {
             goalDescription: "3.14e9 Numbers",
             rewardDescription(){return "Unlock one number upgrade."},
           unlocked(){return hasMilestone('F', 12)},
+          
+        },
+        21: {
+            name: "No cap factor",
+            challengeDescription: "'6', '7' and '8' is no effect.",
+            canComplete(){return player.N.points.gte("3.14e12")},
+            goalDescription: "3.14e12 Numbers",
+            rewardDescription(){return "Factor will not reset upgrade, you can buy max factor."},
+          unlocked(){return hasUpgrade('F', 13)},
+          
+        },
+        22: {
+            name: "No factor factor",
+            challengeDescription: "Factor milestone 5 and upgrades is no effect.",
+            canComplete(){return player.N.points.gte("1e20")},
+            goalDescription: "1e20 Numbers",
+            rewardDescription(){return "Unlock a new layer(not yet)."},
+          unlocked(){return hasUpgrade('F', 13)},
           
         },
     },
