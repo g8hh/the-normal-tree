@@ -23,19 +23,19 @@ let changelog = `<h1>Changelog:</h1><br>
 - Added 2 Numbers Upgrade.<br>
 - Added 2 Factors Challenge.<br>
 - Added 1 Factors Upgrade.<br>
-- Endgame: Complete Factor challenge 5		
+- Endgame: Complete Factor challenge 5<br>	
 <h3>v0.0.3</h3><br>
 - Added 1 Numbers Upgrade.<br>
 - Added 2 Factors Milestone.<br>
 - Added 1 Factors Challenge.<br>
 - Added 1 Factors Upgrade.<br>
-- Endgame: 15 factors.		
+- Endgame: 15 factors.<br>		
 <h3>v0.0.2</h3><br>
 - Added 1 Numbers Upgrade.<br>
 - Added 3 Factors Milestone.<br>
 - Added 1 Factors Challenge.<br>
 - Added 1 Factors Upgrade.<br>
-- Endgame: 8 factors.
+- Endgame: 8 factors.<br>
 
 <h3>v0.0.1</h3><br>
 - Added 6 Numbers Upgrade.<br>
