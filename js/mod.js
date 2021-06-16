@@ -13,18 +13,25 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.4",
-	name: "Fourth",
+	num: "0.0.5",
+	name: "Fifth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 
+<h3>v0.0.5</h3><br>
+- Added 1 Upgrade factor Milestone.<br>
+- Added 1 factor Milestone.<br>
+- Added 2 Numbers Buyable.<br>
+- Added 1 Factors Challenge.<br>
+- Added 2 Factors Upgrade.<br>
+- Endgame: 2 Upgrade factor<br>	
 <h3>v0.0.4</h3><br>
-- Added Power factor.<br>
+- Added Upgrade factor.<br>
 - Added 2 Numbers Upgrade.<br>
 - Added 2 Factors Challenge.<br>
 - Added 1 Factors Upgrade.<br>
-- Endgame: 1 Power factor<br>	
+- Endgame: 1 Upgrade factor<br>	
 <h3>v0.0.3</h3><br>
 - Added 1 Numbers Upgrade.<br>
 - Added 2 Factors Milestone.<br>
@@ -67,9 +74,11 @@ function getPointGen() {
 
 
 	let gain = new Decimal(1)
+	if (hasChallenge('F', 22)) gain = gain.times(2)
 	if (hasChallenge('F', 12)) gain = gain.times(3)
 	if (inChallenge('F', 11)) gain = gain.times(0.2)
 	if (inChallenge('F', 13)) gain = gain.times(0.2)
+	if (inChallenge('F', 23)) gain = gain.times(0.2)
 	if (hasChallenge('F', 11)) gain = gain.times(3)
 	if (hasUpgrade('N', 11)) gain = gain.times(3)
 	if (hasUpgrade('N', 12)) gain = gain.times(upgradeEffect('N', 12))
@@ -89,7 +98,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasChallenge('F',22)
+	return 
 }
 
 

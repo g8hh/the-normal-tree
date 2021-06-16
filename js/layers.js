@@ -15,7 +15,10 @@ addLayer("N", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasUpgrade('F',15)) mult = mult.times(buyableEffect('N',11))
+        if (inChallenge('F', 23)) mult = mult.times(0.2)
         if (hasChallenge('F', 11)) mult = mult.times(3)
+        if (hasChallenge('F', 22)) mult = mult.times(2)
         if (hasUpgrade('F',12)) mult = mult.times(upgradeEffect('F', 12))
         if (inChallenge('F', 11)) mult = mult.times(0.2)
         if (inChallenge('F', 13)) mult = mult.times(0.2)
@@ -44,6 +47,7 @@ addLayer("N", {
     doReset(resettingLayer) {
         let keep = [];
         if (hasChallenge("F", 21) && resettingLayer=="F") keep.push("upgrades")
+        if (hasMilestone("UF", 1) && resettingLayer=="UF") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     upgrades: {
@@ -60,7 +64,7 @@ addLayer("N", {
             cost: new Decimal(5),
             effect() {
                 if (player.N.points >=1e24) return 1e15
-            
+                if (inChallenge("F",23)) return 1
                 if(hasUpgrade("N",24)) return player.N.points.pow(0.625).add(1)
                 if (inChallenge("F",21)) return 1000
                 if (inChallenge("F",12)) return 1
@@ -82,6 +86,9 @@ addLayer("N", {
             description: "Points boost points gain.",
             cost: new Decimal(25),
             effect() {
+                if (inChallenge("F",23)) return 30
+                if (player.points >= 7.0328889e+31) return 1e10
+                if(hasUpgrade("F",14)) return player.points.pow(0.314).add(1)
                 if (inChallenge("F",21)) return 30
         if (player.points >= 4.60e15) return 50000
         if(hasUpgrade("N",23)) return player.points.pow(0.3).add(1)
@@ -99,6 +106,7 @@ addLayer("N", {
             description: "Points boost Numbers gain.",
             cost: new Decimal(125),
             effect() {
+                if (inChallenge("F",21)) return 20
                 if (player.points >= 4.64e26) return 1e8
                 if(hasUpgrade("N",25)) return player.points.pow(0.3).add(1)
                 if (inChallenge("F",21)) return 20
@@ -180,24 +188,49 @@ addLayer("N", {
             
         },
     },
-    passiveGeneration(){return hasMilestone('F',6) && (!inChallenge('F',22))  ? 1 : 0},
+    buyables: {
+        rows: 2,
+        cols: 3,
+        11: {
+            title: "+",
+            display() {
+
+                return "Boosts Number gain by " + format(tmp.N.buyables[11].effect) + "x<br>Cost : " + format(new Decimal("1e4").pow(getBuyableAmount("N", 11).add(1))) + " Numbers"
+            },
+            unlocked() { return hasUpgrade("F", 15) },
+            canAfford() { 
+                return player.N.points.gte(new Decimal("1e4").pow(getBuyableAmount("N", 11).add(1))) 
+            },
+            buy() { 
+                {
+                    player.N.points = player.N.points.minus(new Decimal("1e4").pow(getBuyableAmount("N", 11).add(1)))
+                }
+                setBuyableAmount("N", 11, getBuyableAmount("N", 11).add(1))
+            },
+            effect() { 
+                eff = new Decimal("3").pow(getBuyableAmount("N", 11))
+                return eff
+            }
+        },
+    },
+passiveGeneration(){return hasMilestone('F',6) && (!inChallenge('F',22)) && (!inChallenge('F',23)) ? 1 : 0},
     layerShown(){return true}
 })
-addLayer("PF", {
-    name: "Power Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "PF", // This appears on the layer's node. Default is the id with the first letter capitalized
+addLayer("UF", {
+    name: "Upgrade Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "UF", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
-        unlocked: false,
+        unlocked: true,
 		points: new Decimal(0),
     }},
     color: "#FF0000",
     requires: new Decimal(1e30), // Can be a function that takes requirement increases into account
-    resource: "Power Factors", // Name of prestige currency
+    resource: "Upgrade Factor", // Name of prestige currency
     baseResource: "Numbers", // Name of resource prestige is based on
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    base:1e7,
+    base:1e10,
     exponent: 1.25,
     branches:["N"],
      // Prestige currency exponent
@@ -212,16 +245,16 @@ addLayer("PF", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "p", description: "P: Reset for Power factors", onPress(){if (canReset(this.layer)) doReset(this.layer)},
-        onPress() { if (player.PF.unlocked) doReset("PF") },
+        {key: "u", description: "U: Reset for Upgrade Factor", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.UF.unlocked) doReset("UF") },
         unlocked() {return hasChallenge('N', 22)} // Determines if you can use the hotkey, optional
     },
     ],
     milestones: {
         1: {
-            requirementDescription: "1 Power factor",
-            effectDescription: "Power factor boost power point gain. (not yet)",
-            done() { return player.PF.points.gte(1) }
+            requirementDescription: "1 Upgrade Factor",
+            effectDescription: "Unlock 1 upgrade per Upgrade Factor and keep upgrade on reset.",
+            done() { return player.UF.points.gte(1) }
         },
     },
 })
@@ -230,7 +263,7 @@ addLayer("F", {
     symbol: "F", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
-        unlocked: false,
+        unlocked: true,
 		points: new Decimal(0),
     }},
     color: "#FFCD00",
@@ -240,7 +273,11 @@ addLayer("F", {
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
-    exponent: 0.75,
+    exponent(){
+        if(hasChallenge('F',23))return 0.69
+        else return 0.75
+
+    },
     branches:["N"],
      // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
@@ -299,6 +336,11 @@ addLayer("F", {
             effectDescription: "Unlock 1 more challenge",
             done() { return player.F.points.gte(12)}
         },
+        44: {
+            requirementDescription: "44 factors",
+            effectDescription: "Unlock 1 more challenge",
+            done() { return player.F.points.gte(44)}
+        },
     },
     upgrades: {
         rows: 2,
@@ -307,12 +349,17 @@ addLayer("F", {
             title: "Factor Alpha",
             description: "Boost points and numbers base on factor.",
             effect() {
+                if (inChallenge('F',23)) return 1
                 if (inChallenge('F',22)) return 1 
                 return player.F.points.pow(0.4).add(1)
         
                     },
                     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+
             cost: new Decimal(5),
+            unlocked() {
+                return hasMilestone("F",5)
+            },
         },
         12: {
             title: "Factor Beta",
@@ -335,6 +382,22 @@ addLayer("F", {
         unlocked(){
             return hasUpgrade("F", 12)
         },
+},
+14: {
+    title: "Factor Delta",
+    description: "Remove the second hardcap of '3'",
+    cost: new Decimal(36),
+    unlocked(){
+        return hasMilestone("UF", 1)
+    },
+},
+15: {
+    title: "Factor Epsilon",
+    description: "Unlock number buyable",
+    cost: new Decimal(60),
+    unlocked(){
+        return hasChallenge("F", 23)
+    },
 },
 },
     challenges: {
@@ -377,11 +440,21 @@ addLayer("F", {
             challengeDescription: "Factor milestone 5 and upgrades is no effect.",
             canComplete(){return player.N.points.gte("1e20")},
             goalDescription: "1e20 Numbers",
-            rewardDescription(){return "NO"},
+            rewardDescription(){return "Point and Number x2"},
           unlocked(){return hasUpgrade('F', 13)},
           
         },
+        23: {
+            name: "3 in 1",
+            challengeDescription: "You trap in 2 in 1, No cap and no factor factor.",
+            canComplete(){return player.N.points.gte("69420420")},
+            goalDescription: "69420420 Numbers",
+            rewardDescription(){return "Factor is cheaper and unlock 1 factor upgrade."},
+          unlocked(){return hasMilestone('F', 44)},
+          
+        },
     },
+
 
     layerShown(){return true}
 })
