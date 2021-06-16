@@ -13,16 +13,21 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.5",
-	name: "Fifth",
+	num: "0.0.6",
+	name: "Sixth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-
+<h3>v0.0.6</h3><br>
+- Added 3 factor Milestone.<br>
+- Added 1 Numbers Buyable.<br>
+- Added 2 Number Upgrade.<br>
+- Added 2 Factors Challenge.<br>
+- Endgame: 3 Upgrade factor<br>	
 <h3>v0.0.5</h3><br>
 - Added 1 Upgrade factor Milestone.<br>
 - Added 1 factor Milestone.<br>
-- Added 2 Numbers Buyable.<br>
+- Added 1 Numbers Buyable.<br>
 - Added 1 Factors Challenge.<br>
 - Added 2 Factors Upgrade.<br>
 - Endgame: 2 Upgrade factor<br>	
@@ -74,6 +79,8 @@ function getPointGen() {
 
 
 	let gain = new Decimal(1)
+	if (hasChallenge('F',31)) gain = gain.times(buyableEffect('N',12))
+	if (inChallenge('F', 31)) gain = gain.times(0.000001)
 	if (hasChallenge('F', 22)) gain = gain.times(2)
 	if (hasChallenge('F', 12)) gain = gain.times(3)
 	if (inChallenge('F', 11)) gain = gain.times(0.2)
