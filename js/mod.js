@@ -20,8 +20,9 @@ let VERSION = {
 let changelog = `<h1>Changelog:</h1><br>
 <h3>v0.0.7</h3><br>
 - Added 1 Number Upgrade.<br>
-- Added 1 Factors Upgrade.<br>
+- Added 3 Factors Upgrade.<br>
 - Added 1 upgrade Factors Challenge.<br>
+- Added 2 Factors Challenge.<br>
 - Endgame: 6 Upgrade factor<br>	
 <h3>v0.0.6</h3><br>
 - Added 3 factor Milestone.<br>
