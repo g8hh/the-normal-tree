@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.6",
-	name: "Sixth",
+	num: "0.0.7",
+	name: "Seventh",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.0.7</h3><br>
+- Added 1 Number Upgrade.<br>
+- Added 1 Factors Upgrade.<br>
+- Added 1 upgrade Factors Challenge.<br>
+- Endgame: 6 Upgrade factor<br>	
 <h3>v0.0.6</h3><br>
 - Added 3 factor Milestone.<br>
 - Added 1 Numbers Buyable.<br>
@@ -80,6 +85,7 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
 	if (hasChallenge('F',31)) gain = gain.times(buyableEffect('N',12))
+	if (inChallenge('F', 33)) gain = gain.times(0.000001)
 	if (inChallenge('F', 31)) gain = gain.times(0.000001)
 	if (hasChallenge('F', 22)) gain = gain.times(2)
 	if (hasChallenge('F', 12)) gain = gain.times(3)
@@ -105,7 +111,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return 
+	return player.UF.points.gte(6);
 }
 
 

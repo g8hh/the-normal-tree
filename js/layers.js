@@ -15,6 +15,7 @@ addLayer("N", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (inChallenge('F', 33)) mult = mult.times(0.000001)
         if (inChallenge('F', 31)) mult = mult.times(0.000001)
         if (hasUpgrade('F',15)) mult = mult.times(buyableEffect('N',11))
         if (hasUpgrade('F',13)) mult = mult.times(2)
@@ -65,11 +66,14 @@ addLayer("N", {
             description:"Numbers boost point gain.",
             cost: new Decimal(5),
             effect() {
-                
+                if (inChallenge("F",33)) return 1
+                if (inChallenge("F",32)) return 1
                 if (inChallenge("F",23)) return 1
                 if (inChallenge("F",21)) return 1000
                 if (inChallenge("F",12)) return 1
                 if (inChallenge("F",13)) return 1
+                if (player.N.points >=1e56) return 1e35
+                if(hasUpgrade("F",23)) return player.N.points.pow(0.625).add(1)
                 if (player.N.points >=1e24) return 1e15
                 if(hasUpgrade("N",24)) return player.N.points.pow(0.625).add(1)
                 if (player.N.points >=52281977629) return 5000000
@@ -89,6 +93,8 @@ addLayer("N", {
             description: "Points boost points gain.",
             cost: new Decimal(25),
             effect() {
+                if (inChallenge("F",33)) return 1
+                if (inChallenge("F",32)) return 1
                 if (inChallenge("F",23)) return 30
                 if (inChallenge("F",21)) return 30
                 if (player.points >= 7.0328889e+31) return 1e10
@@ -110,6 +116,8 @@ addLayer("N", {
             description: "Points boost Numbers gain.",
             cost: new Decimal(125),
             effect() {
+                if (inChallenge("F",33)) return 1
+                if (inChallenge("F",32)) return 1
                 if (inChallenge("F",21)) return 20
                 if (inChallenge("F",23)) return 20
                 if (player.points >= 4.64e26) return 1e8
@@ -216,6 +224,17 @@ addLayer("N", {
             },
             
         },
+        33: {
+            title: "13",
+            description: "'+' work in 'Buyable Upgrader' but nerf it in 'Buyable Upgrader'",
+            cost(){ 
+                return new Decimal(1e100);
+            },
+            unlocked(){
+                {return player.UF.best.gte(4)}
+            },
+            
+        },
     },
     buyables: {
         rows: 2,
@@ -241,6 +260,12 @@ addLayer("N", {
                 if (hasUpgrade('N',31)) eff = new Decimal("6").pow(getBuyableAmount("N", 11))
                 else   eff = new Decimal("3").pow(getBuyableAmount("N", 11))
                 if (hasUpgrade('N',32)) eff = new Decimal("12").pow(getBuyableAmount("N", 11))
+                
+                if ( player.UF.challenges[11]>=1) eff = new Decimal("24").pow(getBuyableAmount("N", 11))
+                if ( player.UF.challenges[11]>=2) eff = new Decimal("36").pow(getBuyableAmount("N", 11))
+                if ( player.UF.challenges[11]>=3) eff = new Decimal("50").pow(getBuyableAmount("N", 11))
+                if (inChallenge('UF',11)) eff = new Decimal("1")
+                if (inChallenge('UF',11) && hasUpgrade('N',33)) eff =  new Decimal("3").pow(getBuyableAmount("N", 11))
                 return eff
             }
         },
@@ -261,7 +286,12 @@ addLayer("N", {
                 setBuyableAmount("N", 12, getBuyableAmount("N", 12).add(1))
             },
             effect() { 
-              eff = new Decimal("2").pow(getBuyableAmount("N", 12))
+                if (hasChallenge('F',32)) eff = new Decimal("4").pow(getBuyableAmount("N", 12))
+                else eff = new Decimal("2").pow(getBuyableAmount("N", 12))
+                if (hasChallenge('F',33)) eff = new Decimal("8").pow(getBuyableAmount("N", 12))
+                if (inChallenge('UF',11)) eff = new Decimal("1")
+               
+              
               return eff
                 
             }
@@ -308,10 +338,27 @@ addLayer("UF", {
     milestones: {
         1: {
             requirementDescription: "1 Upgrade Factor",
-            effectDescription: "Unlock 1 upgrade per Upgrade Factor and keep upgrade on reset.",
+            effectDescription: "First four Upgrade Factor Unlock 1 upgrade and keep upgrade on reset.",
             done() { return player.UF.points.gte(1) }
         },
     },
+    challenges: {
+        11: {
+           
+            completionLimit(){
+                let limit=3;
+                return limit;
+            },
+            name: "Buyable upgrader",
+            challengeDescription: "Buyable is no effect (You can do 3 times)",
+            goal: function(){
+                return [new Decimal("1e30"),new Decimal("1e45"),new Decimal("5e52"),new Decimal(Infinity)][player.UF.challenges[11]];
+        },
+            rewardDescription(){return "'+' is better'."},
+          unlocked(){return hasUpgrade('F', 22)},
+
+    },
+},
 })
 addLayer("F", {
     name: "Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -472,6 +519,32 @@ addLayer("F", {
         return hasChallenge("F", 23)
     },
 },
+21: {
+    title: "Factor Zeta",
+    description: "Unlock a challenge",
+    cost: new Decimal(125),
+    unlocked(){
+        return player.UF.best.gte(3)
+    },
+},
+22: {
+    title: "Factor Eta",
+    description: "Unlock 1 upgrade factor challenge.",
+    cost: new Decimal(144),
+    unlocked(){
+        return hasUpgrade('F',21)
+    },
+},
+23: {
+    title: "Factor Theta",
+    description: "Remove the fourth hardcap of '2'.",
+    cost: new Decimal(169),
+    unlocked(){
+        return hasUpgrade('F',22)
+    },
+},
+
+
 },
     challenges: {
         11: {
@@ -533,6 +606,24 @@ addLayer("F", {
             goalDescription: "10,000 Numbers",
             rewardDescription(){return "unlock 1 Number buyable."},
           unlocked(){return hasMilestone('F', 108)},
+          
+        },
+        32: {
+            name: "Super No upgrade factor",
+            challengeDescription: "'2','3' and '4' is no effect",
+            canComplete(){return player.N.points.gte("3.14e16")},
+            goalDescription: "3.14e16 Numbers",
+            rewardDescription(){return "'-' base x2 and unlock 1 challenge"},
+          unlocked(){return hasUpgrade('F', 21)},
+          
+        },
+        33: {
+            name: "Super 2 in 1",
+            challengeDescription: "You trap in super / and super No upgrade factor.",
+            canComplete(){return player.N.points.gte("1234")},
+            goalDescription: "1,234 Numbers",
+            rewardDescription(){return "'-' base x2 and unlock 1 factor upgrade"},
+          unlocked(){return hasUpgrade('F', 21) && hasChallenge('F',32)},
           
         },
     },
