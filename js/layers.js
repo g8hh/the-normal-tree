@@ -499,6 +499,7 @@ addLayer("F", {
                 if (inChallenge('F',42)) return 1 
                 if (inChallenge('F',23)) return 1
                 if (inChallenge('F',22)) return 1 
+                if (player.F.points>=1108) return 4500
                 if (hasMilestone('F',888)) return player.F.points.pow(1.2).add(1)
                 if (hasMilestone('F',120)) return player.F.points.pow(0.65).add(1)
                 return player.F.points.pow(0.4).add(1)
@@ -517,6 +518,8 @@ addLayer("F", {
             effect() {
                 if (inChallenge('F',42)) return 1 
                 if (inChallenge('F',22)) return 1 
+                if (player.N.points>=1.078752e+144) return 1e35
+                
                 if (hasMilestone('F',1024)) return player.N.points.pow(0.243).add(1)
                 if (hasUpgrade('F',24)) return player.N.points.pow(0.2).add(1)
              
