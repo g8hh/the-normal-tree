@@ -15,8 +15,9 @@ addLayer("N", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        if (inChallenge('F', 33)) mult = mult.times(0.000001)
+        if (inChallenge('F', 33)|inChallenge('F',43)) mult = mult.times(0.000001)
         if (inChallenge('F', 31)) mult = mult.times(0.000001)
+        if (hasMilestone('F',1580)) mult = mult.times(buyableEffect('N',13))
         if (hasUpgrade('F',15)) mult = mult.times(buyableEffect('N',11))
         if (hasUpgrade('F',15)&& !inChallenge('F',42)) mult = mult.times(2)
         if (inChallenge('F', 23)) mult = mult.times(0.2)
@@ -72,9 +73,9 @@ addLayer("N", {
                 if (inChallenge("F",21)) return 1000
                 if (inChallenge("F",12)) return 1
                 if (inChallenge("F",13)) return 1
-                if (inChallenge("F",41)) return 10
-                if (player.N.points >=1e56&& !inChallenge('F',42)) return 1e35
-                if(hasUpgrade("F",23)&& !inChallenge('F',42)) return player.N.points.pow(0.625).add(1)
+                if (inChallenge("F",41)|inChallenge('F',43)) return 10
+                if (player.N.points >=1e56&& !inChallenge('F',42)&& !inChallenge('F',43)) return 1e35
+                if(hasUpgrade("F",23)&& !inChallenge('F',42)&& !inChallenge('F',43)) return player.N.points.pow(0.625).add(1)
                 if (player.N.points >=1e24) return 1e15
                 if(hasUpgrade("N",24)) return player.N.points.pow(0.625).add(1)
                 if (player.N.points >=52281977629) return 5000000
@@ -98,8 +99,11 @@ addLayer("N", {
                 if (inChallenge("F",32)) return 1
                 if (inChallenge("F",23)) return 30
                 if (inChallenge("F",21)) return 30
-                if (inChallenge("F",41)) return 10
-                if (player.points >= 7.0328889e+31&&!inChallenge('F',42)) return 1e10
+                if (inChallenge("F",41)|inChallenge('F',43)) return 10
+                if (player.points >= 2.91e111&&!inChallenge('F',42)&& !inChallenge('F',43)) return 1e35
+            
+                if(hasUpgrade("N",35)) return player.points.pow(0.314).add(1)
+                if (player.points >= 7.0328889e+31&&!inChallenge('F',42)&& !inChallenge('F',43)) return 09
                 if(hasUpgrade("F",14) && !inChallenge('F',42)) return player.points.pow(0.314).add(1)
                 
         if (player.points >= 4.60e15) return 50000
@@ -122,7 +126,9 @@ addLayer("N", {
                 if (inChallenge("F",32)) return 1
                 if (inChallenge("F",21)) return 20
                 if (inChallenge("F",23)) return 20
-                if (inChallenge("F",41)) return 10
+                if (inChallenge("F",41)|inChallenge('F',43)) return 10
+                if (player.points >= 2.15e83) return 1e25
+                if(hasUpgrade("N",34)) return player.points.pow(0.3).add(1)
                 if (player.points >= 4.64e26) return 1e8
                 if(hasUpgrade("N",25)) return player.points.pow(0.3).add(1)
                 if (player.points >= 471556031) return 400
@@ -238,6 +244,30 @@ addLayer("N", {
             },
             
         },
+        34: {
+            title: "14",
+            description: "Remove the third hardcap of '4'. You can buy this upgrade while you are in Factor Challenge 9.",
+            cost(){ 
+                if(player.F.activeChallenge!=33)return new Decimal(Infinity);
+                return new Decimal(1e30);
+            },
+            unlocked(){
+                {return player.UF.best.gte(8)}
+            },
+            
+        },
+        35: {
+            title: "15",
+            description: "Remove the third hardcap of '3'. You can buy this upgrade while you are in Factor Challenge 11.",
+            cost(){ 
+                if(player.F.activeChallenge!=42)return new Decimal(Infinity);
+                return new Decimal(1e50);
+            },
+            unlocked(){
+                {return hasMilestone('F',1333)}
+            },
+            
+        },
     },
     buyables: {
         rows: 2,
@@ -269,7 +299,8 @@ addLayer("N", {
                 if ( player.UF.challenges[11]>=3) eff = new Decimal("50").pow(getBuyableAmount("N", 11))
                 if (inChallenge('UF',11)) eff = new Decimal("1")
                 if (inChallenge('UF',11) && hasUpgrade('N',33)) eff =  new Decimal("3").pow(getBuyableAmount("N", 11))
-                if (eff>=1e50) return eff = new Decimal("1e50")
+                if (eff>=1e50 &&(!hasMilestone('F',6000))) return eff = new Decimal("1e50")
+                else if (eff>=1e64&&(hasMilestone('F',6000))) return eff = new Decimal("1e64")
                 else return eff = eff
                 
                
@@ -281,7 +312,7 @@ addLayer("N", {
             display() {
                 if (hasChallenge('F',42)) return "Boosts point gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + format(new Decimal("1e6").pow(getBuyableAmount("N", 12).add(1))) + " Numbers"
 
-                else return "Boosts point gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + format(new Decimal("1e10").pow(getBuyableAmount("N", 12).add(1))) + " Numbers"
+                else return "Boosts point gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + format(new Decimal(" +").pow(getBuyableAmount("N", 12).add(1))) + " Numbers"
             },
             unlocked() { return hasChallenge("F", 31) },
             canAfford() { 
@@ -300,18 +331,41 @@ addLayer("N", {
                 else eff = new Decimal("2").pow(getBuyableAmount("N", 12))
                 if (hasChallenge('F',33)) eff = new Decimal("8").pow(getBuyableAmount("N", 12))
                 if (inChallenge('UF',11)) eff = new Decimal("1")
-                if (eff>=1e20) return eff = new Decimal("1e20")
+                if (eff>=1e20&& ( player.UF.challenges[11]<=3)) return eff = new Decimal("1e20")
+                else if (eff>=1e30&& ( player.UF.challenges[11]>=4)) return eff = new Decimal("1e30")
                 else return eff = eff
+    
                
               
-              return eff
                 
+            }
+        },
+        13: {
+            title: "x",
+            display() {
+                if (hasMilestone('F',1580)) return "Boosts Number gain by " + format(tmp.N.buyables[13].effect) + "x<br>Cost : " + format(new Decimal("1e20").pow(getBuyableAmount("N", 13).add(1))) + " Numbers"
+
+                else return "Boosts number gain by " + format(tmp.N.buyables[13].effect) + "x<br>Cost : " + format(new Decimal("1e20").pow(getBuyableAmount("N", 13).add(1))) + " Numbers"
+            },
+            unlocked() { return hasMilestone("F", 1580) },
+            canAfford() { 
+               return player.N.points.gte(new Decimal("1e20").pow(getBuyableAmount("N", 13).add(1))) 
+            },
+            buy() { 
+                {
+                 player.N.points = player.N.points.minus(new Decimal("1e20").pow(getBuyableAmount("N", 13).add(1)))
+                }
+                setBuyableAmount("N", 13, getBuyableAmount("N", 13).add(1))
+            },
+            effect() { 
+                return  eff = new Decimal(player.N.points.add(1).log(10).pow(0.5).add(1)).pow(getBuyableAmount("N", 13))        
+                  
             }
         },
     
        
     },
-passiveGeneration(){return hasMilestone('F',6) && (!inChallenge('F',22)) && (!inChallenge('F',23)) && (!inChallenge('F',42))? 1 : 0},
+passiveGeneration(){return hasMilestone('F',6) && (!inChallenge('F',22)) && (!inChallenge('F',23)) && (!inChallenge('F',42)&& (!inChallenge('F',43)))? 1 : 0},
     layerShown(){return true}
 })
 addLayer("UF", {
@@ -359,20 +413,32 @@ addLayer("UF", {
             effectDescription: "Unlock 1 upgrade.",
             done() { return player.UF.points.gte(6) }
         },
+        8: {
+            requirementDescription: "8 Upgrade Factor",
+            effectDescription: "Unlock 1 upgrade.",
+            done() { return player.UF.points.gte(8) }
+        },
+        10: {
+            requirementDescription: "10 Upgrade Factor",
+            effectDescription: "Unlock 1 challenge (not upgrade) and point x10000.",
+            done() { return player.UF.points.gte(10) }
+        },
+        
+
     },
     challenges: {
         11: {
            
             completionLimit(){
-                let limit=3;
+                let limit=4;
                 return limit;
             },
             name: "Buyable upgrader",
-            challengeDescription: "Buyable is no effect (You can do 3 times)",
+            challengeDescription: "'+' and '-' is no effect (You can do 4 times)",
             goal: function(){
-                return [new Decimal("1e30"),new Decimal("1e45"),new Decimal("5e52"),new Decimal(Infinity)][player.UF.challenges[11]];
+                return [new Decimal("1e30"),new Decimal("1e45"),new Decimal("5e52"),new Decimal("1e65"),new Decimal(Infinity)][player.UF.challenges[11]];
         },
-            rewardDescription(){return "'+' is better'."},
+            rewardDescription(){return "'+' is better' (1-3) and Remove 1 hardcap of '-'  (4)."},
           unlocked(){return hasUpgrade('F', 22)},
 
     },
@@ -394,6 +460,7 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if(hasChallenge('F',43))return 0.538
         if(hasChallenge('F',41))return 0.625
         if(hasChallenge('F',23))return 0.69
         else return 0.75
@@ -419,6 +486,10 @@ addLayer("F", {
     ],
     canBuyMax(){
         return hasChallenge('F',21) 
+    },autoPrestige(){
+        return hasMilestone('F',6000);
+    },resetsNothing(){
+        return hasMilestone('F',6000);
     },
  
     milestones: {
@@ -487,6 +558,21 @@ addLayer("F", {
             effectDescription: "'Factor Beta' is better.",
             done() { return player.F.points.gte(1024)}
         },
+        1333: {
+            requirementDescription: "1333 factors",
+            effectDescription: "Unlock 1 number upgrade",
+            done() { return player.F.points.gte(1333)}
+        },     
+        1580: {
+            requirementDescription: "1580 factors",
+            effectDescription: "Unlock 1 number buyable",
+            done() { return player.F.points.gte(1580)}
+        },  
+        6000: {
+            requirementDescription: "6000 factors",
+            effectDescription: "Remove the first hardcap of '+', auto buy factor and factor reset nothing",
+            done() { return player.F.points.gte(6000)}
+        },  
     },
     upgrades: {
         rows: 2,
@@ -496,7 +582,7 @@ addLayer("F", {
             description: "Boost points and numbers base on factor.",
             effect() {
                 
-                if (inChallenge('F',42)) return 1 
+                if (inChallenge('F',42)|inChallenge('F',43)) return 1 
                 if (inChallenge('F',23)) return 1
                 if (inChallenge('F',22)) return 1 
                 if (player.F.points>=1108) return 4500
@@ -516,7 +602,7 @@ addLayer("F", {
             title: "Factor Beta",
             description: "Number boost itself gain.",
             effect() {
-                if (inChallenge('F',42)) return 1 
+                if (inChallenge('F',42)|inChallenge('F',43)) return 1 
                 if (inChallenge('F',22)) return 1 
                 if (player.N.points>=1.078752e+144) return 1e35
                 
@@ -695,6 +781,15 @@ addLayer("F", {
             canComplete(){return player.N.points.gte("3.14e45")},
             goalDescription: "3.14e45 Numbers",
             rewardDescription(){return "'-' cost base /1e4."},
+          unlocked(){return hasUpgrade('F', 25)},
+          
+        },
+        43: {
+            name: "Super 3 in 1",
+            challengeDescription: "You trap in Super 2 in 1, Super no cap factor and no factor factor.",
+            canComplete(){return player.N.points.gte("5000")},
+            goalDescription: "5,000 Numbers",
+            rewardDescription(){return "Factor is cheaper."},
           unlocked(){return hasUpgrade('F', 25)},
           
         },

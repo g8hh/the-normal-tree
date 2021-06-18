@@ -13,12 +13,20 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.8",
-	name: "Eighth",
+	num: "0.0.9",
+	name: "ninth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.0.9</h3><br>
+- Added 2 Upgrade factor Milestone.<br>
+- Added 3 Factors Milestone.<br>
+- Added 1 Factors Challenge.<br>
+- Added 2 Number Upgrade.<br>
+- Added 1 Number Buyable.<br>
+- Endgame: 11 Upgrade factor<br>	
 <h3>v0.0.8</h3><br>
+- Added 1 Upgrade factor Milestone.<br>
 - Added 2 Factor Upgrade.<br>
 - Added 2 Factors Milestone.<br>
 - Added 2 Factors Challenge.<br>
@@ -91,7 +99,7 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
 	if (hasChallenge('F',31)) gain = gain.times(buyableEffect('N',12))
-	if (inChallenge('F', 33)) gain = gain.times(0.000001)
+	if (inChallenge('F', 33)|inChallenge('F',43)) gain = gain.times(0.000001)
 	if (inChallenge('F', 31)) gain = gain.times(0.000001)
 	if (hasChallenge('F', 22)) gain = gain.times(2)
 	if (hasChallenge('F', 12)) gain = gain.times(3)
@@ -103,6 +111,7 @@ function getPointGen() {
 	if (hasUpgrade('N', 12)) gain = gain.times(upgradeEffect('N', 12))
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
+	if (hasMilestone('UF', 10)) gain = gain.times(10000)
 	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
 	return gain
 }
@@ -117,7 +126,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.UF.points.gte(8);
+	return player.UF.points.gte(11);
 }
 
 
