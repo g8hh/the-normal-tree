@@ -1,6 +1,6 @@
 let modInfo = {
 	name: "The Number Tree",
-	id: "mymod",
+	id: "factor",
 	author: "3^3=7",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
