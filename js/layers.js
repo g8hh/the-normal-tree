@@ -53,7 +53,7 @@ addLayer("N", {
 
     doReset(resettingLayer) {
         let keep = [];
-        if (hasChallenge("F", 21) && resettingLayer=="F") keep.push("upgrades")
+        if (hasChallenge("F", 21) |(hasMilestone("I", 1))&& resettingLayer=="F") keep.push("upgrades")
         if (hasMilestone("UF", 1) && resettingLayer=="UF") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
@@ -106,7 +106,7 @@ addLayer("N", {
                 if (player.points >= 2.91e111&&!inChallenge('F',42)&& !inChallenge('F',43)) return 1e35
             
                 if(hasUpgrade("N",35)) return player.points.pow(0.314).add(1)
-                if (player.points >= 7.0328889e+31&&!inChallenge('F',42)&& !inChallenge('F',43)) return 09
+                if (player.points >= 7.0328889e+31&&!inChallenge('F',42)&& !inChallenge('F',43)) return 1e10
                 if(hasUpgrade("F",14) && !inChallenge('F',42)) return player.points.pow(0.314).add(1)
                 
         if (player.points >= 4.60e15) return 50000
@@ -612,7 +612,7 @@ addLayer("F", {
         },
         888: {
             requirementDescription: "888 factors",
-            effectDescription: "'Factor Alpha' is much more better.",
+            effectDescription: "'Factor Alpha' is much better.",
             done() { return player.F.points.gte(888)}
         },
     1024: {
@@ -632,7 +632,7 @@ addLayer("F", {
         },  
         6000: {
             requirementDescription: "6000 factors",
-            effectDescription: "Remove the first hardcap of '+', auto buy factor and factor reset nothing",
+            effectDescription: "Remove the first hardcap of '+', auto buy factor ,and factor reset nothing",
             done() { return player.F.points.gte(6000)}
         },  
         12500: {
@@ -646,7 +646,7 @@ addLayer("F", {
         cols: 5,
         11: {
             title: "Factor Alpha",
-            description: "Boost points and numbers base on factor.",
+            description: "Boost points and numbers base on factors.",
             effect() {
                 
                 if (inChallenge('F',42)|inChallenge('F',43)) return 1 
@@ -722,7 +722,7 @@ addLayer("F", {
     description: "Unlock 1 upgrade factor challenge.",
     cost: new Decimal(144),
     unlocked(){
-        return hasUpgrade('F',21)
+        return hasUpgrade('F',21)|hasChallenge('F',33)
     },
 },
 23: {
@@ -844,7 +844,7 @@ addLayer("F", {
         },
         42: {
             name: "Super no factor factor",
-            challengeDescription: "Factor milestone 5, 11, 12 and upgrades is no effect.",
+            challengeDescription: "Factor milestone 5, 11, 12 ,and upgrades are no effect.",
             canComplete(){return player.N.points.gte("3.14e45")},
             goalDescription: "3.14e45 Numbers",
             rewardDescription(){return "'-' cost base /1e4."},
@@ -853,11 +853,11 @@ addLayer("F", {
         },
         43: {
             name: "Super 3 in 1",
-            challengeDescription: "You trap in Super 2 in 1, Super no cap factor and no factor factor.",
+            challengeDescription: "You trap in Super 2 in 1, Super no cap factor,and no factor factor.",
             canComplete(){return player.N.points.gte("5000")},
             goalDescription: "5,000 Numbers",
             rewardDescription(){return "Factor is cheaper."},
-          unlocked(){return hasUpgrade('F', 25)},
+          unlocked(){return hasMilestone('UF', 10)},
         },
           
         },
@@ -937,7 +937,7 @@ addLayer("I", {
     milestones: {
         1: {
             requirementDescription: "1 Infinity",
-            effectDescription: "Number gain ^1.05 and point gain x100",
+            effectDescription: "Number gain ^1.05 and point gain x100, keep upgrade on factor reset.",
             done() { return player.I.points.gte(1) }
         },
     },
@@ -955,4 +955,118 @@ addLayer("Hardcap", {
 		"blank", "blank", "blank",
         ["raw-html", "<h1><a href=https://docs.google.com/document/d/1oT5siVj4lT8nnmHjPmAiSQL1NVSmNXQT8bpgUUqjBkM/edit target=_blank>Hardcap table</a></h1>"],
 	],
+})
+addLayer("Achievements", {
+	startData() { return {unlocked: true}},
+	color: "##ff5588",
+	symbol: "A",
+	row: "side",
+	position: 0,
+	layerShown() { return true },
+    tooltip: "Achievements", 
+    achievements: {
+        11: {
+            name: "First",
+            goalTooltip:"Get the first upgrade",
+            done()  {
+                if (hasUpgrade('N',11)) return true
+            }
+        },
+        12: {
+            name: "Wall?",
+            goalTooltip:"Get the fourth upgrade",
+            done()  {
+                if (hasUpgrade('N',14)) return true
+            }
+        },
+        13: {
+            name: "Factor",
+            goalTooltip:"Get 1 factor",
+            done()  {
+                if (hasMilestone('F',1)) return true
+            }       
+         },
+         14: {
+            name: "Challenged",
+            goalTooltip:"complete / factor.",
+            done()  {
+                if (hasChallenge('F',11)) return true
+            }
+        },
+        15: {
+            name: "Automation",
+            goalTooltip:"Get 6 factors.",
+            done()  {
+                if (hasMilestone('F',6)) return true
+            }
+        },
+        16: {
+            name: "Ten Upgrade",
+            goalTooltip:"Get 10 upgrade.",
+            done()  {
+                if (hasUpgrade('N',23)) return true
+            }
+        },
+        21: {
+            name: "More and more",
+            goalTooltip:"Get 1 upgrade factor.",
+            done()  {
+                if (hasMilestone('UF',1)) return true
+            }
+        },
+        22: {
+            name: "Base++",
+            goalTooltip:"Get 12 Number upgrade.",
+            done()  {
+                if (hasUpgrade('N',32)) return true
+            }
+        },
+        23: {
+            name: "Buyable challenge?",
+            goalTooltip:"Complete Buyable upgrader once.",
+            done()  {
+                if (challengeCompletions('UF', 11)>=1) return true
+            }
+        },
+        24: {
+            name: "Buyable challenge!",
+            goalTooltip:"Complete Buyable upgrader three times.",
+            done()  {
+                if (challengeCompletions('UF', 11)>=3) return true
+            }
+        },
+        25: {
+            name: "2^10 factor",
+            goalTooltip:"Get 1024 factor",
+            done()  {
+                if (hasMilestone('F', 1024)) return true
+            }
+        },
+        26: {
+            name: "one to fifteen",
+            goalTooltip:"Get 15 Number upgrade",
+            done()  {
+                if (hasUpgrade('N', 35)) return true
+            }
+        },
+        31: {
+            name: "Super Challenged",
+            goalTooltip:"Complete Super 3 in 1",
+            done()  {
+                if (hasChallenge('F', 43)) return true
+            }
+        },
+      
+        32: {
+            name: "Inflatity",
+            goalTooltip:"Get 1 Infinity.",
+            done()  {
+                if (hasMilestone('I', 1)) return true
+            }
+        },
+      
+
+      
+    }
+    
 })
