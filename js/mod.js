@@ -19,7 +19,7 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 <h3>v0.1.b</h3><br>
-- The game is easier.
+- The game is easier.<br>
 <h3>v0.1.a</h3><br>
 - Fixed a lot of bug.<br>
 - Fixed little grammar errors.<br>
