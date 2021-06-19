@@ -411,7 +411,7 @@ addLayer("N", {
       },
 
       "Buyables":{
-        unlocked(){return hasMilestone('F',2)},
+        unlocked(){return hasUpgrade('F',15)},
         content:[
           "main-display",
           "blank",
