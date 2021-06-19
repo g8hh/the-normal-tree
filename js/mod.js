@@ -13,17 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.a",
+	num: "0.1.b",
 	name: "tenth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.b</h3><br>
+- The game is easier.
 <h3>v0.1.a</h3><br>
 - Fixed a lot of bug.<br>
 - Fixed little grammar errors.<br>
 - added achievements.<br>
-
-
 <h3>v0.1</h3><br>
 - Added Infinity.<br>
 - Added 1 Upgrade factor Milestone.<br>
@@ -114,13 +114,15 @@ function getPointGen() {
 	if (hasChallenge('F',31)) gain = gain.times(buyableEffect('N',12))
 	if (inChallenge('F', 33)|inChallenge('F',43)) gain = gain.times(0.000001)
 	if (inChallenge('F', 31)) gain = gain.times(0.000001)
+	if (hasMilestone('UF', 1)) gain = gain.times(2)
 	if (hasChallenge('F', 22)) gain = gain.times(2)
 	if (hasChallenge('F', 12)) gain = gain.times(3)
-	if (inChallenge('F', 11)) gain = gain.times(0.2)
-	if (inChallenge('F', 13)) gain = gain.times(0.2)
-	if (inChallenge('F', 23)) gain = gain.times(0.2)
+	if (inChallenge('F', 11)) gain = gain.times(0.3)
+	if (inChallenge('F', 13)) gain = gain.times(0.3)
+	if (inChallenge('F', 23)) gain = gain.times(0.3)
 	if (hasChallenge('F', 11)) gain = gain.times(3)
-	if (hasUpgrade('N', 11)) gain = gain.times(3)
+	if (hasUpgrade('N', 11)) gain = gain.times(4)
+	if (hasAchievement("A", 11)) gain = gain.times(1.25)
 	if (hasUpgrade('N', 12)) gain = gain.times(upgradeEffect('N', 12))
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
