@@ -36,7 +36,7 @@ addLayer("N", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         let mult=new Decimal(1)
         if (hasMilestone('UF',11)) mult = mult.times(buyableEffect('N',21))
-        if (hasMilestone('I',1)) mult = mult.times(1.25)
+        if (hasMilestone('I',1)) mult = mult.times(1.05)
 
         return mult
 
@@ -316,7 +316,7 @@ addLayer("N", {
             display() {
                 if (hasChallenge('F',42)) return "Boosts point gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + format(new Decimal("1e6").pow(getBuyableAmount("N", 12).add(1))) + " Numbers"
 
-                else return "Boosts point gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + format(new Decimal(" +").pow(getBuyableAmount("N", 12).add(1))) + " Numbers"
+                else return "Boosts point gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + format(new Decimal("1e10").pow(getBuyableAmount("N", 12).add(1))) + " Numbers"
             },
             unlocked() { return hasChallenge("F", 31) },
             canAfford() { 
@@ -483,7 +483,7 @@ addLayer("UF", {
         11: {
             requirementDescription: "11 Upgrade Factor",
             effectDescription: "Unlock 1 buyable (not upgrade).",
-            done() { return player.UF.points.gte(10) }
+            done() { return player.UF.points.gte(11) }
         },
         
 
@@ -937,7 +937,7 @@ addLayer("I", {
     milestones: {
         1: {
             requirementDescription: "1 Infinity",
-            effectDescription: "Number gain ^1.25 and point gain x1000",
+            effectDescription: "Number gain ^1.05 and point gain x100",
             done() { return player.I.points.gte(1) }
         },
     },
