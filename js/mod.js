@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.9",
-	name: "ninth",
+	num: "0.1",
+	name: "tenth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1</h3><br>
+- Added Infinity.<br>
+- Added 1 Upgrade factor Milestone.<br>
+- Added 1 Factors Milestone.<br>
+- Added 1 Number Buyable.<br>
+- Endgame: 1 Infinity<br>
 <h3>v0.0.9</h3><br>
 - Added 2 Upgrade factor Milestone.<br>
 - Added 3 Factors Milestone.<br>
@@ -98,6 +104,7 @@ function getPointGen() {
 
 
 	let gain = new Decimal(1)
+
 	if (hasChallenge('F',31)) gain = gain.times(buyableEffect('N',12))
 	if (inChallenge('F', 33)|inChallenge('F',43)) gain = gain.times(0.000001)
 	if (inChallenge('F', 31)) gain = gain.times(0.000001)
@@ -112,6 +119,7 @@ function getPointGen() {
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
 	if (hasMilestone('UF', 10)) gain = gain.times(10000)
+	if (hasMilestone('I', 1)) gain = gain.times(1000)
 	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
 	return gain
 }
@@ -126,7 +134,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.UF.points.gte(11);
+	return player.I.points.gte(1);
 }
 
 
