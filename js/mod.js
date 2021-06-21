@@ -161,7 +161,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.I.points.gte(2);
+	return player.I.points.gte(3);
 }
 
 

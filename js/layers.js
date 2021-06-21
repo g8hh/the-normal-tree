@@ -66,7 +66,7 @@ addLayer("N", {
         let keep = [];
         if (hasChallenge("F", 21) |(hasMilestone("I", 1))&& resettingLayer=="F") keep.push("upgrades")
         if (hasMilestone("UF", 1) && resettingLayer=="UF")  keep.push("upgrades")
-        if (hasMilestone('I',2)&& resettingLayer=="I") keep.push("11,12,13,14,15,21,22,23,24,25,31,32,33,34,35")
+        if (hasMilestone('I',3)&& resettingLayer=="I") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     upgrades: {
@@ -1116,6 +1116,7 @@ addLayer("F", {
       doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("I", 2) && resettingLayer=="I") keep.push("milestones")
+        if (hasMilestone("I", 3) && resettingLayer=="I") keep.push("challenges")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
 
@@ -1166,7 +1167,7 @@ addLayer("I", {
             requirementDescription: "2 Infinity",
             effectDescription: "Number gain ^1.05, keep Factor milestone and upgrade factor milestone on reset.",
             done() { return player.I.points.gte(2) }
-        },
+        }
     },
     layerShown(){return true}
 })
