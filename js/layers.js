@@ -831,7 +831,7 @@ addLayer("F", {
     description: "Unlock a challenge",
     cost: new Decimal(125),
     unlocked(){
-        return player.UF.point>=3|hasMilestone("I", 1)
+        return player.UF.best.gte(3) |hasMilestone("I", 1)
     },
 },
 22: {
