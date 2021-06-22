@@ -19,7 +19,7 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 <h3>v0.1.3</h3><br>
-- Added Negative number
+- Added Negative number.<br>
 - Added 6 NN Upgrade.<br>
 - Added 2 NN milestone.<br>
 - Endgame: 1.8e308 points<br>
