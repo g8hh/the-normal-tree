@@ -13,11 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.2",
+	num: "0.1.2.1",
 	name: "twelfth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.2.1</h3><br>
+- Upgrade, milestone and challenge is easier(harder).
 <h3>v0.1.2</h3><br>
 - Added 3 N Upgrade.<br>
 - Added 1 UF milestone.<br>
@@ -142,9 +144,9 @@ function getPointGen() {
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
 	if (hasMilestone('UF', 52)) gain = gain.times(player.UF.points.pow(3).add(1))
-	if (hasMilestone('UF', 129)) gain = gain.times(player.UF.points.pow(3).add(1))
+	if (hasMilestone('UF', 128)) gain = gain.times(player.UF.points.pow(3).add(1))
 	
-	if (hasMilestone('F', 64000)) gain = gain.times(player.F.points.add(1))
+	if (hasMilestone('F', 1100)) gain = gain.times(player.F.points.add(1))
 	if (hasMilestone('UF', 10)) gain = gain.times(10000)
 	if (hasMilestone('I', 1)) gain = gain.times(100)
 	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
