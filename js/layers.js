@@ -28,6 +28,7 @@ addLayer("N", {
         if (inChallenge('F', 23)) mult = mult.times(0.3)
         if (hasChallenge('F', 21)) mult = mult.times(1.5)
         if (hasChallenge('F', 11)) mult = mult.times(3)
+        if (hasUpgrade('NN', 11)) mult = mult.times(1e4)
         if (hasChallenge('F', 22)) mult = mult.times(2)
         if (hasMilestone('F', 32)) mult = mult.times(3)
         if (hasUpgrade('F',12)) mult = mult.times(upgradeEffect('F', 12))
@@ -63,11 +64,15 @@ addLayer("N", {
     
 
     doReset(resettingLayer) {
+        let extraUpgrades = [];
+        if (hasMilestone("I",3)) extraUpgrades.push(24,25,31,32,33,34,35,41);
+        if (hasMilestone("NN",5)) extraUpgrades.push(16,26,36,46);
+        if (hasMilestone("NN",25)) extraUpgrades.push(12,13,14,44);
         let keep = [];
         if (hasChallenge("F", 21) |(hasMilestone("I", 1))&& resettingLayer=="F") keep.push("upgrades")
         if (hasMilestone("UF", 1) && resettingLayer=="UF")  keep.push("upgrades")
-        if (hasMilestone('I',3)&& resettingLayer=="I") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+        player[this.layer].upgrades.push(...extraUpgrades)
     },
     upgrades: {
         rows: 4,
@@ -82,6 +87,7 @@ addLayer("N", {
             description:"Numbers boost point gain.",
             cost: new Decimal(5),
             effect() {
+                if(hasUpgrade("NN",15)) return 1e70
                 if (inChallenge("F",33)) return 1
                 if (inChallenge("F",32)) return 1
                 if (inChallenge("F",23)) return 1
@@ -110,6 +116,7 @@ addLayer("N", {
             description: "Points boost points gain.",
             cost: new Decimal(25),
             effect() {
+                if(hasUpgrade("NN",15)) return 1e70
                 if (inChallenge("F",33)) return 1
                 if (inChallenge("F",32)) return 1
                 if (inChallenge("F",23)) return 30
@@ -135,6 +142,7 @@ addLayer("N", {
             description: "Points boost Numbers gain.",
             cost: new Decimal(125),
             effect() {
+                if(hasUpgrade("NN",15)) return 1e50
                 if (inChallenge("F",33)) return 1
                 if (inChallenge("F",32)) return 1
                 if (inChallenge("F",21)) return 20
@@ -524,6 +532,132 @@ addLayer("N", {
 passiveGeneration(){return hasMilestone('F',5) && (!inChallenge('F',22)) && (!inChallenge('F',23)) && (!inChallenge('F',42)&& (!inChallenge('F',43)))? 1 : 0},
 
     layerShown(){return true}
+})
+addLayer("NN", {
+    name: "Negative number", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "NN", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: -1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#ffa0ff",
+    requires: new Decimal("1e940"), // Can be a function that takes requirement increases into account
+    resource: "Negative number", // Name of prestige currency
+    baseResource: "Numbers", // Name of resource prestige is based on
+    baseAmount() {return player.N.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent(){
+     return 0.01
+    },
+    branches:["N"],
+     // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        
+        if (hasUpgrade('NN',14)) mult = mult.times(upgradeEffect('NN', 14))
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 1, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "N", description: "shift + N: Reset for Negative number", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.UF.unlocked) doReset("NN") },
+        unlocked() {return hasMilestone('I', 3)} // Determines if you can use the hotkey, optional
+    },
+    ],
+    upgrades: {
+        rows: 2,
+        cols: 5,
+        11: {
+            title: "-1",
+            description: "Number gain x1e4.",
+            cost: new Decimal(2),
+        },
+        12: {
+            title: "-2",
+            description:"Negative number boost point gain.",
+            cost: new Decimal(5),
+            effect() {
+                if (player.NN.points >=3981071705.53) return 1e72
+                
+                else if(hasUpgrade('NN',21)) return player.NN.points.pow(0.75).add(1).pow(10)
+                else if (player.NN.points >=1000000) return 1e30
+                else    return player.NN.points.pow(0.5).add(1).pow(10)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+            unlocked(){
+                return hasUpgrade("NN", 11)
+            },
+        },
+        13: {
+            title: "-3",
+            description: "Points boost points gain.",
+            cost: new Decimal(25),
+            effect() {
+                if (player.points >=1e900) return 5.9049e14
+                else return  player.points.log(10).pow(5)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+            unlocked(){
+                return hasUpgrade("NN", 12)
+        },
+    },
+    14: {
+        title: "-4",
+        description: "Negative number boost Negative number gain.",
+        cost: new Decimal(125),
+        effect() {
+            if (player.NN.points>= 2.1544347e+13) return 1e8
+            
+            else if (hasUpgrade('NN',21)) return player.NN.points.pow(0.6).add(1)
+           
+            else if (player.NN.points>= 3200000) return 400
+            else return player.NN.points.pow(0.4).add(1)
+        },
+        effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+        unlocked(){
+            return hasUpgrade("NN", 13)
+        },
+    },
+    15: {
+        title: "-5",
+        description: "Boost '2', '3', '4'.",
+        cost: new Decimal(3141),
+     
+        unlocked(){
+            return hasUpgrade("NN", 14)
+        },
+    },
+    21: {
+        title: "-6",
+        description: "Boost '-2' and '-4'",
+        cost: new Decimal(111111),
+     
+        unlocked(){
+            return hasUpgrade("NN", 15)
+        },
+    },
+},
+    milestones: {
+        5: {
+            requirementDescription: "5 Negative number",
+            effectDescription: "Keep master +, -, x and / on ALL reset.",
+            done() { return player.NN.points.gte(5) }
+        },
+        25: {
+            requirementDescription: "25 Negative number",
+            effectDescription: "Keep '2', '3', '4' and '19' on ALL reset.",
+            done() { return player.NN.points.gte(25) }
+        },
+    },
+    doReset(resettingLayer) {
+        let keep = [];
+        if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("milestones")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
 })
 addLayer("UF", {
     name: "Upgrade Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1113,8 +1247,9 @@ addLayer("F", {
         let keep = [];
         if (hasMilestone("I", 2) && resettingLayer=="I") keep.push("milestones")
         if (hasMilestone("I", 3) && resettingLayer=="I") keep.push("challenges")
+        if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
-    },
+      },
 
 
     layerShown(){return true}
@@ -1163,6 +1298,16 @@ addLayer("I", {
             requirementDescription: "2 Infinity",
             effectDescription: "Number gain ^1.05, keep Factor milestone and upgrade factor milestone on reset.",
             done() { return player.I.points.gte(2) }
+        },
+        3: {
+            requirementDescription: "3 Infinity",
+            effectDescription: "keep Factor challenge on reset, and '9' to '16' on ALL reset.",
+            done() { return player.I.points.gte(3) }
+        },
+        4: {
+            requirementDescription: "4 Infinity",
+            effectDescription: "keep Factor Upgrade and Negative number milestone on reset",
+            done() { return player.I.points.gte(4) }
         }
     },
     layerShown(){return true}
@@ -1309,6 +1454,27 @@ addLayer("A", {
                 return (hasMilestone('I',1))
             }
         },
+        33:{
+            name: "Free Infinity",
+            tooltip:"Get 3 Infinity.",
+            done()  {
+                if (hasMilestone('I',3)) return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1))
+            }
+        },
+        34:{
+            name: "True Infinity",
+            tooltip:"Get 1.8e308 point.",
+            done()  {
+                if (player.points.gte(1.79e308)) return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1))
+            }
+        },
+
     
       
 
