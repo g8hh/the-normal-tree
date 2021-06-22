@@ -329,7 +329,7 @@ addLayer("N", {
         description: "'+' is always 1e120.",
         cost: new Decimal("1e487"),
         unlocked(){
-            {return hasUpgrade('N',45)}
+            {return hasUpgrade('N',45)|hasMilestone("I", 2)}
         },
     },
     26: {
