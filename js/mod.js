@@ -13,18 +13,24 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.3",
-	name: "thirteenth",
+	num: "0.1.4",
+	name: "fourteenth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.4</h3><br>
+- Added 1 N Upgrade.<br>
+- Added 2 NN Upgrade.<br>
+- Added 1 NN milestone.<br>
+- Added 2 I challenge.<br>
+- Endgame: 6 Infinity<br>
 <h3>v0.1.3</h3><br>
 - Added Negative number.<br>
 - Added 6 NN Upgrade.<br>
 - Added 2 NN milestone.<br>
 - Endgame: 1.8e308 points<br>
 <h3>v0.1.2.1</h3><br>
-- Upgrade, milestone and challenge is easier(harder).
+- Upgrade, milestone and challenge is easier(harder).<br>
 <h3>v0.1.2</h3><br>
 - Added 3 N Upgrade.<br>
 - Added 1 UF milestone.<br>
@@ -169,7 +175,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(1.79e308);
+	return player.I.points.gte(6);
 }
 
 
