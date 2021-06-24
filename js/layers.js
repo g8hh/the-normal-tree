@@ -797,7 +797,7 @@ addLayer("UF", {
         },
         128: {
             requirementDescription: "128 Upgrade Factor",
-            effectDescription: "Upgrade 2 Number upgrade and boost the eighth milestone.",
+            effectDescription: "Unlock 2 Number upgrade and boost the eighth milestone.",
             done() { return player.UF.points.gte(128) }
         },
         
