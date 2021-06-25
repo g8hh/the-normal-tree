@@ -189,7 +189,6 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.F.points.gte>=new Decimal(9.6e10)
 }
 
 
