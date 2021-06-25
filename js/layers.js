@@ -31,7 +31,7 @@ addLayer("N", {
         if (hasChallenge('F', 11)) mult = mult.times(3)
         if (hasUpgrade('NN', 11)) mult = mult.times(1e4)
         if (hasChallenge('F', 22)) mult = mult.times(2)
-        if (hasMilestone('F', 32)) mult = mult.times(3)
+        if (hasAchievement("A", 12)) mult = mult.times(3)
         if (hasUpgrade('F',12)) mult = mult.times(upgradeEffect('F', 12))
         if (inChallenge('F', 11)) mult = mult.times(0.3)
         if (inChallenge('F', 13)) mult = mult.times(0.3)
@@ -119,7 +119,7 @@ addLayer("N", {
         13: {
             title: "3",
             description: "Points boost points gain.",
-            cost: new Decimal(25),
+            cost: new Decimal(20),
             effect() {
                 if(hasUpgrade("NN",15)) return 1e70
                 if (inChallenge("F",33)) return 1
@@ -145,7 +145,7 @@ addLayer("N", {
         14: {
             title: "4",
             description: "Points boost Numbers gain.",
-            cost: new Decimal(125),
+            cost: new Decimal(60),
             effect() {
                 if(hasUpgrade("NN",15)) return 1e50
                 if (inChallenge("F",33)) return 1
@@ -918,11 +918,7 @@ addLayer("F", {
             effectDescription: "Unlock 1 more challenge",
             done() { return player.F.points.gte(12)}
         },
-        32: {
-            requirementDescription: "32 factors",
-            effectDescription: "Number x3",
-            done() { return player.F.points.gte(32)}
-        },
+    
         44: {
             requirementDescription: "44 factors",
             effectDescription: "Unlock 1 more challenge",
@@ -1130,8 +1126,8 @@ addLayer("F", {
         22: {
             name: "No factor factor",
             challengeDescription: "Factor milestone 4 and upgrades is no effect.",
-            canComplete(){return player.N.points.gte("3.14e19")},
-            goalDescription: "3.14e19 Numbers",
+            canComplete(){return player.N.points.gte("3.14e18")},
+            goalDescription: "3.14e18 Numbers",
             rewardDescription(){return "Point and Number x2"},
           unlocked(){return hasMilestone("I", 1)|hasUpgrade('F', 13)},
           
@@ -1416,7 +1412,7 @@ addLayer("A", {
         },
         12: {
             name: "Super click",
-            tooltip:"Get the fourth upgrade",
+            tooltip:"Get the fourth upgrade, reward: Number x3.",
             done()  {
                 if (hasUpgrade('N',14)) return true
             }
