@@ -648,7 +648,7 @@ addLayer("NN", {
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
             unlocked(){
-                return hasUpgrade("NN", 12)
+                return hasUpgrade("NN", 31)
         },
     },
     14: {
@@ -669,7 +669,7 @@ addLayer("NN", {
         },
         effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         unlocked(){
-            return hasUpgrade("NN", 31)
+            return hasUpgrade("NN", 13)
         },
     },
     15: {
