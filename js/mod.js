@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.5",
-	name: "OM? (Not fifteenth)",
+	num: "0.1.6",
+	name: "OM!",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.6</h3><br>
+- Added 1 FS milestone.<br>
+- Added 1 NN upgrade.<br>
+- Added 5 F upgrade.<br>
+- Added 1 N upgrade.<br>
+- Endgame: 9.6e10 Factor.<br>
 <h3>v0.1.5</h3><br>
 - Early game is easier.<br>
 - Added 2 NN Upgrade.<br>
@@ -160,6 +166,7 @@ function getPointGen() {
 	if (hasAchievement("A", 11)) gain = gain.times(1.25)
 	if (hasUpgrade('N', 12)) gain = gain.times(upgradeEffect('N', 12))
 	if (hasUpgrade('NN', 12)) gain = gain.times(upgradeEffect('NN', 12))
+	if (hasUpgrade('NN', 13)) gain = gain.times(upgradeEffect('NN', 13))
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
 	if (hasMilestone('UF', 52)) gain = gain.times(player.UF.points.pow(3).add(1))
@@ -182,7 +189,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.I.points.gte(8)&&player.FS.points.gte(1);
+	return player.F.points.gte>=new Decimal(9.6e10)
 }
 
 
