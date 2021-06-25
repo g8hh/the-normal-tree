@@ -1555,7 +1555,7 @@ addLayer("A", {
             name: "~2^10 factor",
             tooltip:"Get 1000 factor",
             done()  {
-                if (hasMilestone('F', 1024)) return true
+                if (hasMilestone('F', 1000)) return true
             }
         },
         25: {
