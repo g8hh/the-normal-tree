@@ -25,6 +25,7 @@ addLayer("N", {
         if (hasMilestone('F',8)) mult = mult.times(2)
         if (hasUpgrade('F',15)) mult = mult.times(buyableEffect('N',11))
         if (hasUpgrade('N',44)) mult = mult.times(buyableEffect('F',11))
+        if (hasMilestone('NN',1e28)) mult = mult.times(buyableEffect('F',13))
         if (hasUpgrade('F',15)&& !inChallenge('F',42)) mult = mult.times(2)
         if (inChallenge('F', 23)) mult = mult.times(0.3)
         if (hasChallenge('F', 21)) mult = mult.times(1.5)
@@ -563,7 +564,11 @@ addLayer("NN", {
 		points: new Decimal(0),
     }},
     color: "#ffa0ff",
-    requires: new Decimal("1e940"), // Can be a function that takes requirement increases into account
+    requires(){
+        if(hasMilestone('I',7)&&((inChallenge('I',11))||(inChallenge('I',12)))) return new Decimal("1e400")
+        if(hasMilestone('I',6)&&((inChallenge('I',11))||(inChallenge('I',12)))) return new Decimal("1e470")
+        else return new Decimal("1e940")
+    }, // Can be a function that takes requirement increases into account
     resource: "Negative number", // Name of prestige currency
     baseResource: "Numbers", // Name of resource prestige is based on
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
@@ -604,6 +609,8 @@ addLayer("NN", {
             description:"Negative number boost point gain.",
             cost: new Decimal(5),
             effect() {
+                if (player.NN.points >=1e40) return new Decimal("1e600")
+                if(hasUpgrade('NN',24)) return player.NN.points.add(1).pow(15)
                 if (player.NN.points >=1e24) return 1e300
                 if(hasUpgrade('NN',23)) return player.NN.points.add(1).pow(12.5)
                 if (player.NN.points >=1e15) return 1e150
@@ -637,6 +644,8 @@ addLayer("NN", {
         description: "Negative number boost Negative number gain.",
         cost: new Decimal(125),
         effect() {
+            if (player.NN.points >=4.6415888e+66) return 1e50
+            if(hasUpgrade('NN',25)) return player.NN.points.pow(0.75).add(1)
             if (player.NN.points >=1e20) return 1e15
             if(hasUpgrade('NN',22)) return player.NN.points.pow(0.75).add(1)
             if (player.NN.points>= 2.1544347e+13) return 1e8
@@ -681,11 +690,37 @@ addLayer("NN", {
     23: {
         title: "-8",
         description: "Boost '-2'",
-        cost: new Decimal(3.14e20),
+        cost: new Decimal(1e20),
      
         unlocked(){
             return hasUpgrade("NN", 22)
         },
+    },
+    24: {
+        title: "-9",
+        description: "Remove the fourth hardcap of '-2'. You can buy this upgrade while you are in Infinity Challenge 1.",
+        cost(){ 
+            if(player.I.activeChallenge!=11)return new Decimal(Infinity);
+            return new Decimal(3.14e9);
+        },
+        unlocked(){
+            return (hasMilestone('I',6))
+        
+        },
+        
+    },
+    25: {
+        title: "-10",
+        description: "Remove the third hardcap of '-4'. You can buy this upgrade while you are in Infinity Challenge 2.",
+        cost(){ 
+            if(player.I.activeChallenge!=12)return new Decimal(Infinity);
+            return new Decimal(3.14e9);
+        },
+        unlocked(){
+            return (hasMilestone('I',7))
+        
+        },
+        
     },
 },
     milestones: {
@@ -703,6 +738,16 @@ addLayer("NN", {
             requirementDescription: "4e22 Negative number",
             effectDescription: "Unlock 1 Infinity challenge.",
             done() { return player.NN.points.gte(4e22) }
+        },
+        1e28: {
+            requirementDescription: "1e28 Negative number",
+            effectDescription: "Unlock 1 factor buyable.",
+            done() { return player.NN.points.gte(1e28) }
+        },
+        1e50: {
+            requirementDescription: "'-4' effect >= 1e50",
+            effectDescription: "factor is cheaper.",
+            done() { return player.NN.points.gte(4.6415888e+66) }
         },
     },
     doReset(resettingLayer) {
@@ -854,6 +899,7 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if(hasMilestone('NN',1e50))return 0.395
         if(hasUpgrade('N',42))return 0.48
         if(hasChallenge('F',43))return 0.538
         if(hasChallenge('F',41))return 0.625
@@ -1239,6 +1285,27 @@ addLayer("F", {
                       
                 }
             },
+            13: {
+                title: "Factor c",
+                display() {
+            return "Boost Number gain by " + format(tmp.F.buyables[13].effect) + "x<br>Cost : " + format(new Decimal("12").pow(getBuyableAmount("F", 13).add(1))) + " Factors"
+                },
+                unlocked() { return hasMilestone('NN',1e28) },
+                canAfford() { 
+                  return player.F.points.gte(new Decimal("12").pow(getBuyableAmount("F", 13).add(1))) 
+                },
+                buy() { 
+                    {
+                  player.F.points = player.F.points.minus(new Decimal("12").pow(getBuyableAmount("F", 13).add(1)))
+                    }
+                    setBuyableAmount("F", 13, getBuyableAmount("F", 13).add(1))
+                },
+                effect() {
+                    eff =  new Decimal(player.F.points.add(1).log(10).pow(3).add(1)).pow(getBuyableAmount("F", 13))
+                    return  eff 
+                      
+                }
+            },
         },
     tabFormat: {
         "Milestones":{
@@ -1358,7 +1425,17 @@ addLayer("I", {
             requirementDescription: "5 Infinity",
             effectDescription: "Unlock more challenge.",
             done() { return player.I.points.gte(5) }
-        }
+        },
+        6: {
+            requirementDescription: "6 Infinity",
+            effectDescription: "Unlock 1 Negative number Upgrade and Negative number is cheaper in IC.",
+            done() { return player.I.points.gte(6) }
+        },
+        7: {
+            requirementDescription: "7 Infinity",
+            effectDescription: "Unlock 1 Negative number Upgrade and Negative number is cheaper again in IC.",
+            done() { return player.I.points.gte(7) }
+        },
     },
     challenges: {
         11: {
@@ -1377,6 +1454,7 @@ addLayer("I", {
             rewardDescription(){return "Number ^1.2."},
           unlocked(){return hasMilestone("I", 5)},
         },
+
     },
     layerShown(){return true}
 })
@@ -1561,4 +1639,35 @@ addLayer("A", {
       
     }
     
+})
+addLayer("FS", {
+    name: "Factor shift", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "FS", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#966400",
+    requires: new Decimal(100000000), // Can be a function that takes requirement increases into account
+    resource: "Factor shift", // Name of prestige currency
+    baseResource: "Factors", // Name of resource prestige is based on
+    baseAmount() {return player.F.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    base:1e10,
+    exponent(){
+return 10
+    },
+    branches:["F"],
+     // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        
+
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
 })

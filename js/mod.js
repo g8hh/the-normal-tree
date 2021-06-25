@@ -13,11 +13,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.4",
-	name: "fourteenth",
+	num: "0.1.5",
+	name: "OM? (Not fifteenth)",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.5</h3><br>
+- Early game is easier.<br>
+- Added 2 NN Upgrade.<br>
+- Added 2 NN milestone.<br>
+- Added 1 F buyable.<br>
+- Added Factor Shift.<br>
+- Endgame: 8 Infinity and 1 Factor Shift<br>
 <h3>v0.1.4</h3><br>
 - Added 1 N Upgrade.<br>
 - Added 2 NN Upgrade.<br>
@@ -175,7 +182,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.I.points.gte(6);
+	return player.I.points.gte(8)&&player.FS.points.gte(1);
 }
 
 
