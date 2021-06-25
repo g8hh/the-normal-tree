@@ -384,7 +384,7 @@ addLayer("N", {
     61: {
         title: "π",
         description: "Factor exponent is 0.314 (Factor is cheaper)",
-        cost: new Decimal("1e4730"),
+        cost: new Decimal("1e4720"),
         unlocked(){
             {return hasUpgrade('F',35)}
         },
@@ -1156,7 +1156,7 @@ addLayer("F", {
 31: {
     title: "Factor Lambda",
     description: "boost Factor milestone 1. " ,
-    cost: new Decimal(272000000),
+    cost: new Decimal(271777777),
     unlocked(){
         return hasMilestone("FS", 1)
     },
@@ -1180,7 +1180,7 @@ addLayer("F", {
 34: {
     title: "Factor Omicron",
     description: "Unlock 1 Negative number Upgrade" ,
-    cost: new Decimal(2.1e10),
+    cost: new Decimal(2.09e10),
     unlocked(){
         return hasUpgrade("F", 33)
     },
