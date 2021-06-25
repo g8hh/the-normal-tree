@@ -643,8 +643,7 @@ addLayer("NN", {
             effect() {
                 if (player.points.gte(1e2000)) return 1e300
                 else if (hasUpgrade('NN',31)) return player.points.add(1).pow(0.15)
-                else if (player.points >=1e900) return 5.9049e14
-                else return  player.points.add(1).log(10).pow(5)
+                else return 1
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
             unlocked(){
