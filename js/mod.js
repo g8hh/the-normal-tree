@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.6.1",
-	name: "OM!",
+	num: "0.1.7",
+	name: "Base 8",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.7</h3><br>
+- Added 2 F upgrade.<br>
+- Added 2 NN upgrade.<br>
+- Added 1 I challenge.<br>
+- Late game is easier.<br>
+- Endgame: 1e8800 Number.<br>
 <h3>v0.1.6.1</h3><br>
 - Fix a lot of wrongly spelling (Thanks to Ice Bear).<br>
 <h3>v0.1.6</h3><br>
@@ -191,6 +197,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
+	return player.N.points.gte("1e8800")
 }
 
 

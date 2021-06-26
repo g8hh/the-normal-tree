@@ -17,7 +17,7 @@ addLayer("N", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        if (inChallenge('I', 11)|inChallenge('I', 12)) mult = mult.times(1e50)
+        if (inChallenge('I', 11)||inChallenge('I', 12)||inChallenge('I', 31)) mult = mult.times(1e50)
         if (hasAchievement("A", 14)) mult = mult.times(2)
         if (inChallenge('F', 33)|inChallenge('F',43)) mult = mult.times(0.000001)
         if (inChallenge('F', 31)) mult = mult.times(0.000001)
@@ -49,13 +49,16 @@ addLayer("N", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         let mult=new Decimal(1) 
         if (hasMilestone('UF',11)) mult = mult.times(buyableEffect('N',21))
+        if (hasUpgrade('NN',32)) mult = mult.times(1.25)
         if (hasMilestone('I',1)) mult = mult.times(1.05)
         if (hasMilestone('I',2)) mult = mult.times(1.05)
         if (inChallenge('I',11)) mult = mult.times(0.3)
+        if (inChallenge('I',31)) mult = mult.times(0.09)
         if (inChallenge('I',21)) mult = mult.times(0.166666)
         if (hasChallenge('I',11)) mult = mult.times(1.1)
         if (hasChallenge('I',12)) mult = mult.times(1.2)
         if (hasChallenge('I',21)) mult = mult.times(1.3)
+        if (hasChallenge('I',31)) mult = mult.times(1.4)
         if (hasUpgrade('F',31)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
 
         return mult
@@ -596,7 +599,7 @@ addLayer("NN", {
      // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-
+        if (hasUpgrade('F', 42)) mult = mult.times(player.F.points.add(1))
          if (hasMilestone('I',4)) mult = mult.times(10)
         if (hasUpgrade('NN',14)) mult = mult.times(upgradeEffect('NN', 14))
         return mult
@@ -748,6 +751,24 @@ addLayer("NN", {
                 return (hasUpgrade('F',34))
             },
             },
+            32: {
+                title: "-12",
+                description: "Number ^1.25",
+                cost: new Decimal(1e103),
+             
+                unlocked(){
+                    return hasUpgrade("F", 42)
+                },
+            },
+            33: {
+                title: "-12",
+                description: "Unlock Infinity challenge 5.",
+                cost: new Decimal(1e117),
+             
+                unlocked(){
+                    return hasUpgrade("NN", 32)
+                },
+            },
 },
     milestones: {
         3: {
@@ -819,6 +840,7 @@ addLayer("UF", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:1e10,
     exponent(){
+        if(hasUpgrade('F',41))return 0.6
         if(hasUpgrade('N',43))return 0.9
         else return 1.25
     },
@@ -952,6 +974,9 @@ tabFormat: {
     ]
   },
   },
+  canBuyMax(){
+    return hasUpgrade('F',41) 
+  },
 })
 addLayer("F", {
     name: "Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -969,6 +994,7 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if (player.FS.points.gte(2)) return 0.29
         if(hasUpgrade('N',61))return 0.314
         if(hasUpgrade('F',33))return 0.33
         if(hasMilestone('FS',1))return 0.375
@@ -1096,8 +1122,6 @@ addLayer("F", {
 
     },
     upgrades: {
-        rows: 3,
-        cols: 5,
         11: {
             title: "Factor Alpha",
             description: "Boost points and numbers base on factors.",
@@ -1243,8 +1267,22 @@ addLayer("F", {
         return hasUpgrade("F", 34)
     },
 },
-
-
+41: {
+    title: "Factor Rho",
+    description: "Upgrade Factor are cheaper and you can buy max it." ,
+    cost: new Decimal(9.5e10),
+    unlocked(){
+        return hasUpgrade("F", 35)
+    },
+},
+42: {
+    title: "Factor Rho",
+    description: "Factor boost Negative numbers gain and unlock 1 upgrade." ,
+    cost: new Decimal(8.55e11),
+    unlocked(){
+        return hasUpgrade("F", 41)
+    },
+},
 
 },
     challenges: {
@@ -1581,6 +1619,14 @@ addLayer("I", {
             rewardDescription(){return "Number ^1.3."},
           unlocked(){return hasUpgrade("F", 32)},
         },
+        31: {
+            name: "IC5",
+            challengeDescription: "Number gain ^0.09. ",
+            canComplete(){return player.N.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Numbers",
+            rewardDescription(){return "Number ^1.4."},
+          unlocked(){return hasUpgrade("NN", 33)},
+        },
 
     },
     tabFormat: {
@@ -1777,7 +1823,7 @@ addLayer("A", {
         },
         35:{
             name: "Impossible?",
-            tooltip:"Get 1.8e258 Number in IC2, reward: Number x1e50 in All Infinity Challenge.",
+            tooltip:"Get 1.8e258 Number in IC2, reward: Number x1e50 in Row 1, 3 Infinity Challenge.",
             done()  {
                 if (player.N.points.gte(1.79e258)&&inChallenge('I',12)) return true
             },
@@ -1822,9 +1868,9 @@ addLayer("FS", {
     baseResource: "Factors", // Name of resource prestige is based on
     baseAmount() {return player.F.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    base:1e10,
+    base:1000,
     exponent(){
-return 10
+return 1
     },
     branches:["F"],
      // Prestige currency exponent
