@@ -770,6 +770,31 @@ addLayer("NN", {
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
+    tabFormat: {
+        "Milestones":{
+          content:[
+        "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+        "blank",
+        "resource-display",
+        "blank",
+        "blank",
+        "milestones",
+          ]},
+      
+      "Upgrades":{
+        unlocked(){return hasMilestone('F',5)|hasMilestone("I", 1)},
+        content:[
+          "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+          "blank",
+          "blank",
+          "upgrades",
+        ]
+      },
+      },
 })
 addLayer("UF", {
     name: "Upgrade Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -896,6 +921,30 @@ addLayer("UF", {
 
 },
 },
+tabFormat: {
+    "Milestones":{
+      content:[
+    "main-display",
+      "blank",
+    ["prestige-button",function(){return ""}],
+    "blank",
+    "resource-display",
+    "blank",
+    "blank",
+    "milestones",
+      ]},
+  "Challenges":{
+    unlocked(){return hasMilestone('F',2)|hasMilestone("I", 1)},
+    content:[
+      "main-display",
+      "blank",
+    ["prestige-button",function(){return ""}],
+      "blank",
+      "blank",
+      "challenges",
+    ]
+  },
+  },
 })
 addLayer("F", {
     name: "Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1527,6 +1576,31 @@ addLayer("I", {
         },
 
     },
+    tabFormat: {
+        "Milestones":{
+          content:[
+        "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+        "blank",
+        "resource-display",
+        "blank",
+        "blank",
+        "milestones",
+          ]},
+      
+      "Challenges":{
+        unlocked(){return hasMilestone('F',2)|hasMilestone("I", 1)},
+        content:[
+          "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+          "blank",
+          "blank",
+          "challenges",
+        ]
+    },
+      },
     canBuyMax(){
         return hasMilestone('I',8) 
       },
