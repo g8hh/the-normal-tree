@@ -18,6 +18,8 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.6.1</h3><br>
+- Fix a lot of wrongly spelling (Thanks to Ice Bear)
 <h3>v0.1.6</h3><br>
 - Added 1 FS milestone.<br>
 - Added 1 NN upgrade.<br>
