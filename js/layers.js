@@ -60,7 +60,7 @@ addLayer("N", {
         if (hasChallenge('I',21)) mult = mult.times(1.3)
         if (hasChallenge('I',31)) mult = mult.times(1.4)
         if (hasUpgrade('F',31)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
-
+        if (hasUpgrade('F',43)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         return mult
 
     },
@@ -80,6 +80,7 @@ addLayer("N", {
         if (hasMilestone("NN",3)) extraUpgrades.push(16,26,36,46,12,13,14,44);
         if (hasUpgrade("N",51)) extraUpgrades.push(11,42,43,45,51);
         if (hasUpgrade("N",61)) extraUpgrades.push(61);
+        if (hasUpgrade("N",62)) extraUpgrades.push(62);
         let keep = [];
         if (hasChallenge("F", 21) |(hasMilestone("I", 1))&& resettingLayer=="F") keep.push("upgrades")
         if (hasMilestone("UF", 1) && resettingLayer=="UF")  keep.push("upgrades")
@@ -391,6 +392,14 @@ addLayer("N", {
             {return hasUpgrade('F',35)}
         },
     },
+    62: {
+        title: "e",
+        description: "Factor exponent is: 0.271(Factors are cheaper)",
+        cost: new Decimal("1e17500"),
+        unlocked(){
+            {return hasUpgrade('NN',34)}
+        },
+    },
    
 
        },
@@ -651,12 +660,14 @@ addLayer("NN", {
             description:"Negative numbers boost point gain.",
             cost: new Decimal(5),
             effect() {
-                if (player.NN.points >=1e40) return new Decimal("1e600")
-                if(hasUpgrade('NN',24)) return player.NN.points.add(1).pow(15)
-                if (player.NN.points >=1e24) return 1e300
-                if(hasUpgrade('NN',23)) return player.NN.points.add(1).pow(12.5)
-                if (player.NN.points >=1e15) return 1e150
-                if(hasUpgrade('NN',22)) return player.NN.points.add(1).pow(10)
+                if (player.NN.points >=1e250) return new Decimal("1e1500")
+                else if(hasUpgrade('NN',34)) return player.NN.points.add(1).pow(6)
+                else if (player.NN.points >=1e40) return new Decimal("1e600")
+                else if(hasUpgrade('NN',24)) return player.NN.points.add(1).pow(15)
+                else if (player.NN.points >=1e24) return 1e300
+                else if(hasUpgrade('NN',23)) return player.NN.points.add(1).pow(12.5)
+                else if (player.NN.points >=1e15) return 1e150
+                else if(hasUpgrade('NN',22)) return player.NN.points.add(1).pow(10)
                 else if (player.NN.points >=3981071705.53) return 1e72
                 
                 else if(hasUpgrade('NN',21)) return player.NN.points.pow(0.75).add(1).pow(10)
@@ -784,12 +795,21 @@ addLayer("NN", {
                 },
             },
             33: {
-                title: "-12",
+                title: "-13",
                 description: "Unlock Infinity challenge 5.",
                 cost: new Decimal(1e117),
              
                 unlocked(){
                     return hasUpgrade("NN", 32)
+                },
+            },
+            34: {
+                title: "-14",
+                description: "Unlock 1 Number Upgrade and Remove the hardcap of -2.",
+                cost: new Decimal(1e177),
+             
+                unlocked(){
+                    return hasUpgrade("NN", 33)
                 },
             },
 },
@@ -1016,6 +1036,8 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if (player.FS.points.gte(3)) return 0.25
+        if(hasUpgrade('N',62))return 0.271
         if (player.FS.points.gte(2)) return 0.29
         if(hasUpgrade('N',61))return 0.314
         if(hasUpgrade('F',33))return 0.33
@@ -1304,6 +1326,14 @@ addLayer("F", {
     cost: new Decimal(8.55e11),
     unlocked(){
         return hasUpgrade("F", 41)
+    },
+},
+43: {
+    title: "Factor Sigma",
+    description: "Noost 'Factor Lambda'" ,
+    cost: new Decimal(1.25e16),
+    unlocked(){
+        return hasUpgrade("F", 42)
     },
 },
 
@@ -1620,6 +1650,11 @@ addLayer("I", {
             requirementDescription: "28 Infinity",
             effectDescription: "Remove the hardcap of 'Factor beta' but nerf it.",
             done() { return player.I.points.gte(28) }
+        },
+        69: {
+            requirementDescription: "69 Infinity (NICE)",
+            effectDescription: "Endgame.",
+            done() { return player.I.points.gte(69) }
         },
     },
     challenges: {
