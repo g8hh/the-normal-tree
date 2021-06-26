@@ -23,7 +23,8 @@ let changelog = `<h1>Changelog:</h1><br>
 - Added 2 NN upgrade.<br>
 - Added 1 I challenge.<br>
 - Late game is easier.<br>
-- Endgame: 1e8800 Number.<br>
+- Added 1 N buyable.<br>
+- Endgame: 1e177 Negative numbers.<br>
 <h3>v0.1.6.1</h3><br>
 - Fix a lot of wrongly spelling (Thanks to Ice Bear).<br>
 <h3>v0.1.6</h3><br>
@@ -197,7 +198,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.N.points.gte("1e8800")
+	return player.NN.points.gte("1e177")
 }
 
 

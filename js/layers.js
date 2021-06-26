@@ -537,6 +537,28 @@ addLayer("N", {
                   
             }
         },
+        22: {
+            title: "^",
+            display() {
+               return "Boost negative numbers gain by " + format(tmp.N.buyables[22].effect) + "x<br>Cost : " + format(new Decimal("1e1000").pow(getBuyableAmount("N", 22).add(1))) + " Numbers"
+            },
+            unlocked() { return hasAchievement("A", 41) },
+            canAfford() { 
+                return player.N.points.gte(new Decimal("1e1000").pow(getBuyableAmount("N", 22).add(1))) 
+            },
+            buy() { 
+                {
+                  player.N.points = player.N.points.minus(new Decimal("1e1000").pow(getBuyableAmount("N", 22).add(1)))
+                }
+                setBuyableAmount("N", 22, getBuyableAmount("N", 22).add(1))
+            },
+            effect() { 
+
+                eff = new Decimal("10").pow(getBuyableAmount("N", 22)) 
+                return eff = eff
+                  
+            }
+        },
     
     
     
@@ -584,7 +606,7 @@ addLayer("NN", {
     }},
     color: "#ffa0ff",
     requires(){
-        if(hasMilestone('I',7)&&((inChallenge('I',11))||(inChallenge('I',12))||(inChallenge('I',21)))) return new Decimal("1e400")
+        if(hasMilestone('I',7)&&((inChallenge('I',11))||(inChallenge('I',12))||(inChallenge('I',21))||(inChallenge('I',31)))) return new Decimal("1e400")
         if(hasMilestone('I',6)&&((inChallenge('I',11))||(inChallenge('I',12))||(inChallenge('I',21)))) return new Decimal("1e470")
         else return new Decimal("1e940")
     }, // Can be a function that takes requirement increases into account
@@ -599,6 +621,7 @@ addLayer("NN", {
      // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasAchievement('A',41)) mult = mult.times(buyableEffect('N',22))
         if (hasUpgrade('F', 42)) mult = mult.times(player.F.points.add(1))
          if (hasMilestone('I',4)) mult = mult.times(10)
         if (hasUpgrade('NN',14)) mult = mult.times(upgradeEffect('NN', 14))
@@ -812,7 +835,6 @@ addLayer("NN", {
           ]},
       
       "Upgrades":{
-        unlocked(){return hasMilestone('F',5)|hasMilestone("I", 1)},
         content:[
           "main-display",
           "blank",
@@ -963,7 +985,7 @@ tabFormat: {
     "milestones",
       ]},
   "Challenges":{
-    unlocked(){return hasMilestone('F',2)|hasMilestone("I", 1)},
+    unlocked(){return hasUpgrade('F',22)},
     content:[
       "main-display",
       "blank",
@@ -1147,6 +1169,7 @@ addLayer("F", {
             title: "Factor Beta",
             description: "Number boost themselves gain.",
             effect() {
+                if (hasMilestone('I',28)) return player.N.points.pow(0.025).add(1)
                 if (inChallenge('F',42)|inChallenge('F',43)) return 1 
                 if (inChallenge('F',22)) return 1 
                 if (player.N.points>=1.078752e+144) return 1e35
@@ -1593,6 +1616,11 @@ addLayer("I", {
             effectDescription: "You can buy max Infinity.",
             done() { return player.I.points.gte(8) }
         },
+        28: {
+            requirementDescription: "28 Infinity",
+            effectDescription: "Remove the hardcap of 'Factor beta' but nerf it.",
+            done() { return player.I.points.gte(28) }
+        },
     },
     challenges: {
         11: {
@@ -1643,7 +1671,7 @@ addLayer("I", {
           ]},
       
       "Challenges":{
-        unlocked(){return hasMilestone('F',2)|hasMilestone("I", 1)},
+        unlocked(){return hasMilestone('NN',4e22)},
         content:[
           "main-display",
           "blank",
@@ -1846,6 +1874,16 @@ addLayer("A", {
             tooltip:"Get '-3'",
             done()  {
                 if (hasUpgrade('NN',13)) return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1))
+            }
+        },  
+        41:{
+            name: "Don't forget achievements",
+            tooltip:"Get 1e50 Negative numbers in IC5, reward: Unlock 1 Number buyable.",
+            done()  {
+                if (player.NN.points.gte(1e50)&&inChallenge('I',31)) return true
             },
             unlocked(){
                 return (hasMilestone('I',1))
