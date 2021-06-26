@@ -397,11 +397,13 @@ addLayer("N", {
         11: {
             title: "+",
             display() {
-              return "Boosts Numbers gain by " + format(tmp.N.buyables[11].effect) + "x<br>Cost : " + format(new Decimal("1e4").pow(getBuyableAmount("N", 11).add(1))) + " Numbers"
+                if(hasUpgrade('N',16)) return "Boosts Numbers gain by " + format(tmp.N.buyables[11].effect) + "x<br>Cost : " + " Infinity Numbers"
+              else return "Boosts Numbers gain by " + format(tmp.N.buyables[11].effect) + "x<br>Cost : " + format(new Decimal("1e4").pow(getBuyableAmount("N", 11).add(1))) + " Numbers"
             },
             unlocked() { return hasUpgrade("F", 15)|hasMilestone("I", 1) },
             canAfford() { 
-                return player.N.points.gte(new Decimal("1e4").pow(getBuyableAmount("N", 11).add(1))) 
+                if(hasUpgrade('N',16)) return player.N.points.gte(new Decimal(1e1000))
+                else return player.N.points.gte(new Decimal("1e4").pow(getBuyableAmount("N", 11).add(1))) 
             },
             buy() { 
                 {
@@ -434,14 +436,15 @@ addLayer("N", {
         12: {
             title: "-",
             display() {
+                if(hasUpgrade('N',26))  return "Boosts points gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + " Infinity Numbers"
                if (hasChallenge('F',42)) return "Boosts points gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + format(new Decimal("1e6").pow(getBuyableAmount("N", 12).add(1))) + " Numbers"
 
                 else return "Boosts points gain by " + format(tmp.N.buyables[12].effect) + "x<br>Cost : " + format(new Decimal("1e10").pow(getBuyableAmount("N", 12).add(1))) + " Numbers"
             },
             unlocked() { return hasChallenge("F", 31)|hasMilestone("I", 1) },
             canAfford() { 
-               
-                if (hasChallenge('F',42)) return player.N.points.gte(new Decimal("1e6").pow(getBuyableAmount("N", 12).add(1))) 
+                if(hasUpgrade('N',26)) return player.N.points.gte(new Decimal(1e1000))
+                else if (hasChallenge('F',42)) return player.N.points.gte(new Decimal("1e6").pow(getBuyableAmount("N", 12).add(1))) 
                 else return player.N.points.gte(new Decimal("1e10").pow(getBuyableAmount("N", 12).add(1))) 
             },
             buy() { 
@@ -472,12 +475,14 @@ addLayer("N", {
         13: {
             title: "x",
             display() {
-                if (inChallenge('UF',12)) return "Boosts numbers gain by " + format(tmp.N.buyables[13].effect) + "x<br>Cost : " + format(new Decimal("1e35").pow(getBuyableAmount("N", 13).add(1))) + " Numbers"
+                if(hasUpgrade('N',36)) return "Boosts numbers gain by " + format(tmp.N.buyables[13].effect) + "x<br>Cost : " + " Infinity Numbers"
+                else if (inChallenge('UF',12)) return "Boosts numbers gain by " + format(tmp.N.buyables[13].effect) + "x<br>Cost : " + format(new Decimal("1e35").pow(getBuyableAmount("N", 13).add(1))) + " Numbers"
               else return "Boosts numbers gain by " + format(tmp.N.buyables[13].effect) + "x<br>Cost : " + format(new Decimal("1e20").pow(getBuyableAmount("N", 13).add(1))) + " Numbers"
             },
             unlocked() { return hasMilestone("F", 1580)|hasMilestone("I", 1) },
             canAfford() { 
-                if (inChallenge('UF',12)) return player.N.points.gte(new Decimal("1e35").pow(getBuyableAmount("N", 13).add(1))) 
+                if(hasUpgrade('N',36)) return player.N.points.gte(new Decimal(1e1000))
+                else if (inChallenge('UF',12)) return player.N.points.gte(new Decimal("1e35").pow(getBuyableAmount("N", 13).add(1))) 
                else return player.N.points.gte(new Decimal("1e20").pow(getBuyableAmount("N", 13).add(1))) 
             },
             buy() { 
@@ -501,13 +506,15 @@ addLayer("N", {
         21: {
             title: "/",
             display() {
+                if(hasUpgrade('N',46)) return "Numbers gain ^ " + format(tmp.N.buyables[21].effect) + "<br>Cost : " + " Infinity Numbers"
                 if (inChallenge('UF',12)) return "Numbers gain ^ " + format(tmp.N.buyables[21].effect) + "<br>Cost : " + format(new Decimal("1e60").pow(getBuyableAmount("N", 21).add(1))) + " Numbers"
 
                 else return "Numbers gain ^" + format(tmp.N.buyables[21].effect) + "<br>Cost : " + format(new Decimal("1e35").pow(getBuyableAmount("N", 21).add(1))) + " Numbers"
             },
             unlocked() { return hasMilestone("UF", 11)|hasMilestone("I", 1) },
             canAfford() { 
-                if (inChallenge('UF',12))  return player.N.points.gte(new Decimal("1e60").pow(getBuyableAmount("N", 21).add(1))) 
+                if(hasUpgrade('N',46)) return player.N.points.gte(new Decimal(1e1000))
+                else if (inChallenge('UF',12))  return player.N.points.gte(new Decimal("1e60").pow(getBuyableAmount("N", 21).add(1))) 
                else return player.N.points.gte(new Decimal("1e35").pow(getBuyableAmount("N", 21).add(1))) 
             },
             buy() { 
