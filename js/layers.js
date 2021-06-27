@@ -52,6 +52,7 @@ addLayer("N", {
         if (hasUpgrade('NN',32)) mult = mult.times(1.25)
         if (hasMilestone('I',1)) mult = mult.times(1.05)
         if (hasMilestone('I',2)) mult = mult.times(1.05)
+        if (inChallenge('IP',11)) mult = mult.times(0.9)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
         if (inChallenge('I',21)) mult = mult.times(0.166666)
@@ -84,6 +85,7 @@ addLayer("N", {
         let keep = [];
         if (hasChallenge("F", 21) |(hasMilestone("I", 1))&& resettingLayer=="F") keep.push("upgrades")
         if (hasMilestone("UF", 1) && resettingLayer=="UF")  keep.push("upgrades")
+        if (hasMilestone("IP", 1) && resettingLayer=="IP")  keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
         player[this.layer].upgrades.push(...extraUpgrades)
     },
@@ -602,7 +604,12 @@ addLayer("N", {
       },
       },
 passiveGeneration(){return hasMilestone('F',5) && (!inChallenge('F',22)) && (!inChallenge('F',23)) && (!inChallenge('F',42)&& (!inChallenge('F',43)))? 1 : 0},
-
+automateStuff(){
+    if(hasMilestone("I",69)){
+      if(layers.N.buyables[22].canAfford())setBuyableAmount("N",22,player.N.points.log("1e1000").floor())
+      
+    }
+},
     layerShown(){return true}
 })
 addLayer("NN", {
@@ -630,14 +637,20 @@ addLayer("NN", {
      // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasUpgrade('IP',11)) mult = mult.times(buyableEffect('NN',11))
+        if (hasMilestone('I',69)) mult = mult.times(player.I.points.add(1).pow(7.5))
         if (hasAchievement('A',41)) mult = mult.times(buyableEffect('N',22))
         if (hasUpgrade('F', 42)) mult = mult.times(player.F.points.add(1))
          if (hasMilestone('I',4)) mult = mult.times(10)
         if (hasUpgrade('NN',14)) mult = mult.times(upgradeEffect('NN', 14))
+        if (hasUpgrade('IP', 21)) mult = mult.times(player.IP.points.pow(10).add(1))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
+        let mult=new Decimal(1) 
+       
+        if (hasChallenge('IP',11)) mult = mult.times(1.1)
+        return mult
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -744,7 +757,7 @@ addLayer("NN", {
     23: {
         title: "-8",
         description: "Boost '-2'",
-        cost: new Decimal(1e20),
+        cost: new Decimal(1e18),
      
         unlocked(){
             return hasUpgrade("NN", 22)
@@ -819,10 +832,10 @@ addLayer("NN", {
             effectDescription: "Keep master +, -, x, /, '2', '3', '4' and '19' on ALL resets.",
             done() { return player.NN.points.gte(3) }
         },
-        4e22: {
-            requirementDescription: "4e22 Negative number",
+        4e21: {
+            requirementDescription: "4e21 Negative number",
             effectDescription: "Unlock the first infinity challenge",
-            done() { return player.NN.points.gte(4e22) }
+            done() { return player.NN.points.gte(4e21) }
         },
         1e28: {
             requirementDescription: "1e28 Negative number",
@@ -834,11 +847,42 @@ addLayer("NN", {
             effectDescription: "factor are cheaper.",
             done() { return player.NN.points.gte(1e64) }
         },
+        1.79e308: {
+            requirementDescription: "1.79e308 Negative numbers",
+            effectDescription: "Unlock a new layer.",
+            done() { return player.NN.points.gte(1.79e308) }
+        },
+    },
+    buyables: {
+        rows: 2,
+        cols: 3,
+        11: {
+            title: "+",
+            display() {
+               return "Boosts Negative numbers gain by " + format(tmp.NN.buyables[11].effect) + "x<br>Cost : " + format(new Decimal("1e20").pow(getBuyableAmount("NN", 11).add(1))) + " Negative numbers"
+            },
+            unlocked() { return hasUpgrade("IP", 11) },
+            canAfford() { 
+               return player.NN.points.gte(new Decimal("1e20").pow(getBuyableAmount("NN", 11).add(1))) 
+            },
+            buy() { 
+                {
+                   player.NN.points = player.NN.points.minus(new Decimal("1e20").pow(getBuyableAmount("NN", 11).add(1)))
+                }
+                setBuyableAmount("NN", 11, getBuyableAmount("NN", 11).add(1))
+            },
+            effect() { 
+        eff = new Decimal("50").pow(getBuyableAmount("NN", 11))   
+        return eff
+            }
+        },
     },
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("milestones")
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("upgrades")
+        if (hasMilestone("IP", 2) && resettingLayer=="IP") keep.push("upgrades")
+        if (hasMilestone("IP", 2) && resettingLayer=="IP") keep.push("milestones")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     tabFormat: {
@@ -864,7 +908,26 @@ addLayer("NN", {
           "upgrades",
         ]
       },
+      "Buyables":{
+        unlocked(){return hasUpgrade('IP',11)},
+        content:[
+          "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+          "blank",
+          "blank",
+          "buyables",
+        ]
       },
+      },
+      layerShown(){return player.I.best.gte(3)},
+      passiveGeneration(){return hasMilestone('IP',6)? 1 : 0},
+      automateStuff(){
+        if(hasUpgrade("IP",21)){
+          if(layers.NN.buyables[11].canAfford())setBuyableAmount("NN",11,player.NN.points.log(1e20).floor().add(1))
+        
+        }
+    },
 })
 addLayer("UF", {
     name: "Upgrade Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -907,6 +970,7 @@ addLayer("UF", {
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("I", 2) && resettingLayer=="I") keep.push("milestones")
+        if (hasMilestone("IP", 6) && resettingLayer=="IP") keep.push("milestones")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     milestones: {
@@ -1019,6 +1083,7 @@ tabFormat: {
   canBuyMax(){
     return hasUpgrade('F',41) 
   },
+  layerShown(){return hasChallenge('F',22)||hasMilestone('I',1)},
 })
 addLayer("F", {
     name: "Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1168,7 +1233,7 @@ addLayer("F", {
     upgrades: {
         11: {
             title: "Factor Alpha",
-            description: "Boost points and numbers base on factors.",
+            description: "Boost points and numbers based on factors.",
             effect() {
                 
                 if (inChallenge('F',42)|inChallenge('F',43)) return 1 
@@ -1210,7 +1275,7 @@ addLayer("F", {
     },
     13: {
         title: "Factor Gamma",
-        description: "Unlock 2 Number upgrade and 2 challenge, you can buy max factor.",
+        description: "Unlock 2 Number upgraded and 2 challenged, you can buy max factor.",
         cost: new Decimal(15),
         unlocked(){
             return hasUpgrade("F", 12)|hasMilestone("I", 1)
@@ -1226,7 +1291,7 @@ addLayer("F", {
 },
 15: {
     title: "Factor Epsilon",
-    description: "Unlock number buyable and Number x2",
+    description: "Unlock a number buyable and Number x2",
     cost: new Decimal(60),
     unlocked(){
         return hasChallenge("F", 23)|hasMilestone("I", 1)
@@ -1234,7 +1299,7 @@ addLayer("F", {
 },
 21: {
     title: "Factor Zeta",
-    description: "Unlock a challenge",
+    description: "Unlock 1 factor challenge",
     cost: new Decimal(125),
     unlocked(){
         return player.UF.best.gte(3) |hasMilestone("I", 1)
@@ -1242,7 +1307,7 @@ addLayer("F", {
 },
 22: {
     title: "Factor Eta",
-    description: "Unlock 1 upgrade factor challenge.",
+    description: "Unlock the first upgrade factor challenge.",
     cost: new Decimal(135),
     unlocked(){
         return hasMilestone("I", 1)|(hasUpgrade('F',21)&&hasChallenge('F',33))
@@ -1266,7 +1331,7 @@ addLayer("F", {
 },
 25: {
     title: "Factor Kappa",
-    description: "Unlock 2 factor challenge." ,
+    description: "Unlock 2 factor challenges." ,
     cost: new Decimal(460),
     unlocked(){
         return hasMilestone("I", 1)|hasUpgrade('F',24)
@@ -1282,7 +1347,7 @@ addLayer("F", {
 },
 32: {
     title: "Factor Mu",
-    description: "Unlock 1 Infinity challenge " ,
+    description: "Unlock the third Infinity challenge " ,
     cost: new Decimal(555555555),
     unlocked(){
         return hasUpgrade("F", 31)
@@ -1321,7 +1386,7 @@ addLayer("F", {
     },
 },
 42: {
-    title: "Factor Rho",
+    title: "Factor Sigma",
     description: "Factor boost Negative numbers gain and unlock 1 upgrade." ,
     cost: new Decimal(8.55e11),
     unlocked(){
@@ -1329,8 +1394,8 @@ addLayer("F", {
     },
 },
 43: {
-    title: "Factor Sigma",
-    description: "Noost 'Factor Lambda'" ,
+    title: "Factor Tau",
+    description: "Boost 'Factor Lambda'" ,
     cost: new Decimal(1.25e16),
     unlocked(){
         return hasUpgrade("F", 42)
@@ -1341,95 +1406,95 @@ addLayer("F", {
     challenges: {
         11: {
             name: "/ factor",
-            challengeDescription: "Number and point gain x0.3",
+            challengeDescription: "Numbers and points gain x0.3",
             goal: new Decimal(1000000),
-            rewardDescription(){return "Number and Point x3"},
+            rewardDescription(){return "Numbers and Points x3"},
           unlocked(){return hasMilestone("I", 1)|hasMilestone('F', 2)},
         },
         12: {
             name: "No upgrade factor",
-            challengeDescription: "'2' is no effect",
+            challengeDescription: "'2' is useless",
             canComplete(){return player.N.points.gte("100000000")},
             goalDescription: "100,000,000 Numbers",
-            rewardDescription(){return "Number and Point x3"},
+            rewardDescription(){return "Numbers and Points x3"},
           unlocked(){return hasMilestone("I", 1)|hasMilestone('F', 8)},
           
         },
         13: {
             name: "2 in 1",
-            challengeDescription: "You trap in / and No upgrade factor.",
+            challengeDescription: "You are trapped in / and No upgrade factor.",
             canComplete(){return player.N.points.gte("3.14e9")},
             goalDescription: "3.14e9 Numbers",
-            rewardDescription(){return "Unlock one number upgrade."},
+            rewardDescription(){return "Unlock a number upgrade."},
           unlocked(){return hasMilestone("I", 1)|hasMilestone('F', 12)},
           
         },
         21: {
             name: "No cap factor",
-            challengeDescription: "'6', '7' and '8' is no effect.",
+            challengeDescription: "'6', '7' and '8' are useless.",
             canComplete(){return player.N.points.gte("3.14e11")},
             goalDescription: "3.14e11 Numbers",
-            rewardDescription(){return "Factor will not reset upgrade and number x1.5."},
+            rewardDescription(){return "Factor will not reset upgrades and numbers x1.5."},
           unlocked(){return hasMilestone("I", 1)|hasUpgrade('F', 13)},
           
         },
         22: {
             name: "No factor factor",
-            challengeDescription: "Factor milestone 4 and upgrades is no effect.",
+            challengeDescription: "Factor milestone 4 and upgrades are useless.",
             canComplete(){return player.N.points.gte("3.14e18")},
             goalDescription: "3.14e18 Numbers",
-            rewardDescription(){return "Point and Number x2"},
+            rewardDescription(){return "Points and Numbers x2"},
           unlocked(){return hasMilestone("I", 1)|hasUpgrade('F', 13)},
           
         },
         23: {
             name: "3 in 1",
-            challengeDescription: "You trap in 2 in 1, No cap and no factor factor.",
+            challengeDescription: "You are trapped in 2 in 1, No cap and no factor factor.",
             canComplete(){return player.N.points.gte("420420420")},
             goalDescription: "420,420,420 Numbers",
-            rewardDescription(){return "Factor is cheaper and unlock 1 factor upgrade."},
+            rewardDescription(){return "Factors are cheaper and unlock a factor upgrade."},
           unlocked(){return hasMilestone("I", 1)|hasMilestone('F', 44)},
           
         },
         31: {
             name: "Super / factor",
-            challengeDescription: "Point and Number / 1e6",
+            challengeDescription: "Points and Numbers / 1e6",
             canComplete(){return player.N.points.gte("3140")},
             goalDescription: "3,140 Numbers",
-            rewardDescription(){return "unlock 1 Number buyable."},
+            rewardDescription(){return "unlock a Number buyable."},
           unlocked(){return hasMilestone("I", 1)|hasMilestone('F', 108)},
           
         },
         32: {
             name: "Super No upgrade factor",
-            challengeDescription: "'2','3' and '4' is no effect",
+            challengeDescription: "'2','3' and '4' ard useless.",
             canComplete(){return player.N.points.gte("3.14e16")},
             goalDescription: "3.14e16 Numbers",
-            rewardDescription(){return "'-' base x2 and unlock 1 challenge"},
+            rewardDescription(){return "'-' base x2 and unlock a factor challenge"},
           unlocked(){return hasMilestone("I", 1)|hasUpgrade('F', 21)},
           
         },
         33: {
             name: "Super 2 in 1",
-            challengeDescription: "You trap in super / and super No upgrade factor.",
+            challengeDescription: "You are trapped in super / and super No upgrade factor.",
             canComplete(){return player.N.points.gte("314")},
             goalDescription: "314 Numbers",
-            rewardDescription(){return "'-' base x2 and unlock 1 factor upgrade"},
+            rewardDescription(){return "'-' base x2 and unlock a factor upgrade"},
           unlocked(){return hasMilestone("I", 1)|(hasUpgrade('F', 21) && hasChallenge('F',32))},
           
         },
         41: {
             name: "Super no cap factor",
-            challengeDescription: "'2', '3' and '4' effect is cap at 10",
+            challengeDescription: "'2', '3' and '4' effects are capped at 10",
             canComplete(){return player.N.points.gte("3.14e38")},
             goalDescription: "3.14e38 Numbers",
-            rewardDescription(){return "Factor is cheaper."},
+            rewardDescription(){return "Factor are cheaper."},
           unlocked(){return hasMilestone("I", 1)|hasUpgrade('F', 25)},
           
         },
         42: {
             name: "Super no factor factor",
-            challengeDescription: "Factor milestone 4 and upgrades are no effect.",
+            challengeDescription: "Factor milestone 4 and upgrades are useless.",
             canComplete(){return player.N.points.gte("3.14e45")},
             goalDescription: "3.14e45 Numbers",
             rewardDescription(){return "'-' cost base /1e4."},
@@ -1438,10 +1503,10 @@ addLayer("F", {
         },
         43: {
             name: "Super 3 in 1",
-            challengeDescription: "You trap in Super 2 in 1, Super no cap factor,and no factor factor.",
+            challengeDescription: "You are trapped in Super 2 in 1, Super no cap factor,and no factor factor.",
             canComplete(){return player.N.points.gte("1e15")},
             goalDescription: "1e15 Numbers",
-            rewardDescription(){return "Factor is cheaper."},
+            rewardDescription(){return "Factor are cheaper."},
           unlocked(){return hasMilestone("I", 1)|hasMilestone('UF', 10)},
         },
           
@@ -1466,7 +1531,9 @@ addLayer("F", {
                     eff = new Decimal("30").pow(getBuyableAmount("F", 11))     
                     return  eff = eff   
                       
-                }
+                },
+                
+               
             },
             12: {
                 title: "Factor b",
@@ -1510,6 +1577,7 @@ addLayer("F", {
                       
                 }
             },
+
         },
     tabFormat: {
         "Milestones":{
@@ -1559,17 +1627,29 @@ addLayer("F", {
       "buyables",
         ]},
       },
+
       doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("I", 2) && resettingLayer=="I") keep.push("milestones")
         if (hasMilestone("I", 3) && resettingLayer=="I") keep.push("challenges")
+        if (hasMilestone("IP", 1) && resettingLayer=="IP") keep.push("challenges")
+        if (hasMilestone("IP", 4) && resettingLayer=="IP") keep.push("upgrades")
+        if (hasMilestone("IP", 4) && resettingLayer=="IP") keep.push("milestones")
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
       },
+      automateStuff(){
+        if(hasMilestone("I",69)){
+          if(layers.F.buyables[11].canAfford())setBuyableAmount("F",11,player.F.points.log(5).floor().add(1))
+          if(layers.F.buyables[12].canAfford())setBuyableAmount("F",12,player.F.points.log(7).floor().add(1))
+          if(layers.F.buyables[13].canAfford())setBuyableAmount("F",13,player.F.points.log(12).floor().add(1))
+        }
+    },
+      
       
 
 
-    layerShown(){return true}
+      layerShown(){return hasUpgrade('N',15)||hasMilestone('I',1)},
 })
 addLayer("I", {
     name: "Infinity", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1653,7 +1733,7 @@ addLayer("I", {
         },
         69: {
             requirementDescription: "69 Infinity (NICE)",
-            effectDescription: "Endgame.",
+            effectDescription: "Infinity boost Negative Numbers gain and auto buy factor and number buyable.",
             done() { return player.I.points.gte(69) }
         },
     },
@@ -1664,7 +1744,7 @@ addLayer("I", {
             canComplete(){return player.N.points.gte("1.8e308")},
             goalDescription: "1.80e308 Numbers",
             rewardDescription(){return "Number ^1.1."},
-          unlocked(){return hasMilestone("NN", 4e22)},
+          unlocked(){return hasMilestone("NN", 4e21)},
         },
         12: {
             name: "IC2",
@@ -1706,7 +1786,7 @@ addLayer("I", {
           ]},
       
       "Challenges":{
-        unlocked(){return hasMilestone('NN',4e22)},
+        unlocked(){return hasMilestone('NN',4e21)},
         content:[
           "main-display",
           "blank",
@@ -1720,7 +1800,7 @@ addLayer("I", {
     canBuyMax(){
         return hasMilestone('I',8) 
       },
-    layerShown(){return true}
+    layerShown(){return hasMilestone('UF',11)||hasMilestone('IP',1)}
 })
 addLayer("Link", {
 	startData() { return {unlocked: true}},
@@ -1964,4 +2044,130 @@ return 1
             done() { return player.FS.points.gte(1) }
         },
     },
+    layerShown(){return hasMilestone('NN',1e50)||hasMilestone('IP',1)}
+})
+addLayer("IP", {
+    name: "Infinity point", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "IP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: -10, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#80ffff",
+    requires: new Decimal("1.8e308"), // Can be a function that takes requirement increases into account
+    resource: "Infinity point", // Name of prestige currency
+    baseResource: "Negative numbers", // Name of resource prestige is based on
+    baseAmount() {return player.NN.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent(){
+return 0.01
+    },
+    branches:["NN","I"],
+     // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        
+
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    milestones: {
+        1: {
+            requirementDescription: "1 Infinity points",
+            effectDescription: "Keep '0' and Factor challenge on reset.",
+            done() { return player.IP.points.gte(1) }
+        },
+        2: {
+            requirementDescription: "2 Infinity points",
+            effectDescription: "Keep Negative numbers upgrades and milestone on reset.",
+            done() { return player.IP.points.gte(2) }
+        },
+        4: {
+            requirementDescription: "4 Infinity points",
+            effectDescription: "Keep factor upgrades and milestone on reset.",
+            done() { return player.IP.points.gte(4) }
+        },
+        6: {
+            requirementDescription: "6 Infinity points",
+            effectDescription: "gain 100% of Negative numbers on reset per second and keep upgrade factor milestone on reset.",
+            done() { return player.IP.points.gte(6) }
+        },
+    },
+    upgrades:{
+        11: {
+            description: "Unlock 1 Negative numbers buyable.",
+            cost: new Decimal(5),
+            unlocked(){
+                return true
+            },
+        
+
+    },
+    12: {
+        description: "Unlock 1 Infinity point Challenge",
+        cost: new Decimal(10),
+        unlocked(){
+            return hasUpgrade('IP',11)
+        },
+},
+21: {
+    description: "Auto buy Negative numbers buyable and Infinity point boost Negative numbers gain.",
+    cost: new Decimal(10),
+    unlocked(){
+        return hasUpgrade('IP',11)
+    },
+},
+    },
+    
+    challenges:{
+        11: {
+            name: "Infinity",
+            challengeDescription: "Number gain ^0.9 . ",
+            canComplete(){return player.NN.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Negative numbers",
+            rewardDescription(){return "Negative numbers ^1.1."},
+          unlocked(){return hasUpgrade('IP',12)},
+        },
+    },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasMilestone('NN',1.79e308)||hasMilestone('IP',1)},
+    tabFormat: {
+        "Milestones":{
+          content:[
+        "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+        "blank",
+        "resource-display",
+        "blank",
+        "blank",
+        "milestones",
+          ]},
+          "Upgrades":{
+            content:[
+              "main-display",
+              "blank",
+            ["prestige-button",function(){return ""}],
+              "blank",
+              "blank",
+              "upgrades",
+            ]
+        },
+      
+      "Challenges":{
+        unlocked(){return hasUpgrade('IP',21)},
+        content:[
+          "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+          "blank",
+          "blank",
+          "challenges",
+        ]
+    },
+    
+      },
 })
