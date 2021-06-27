@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.8",
+	num: "0.1.8.1",
 	name: "Infinity and Infinity point.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.8.1</h3><br>
+- Added a hardcap for x.<br>
+- Added 2 achievements.<br>
+- Added 1 easter egg. (If anyone find this in next 24 hour add their name in The tree)<br>
 <h3>v0.1.8</h3><br>
 - Added Infinity point.<br>
 - Added 3 IP upgrade.<br>
@@ -110,6 +114,7 @@ let changelog = `<h1>Changelog:</h1><br>
 - Added 1 upgrade Factors Challenge.<br>
 - Added 2 Factors Challenge.<br>
 - Endgame: 6 Upgrade factor<br>	
+- Easter egg is here! <br>
 <h3>v0.0.6</h3><br>
 - Added 3 factor Milestone.<br>
 - Added 1 Numbers Buyable.<br>
