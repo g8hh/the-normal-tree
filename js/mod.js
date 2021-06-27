@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.8.1",
+	num: "0.1.8.1 Bugfix",
 	name: "Infinity and Infinity point.",
 }
 
