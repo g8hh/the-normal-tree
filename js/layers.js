@@ -510,8 +510,7 @@ addLayer("N", {
                 if (inChallenge('I',12)) eff = new Decimal("1")
            if (hasUpgrade('N',41)&&(!hasUpgrade('N',36))&&eff<=1e85) eff  = new Decimal(player.N.points.add(1).log(10).pow(0.65).add(1)).pow(getBuyableAmount("N", 13))
             
-         if(!hasUpgrade('N',36)&&eff<=1e85) return eff  = new Decimal(player.N.points.add(1).log(10).pow(0.5).add(1)).pow(getBuyableAmount("N", 13))
-        else if (eff>=1e85&&(!hasUpgrade('N',36))) return eff = new Decimal("1e85")
+         else if(!hasUpgrade('N',36)&&eff<=1e85) return eff  = new Decimal(player.N.points.add(1).log(10).pow(0.5).add(1)).pow(getBuyableAmount("N", 13))
         else if(hasUpgrade('N',36)) return eff = new Decimal("1e100")
         return eff=eff
 
@@ -2119,6 +2118,7 @@ return 0.01
     },
     upgrades:{
         11: {
+            title: "UltraLuigi (Easter Egg 1)",
             description: "Unlock 1 Negative numbers buyable.",
             cost: new Decimal(5),
             unlocked(){
@@ -2128,6 +2128,7 @@ return 0.01
 
     },
     12: {
+        title: "TrueDiego ΔΔΔ (Easter Egg 1)",
         description: "Unlock 1 Infinity point Challenge",
         cost: new Decimal(10),
         unlocked(){
