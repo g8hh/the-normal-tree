@@ -508,9 +508,10 @@ addLayer("N", {
             },
             effect() { 
                 if (inChallenge('I',12)) eff = new Decimal("1")
-            else if (hasUpgrade('N',41)&&(!hasUpgrade('N',36))) eff  = new Decimal(player.N.points.add(1).log(10).pow(0.65).add(1)).pow(getBuyableAmount("N", 13))
+           if (hasUpgrade('N',41)&&(!hasUpgrade('N',36))&&eff<=1e85) eff  = new Decimal(player.N.points.add(1).log(10).pow(0.65).add(1)).pow(getBuyableAmount("N", 13))
             
-        else if(!hasUpgrade('N',36)) return eff  = new Decimal(player.N.points.add(1).log(10).pow(0.5).add(1)).pow(getBuyableAmount("N", 13))
+         if(!hasUpgrade('N',36)&&eff<=1e85) return eff  = new Decimal(player.N.points.add(1).log(10).pow(0.5).add(1)).pow(getBuyableAmount("N", 13))
+        else if (eff>=1e85&&(!hasUpgrade('N',36))) return eff = new Decimal("1e85")
         else if(hasUpgrade('N',36)) return eff = new Decimal("1e100")
         return eff=eff
 
@@ -1800,7 +1801,7 @@ addLayer("I", {
     canBuyMax(){
         return hasMilestone('I',8) 
       },
-    layerShown(){return hasMilestone('UF',11)||hasMilestone('IP',1)}
+    layerShown(){return hasMilestone('UF',11)||hasMilestone('IP',1)||hasMilestone('FS',1)}
 })
 addLayer("Link", {
 	startData() { return {unlocked: true}},
@@ -2004,6 +2005,26 @@ addLayer("A", {
                 return (hasMilestone('I',1))
             }
         },  
+        42:{
+            name: "I forget achievements",
+            tooltip:"Get 1 Infinity point.",
+            done()  {
+                if (player.IP.points.gte(1)) return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1))
+            }
+        },  
+        43:{
+            name: "twofinity challenge",
+            tooltip:"Complete Infinity Point challenge 1",
+            done()  {
+                if (hasChallenge('IP',11)) return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1))
+            }
+        },  
     }
     
 })
@@ -2044,7 +2065,7 @@ return 1
             done() { return player.FS.points.gte(1) }
         },
     },
-    layerShown(){return hasMilestone('NN',1e50)||hasMilestone('IP',1)}
+    layerShown(){return hasMilestone('NN',1e50)||hasMilestone('IP',1)||hasMilestone('FS',1)}
 })
 addLayer("IP", {
     name: "Infinity point", // This is optional, only used in a few places, If absent it just uses the layer id.
