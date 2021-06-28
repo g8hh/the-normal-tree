@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
+	num: "0.2 Bugfix",
 	name: "+ - x / ^ ...",
 }
 
@@ -22,7 +22,7 @@ let changelog = `<h1>Changelog:</h1><br>
 - Added Mathematics Symbol.<br>
 - Added 1 I challenge<br>
 - Added 1 MS upgrade<br>
-- Endgame: 1 MS and 1e1800 IP
+- Endgame: 1 MS and 1e1800 IP.<br>
 <h3>v0.1.9.1</h3><br>
 - Added 2 IP Challenge.<br>
 - Added 6 F Upgrade.<br>

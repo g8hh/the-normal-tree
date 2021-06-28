@@ -2141,7 +2141,7 @@ addLayer("A", {
         }, 
         46:{
             name: "Don't forget achievements again.",
-            tooltip:"Get 1e25000 Number in IC5. Reward: Unlock 1 Infinity challenge.",
+            tooltip:"Get 1e25000 Number in IC3. Reward: Unlock 1 Infinity challenge.",
             done()  {
                 if (player.N.points.gte("1e25000")&&inChallenge('I',21))  return true
             },
