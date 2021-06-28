@@ -1094,7 +1094,7 @@ tabFormat: {
   canBuyMax(){
     return hasUpgrade('F',41) 
   },
-  layerShown(){return hasChallenge('F',22)||hasMilestone('I',1)},
+  layerShown(){return hasChallenge('F',22)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('UF',1)||hasMilestone('I',1)},
 })
 addLayer("F", {
     name: "Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1664,7 +1664,7 @@ addLayer("F", {
       
 
 
-      layerShown(){return hasUpgrade('N',15)||hasMilestone('I',1)},
+      layerShown(){return hasUpgrade('N',15)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('F',1)||hasMilestone('UF',1)||hasMilestone('I',1)},
 })
 addLayer("I", {
     name: "Infinity", // This is optional, only used in a few places, If absent it just uses the layer id.
