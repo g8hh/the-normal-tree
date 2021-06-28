@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.8.1 Bugfix",
-	name: "Infinity and Infinity point.",
+	num: "0.1.9",
+	name: "Two by two",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.9</h3><br>
+- Added 6 IP upgrades.<br>
+- Added 3 IP challenge.<br>
+- Added 2 IP clickable that reset challenge.<br>
+- Endgame: Get IP upgrade 33.
 <h3>v0.1.8.1</h3><br>
 - Added a hardcap for x.<br>
 - Added 2 achievements.<br>
@@ -114,7 +119,6 @@ let changelog = `<h1>Changelog:</h1><br>
 - Added 1 upgrade Factors Challenge.<br>
 - Added 2 Factors Challenge.<br>
 - Endgame: 6 Upgrade factor<br>	
-- Easter egg is here! <br>
 <h3>v0.0.6</h3><br>
 - Added 3 factor Milestone.<br>
 - Added 1 Numbers Buyable.<br>
@@ -215,7 +219,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasChallenge('IP',11)
+	return hasUpgrade('IP',33)
 }
 
 

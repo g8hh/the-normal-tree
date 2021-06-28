@@ -53,6 +53,7 @@ addLayer("N", {
         if (hasMilestone('I',1)) mult = mult.times(1.05)
         if (hasMilestone('I',2)) mult = mult.times(1.05)
         if (inChallenge('IP',11)) mult = mult.times(0.9)
+        if (inChallenge('IP',21)) mult = mult.times(0.5)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
         if (inChallenge('I',21)) mult = mult.times(0.166666)
@@ -648,8 +649,11 @@ addLayer("NN", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         let mult=new Decimal(1) 
-       
         if (hasChallenge('IP',11)) mult = mult.times(1.1)
+        if (hasChallenge('IP',12)) mult = mult.times(1.15)
+        if (hasChallenge('IP',21)) mult = mult.times(1.2)
+        if (hasChallenge('IP',22)) mult = mult.times(1.25)
+        
         return mult
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
@@ -673,7 +677,10 @@ addLayer("NN", {
             description:"Negative numbers boost point gain.",
             cost: new Decimal(5),
             effect() {
-                if (player.NN.points >=1e250) return new Decimal("1e1500")
+                if(inChallenge('IP',22))return new Decimal("1")
+                else if (player.NN.points.gte("1e1000")) return new Decimal("1e5000")
+                else if(hasUpgrade('IP',22)) return player.NN.points.add(1).pow(5)
+                else if (player.NN.points >=1e250) return new Decimal("1e1500")
                 else if(hasUpgrade('NN',34)) return player.NN.points.add(1).pow(6)
                 else if (player.NN.points >=1e40) return new Decimal("1e600")
                 else if(hasUpgrade('NN',24)) return player.NN.points.add(1).pow(15)
@@ -697,7 +704,8 @@ addLayer("NN", {
             description: " Points boost themselves",
             cost: new Decimal(25),
             effect() {
-                if (player.points.gte(1e2000)) return 1e300
+                if (player.points.gte("1e10000")) return new Decimal("1e2000")
+                else if(hasUpgrade('IP',32)) return player.points.add(1).pow(0.2)
                 else if (hasUpgrade('NN',31)) return player.points.add(1).pow(0.15)
                 else return 1
             },
@@ -711,11 +719,14 @@ addLayer("NN", {
         description: "Negative Numbers boost themselves",
         cost: new Decimal(15),
         effect() {
-            if (player.NN.points >=4.6415888e+66) return 1e50
-            if(hasUpgrade('NN',25)) return player.NN.points.pow(0.75).add(1)
-            if (player.NN.points >=1e20) return 1e15
-            if(hasUpgrade('NN',22)) return player.NN.points.pow(0.75).add(1)
-            if (player.NN.points>= 2.1544347e+13) return 1e8
+            if(inChallenge('IP',12))return new Decimal("1")
+            else if (player.NN.points.gte("1e2000")) return new Decimal("1e600")
+            else if(hasUpgrade('IP',13)) return player.NN.points.pow(0.3).add(1)
+            else if (player.NN.points >=4.6415888e+66) return 1e50
+            else if(hasUpgrade('NN',25)) return player.NN.points.pow(0.75).add(1)
+            else if (player.NN.points >=1e20) return 1e15
+            else if(hasUpgrade('NN',22)) return player.NN.points.pow(0.75).add(1)
+            else if (player.NN.points>= 2.1544347e+13) return 1e8
             
             else if (hasUpgrade('NN',21)) return player.NN.points.pow(0.6).add(1)
            
@@ -1006,7 +1017,7 @@ addLayer("UF", {
         },
         18: {
             requirementDescription: "18 Upgrade Factor",
-            effectDescription: "upgrade factor reset nothing.",
+            effectDescription: "Upgrade factor reset nothing.",
             done() { return player.UF.points.gte(18) }
         },
         52: {
@@ -1016,7 +1027,7 @@ addLayer("UF", {
         },
         128: {
             requirementDescription: "128 Upgrade Factor",
-            effectDescription: "Unlock 2 Number upgrade and boost the eighth milestone.",
+            effectDescription: "Unlock 2 Number upgrades and boost the eighth milestone.",
             done() { return player.UF.points.gte(128) }
         },
         
@@ -1036,7 +1047,7 @@ addLayer("UF", {
                 return limit;
             },
             name: "Buyable upgrader",
-            challengeDescription: "'+' and '-' is no effect (You can do 4 times)",
+            challengeDescription: "'+' and '-' have no effect (You can do 4 times)",
             goal: function(){
                 return [new Decimal("1e30"),new Decimal("1e45"),new Decimal("1e52"),new Decimal("1e65"),new Decimal(Infinity)][player.UF.challenges[11]];
         },
@@ -1254,7 +1265,7 @@ addLayer("F", {
         },
         12: {
             title: "Factor Beta",
-            description: "Number boost themselves gain.",
+            description: "Number boost themselves.",
             effect() {
                 if (hasMilestone('I',28)) return player.N.points.pow(0.025).add(1)
                 if (inChallenge('F',42)|inChallenge('F',43)) return 1 
@@ -1275,7 +1286,7 @@ addLayer("F", {
     },
     13: {
         title: "Factor Gamma",
-        description: "Unlock 2 Number upgraded and 2 challenged, you can buy max factor.",
+        description: "Unlock 2 Number upgrades and 2 challenges, you can buy max factor.",
         cost: new Decimal(15),
         unlocked(){
             return hasUpgrade("F", 12)|hasMilestone("I", 1)
@@ -1379,7 +1390,7 @@ addLayer("F", {
 },
 41: {
     title: "Factor Rho",
-    description: "Upgrade Factor are cheaper and you can buy max it." ,
+    description: "Upgrade Factors are cheaper and you can buy max it." ,
     cost: new Decimal(9.5e10),
     unlocked(){
         return hasUpgrade("F", 35)
@@ -1611,6 +1622,10 @@ addLayer("F", {
         ["prestige-button",function(){return ""}],
           "blank",
           "blank",
+          ["display-text",function(){
+            let s = "There are upgrades that require being in a challenge (Number Upgrade)."
+            return s
+          }],
           "challenges",
         ]
       },
@@ -2024,6 +2039,16 @@ addLayer("A", {
                 return (hasMilestone('I',1))
             }
         },  
+        44:{
+            name: "Nine egg",
+            tooltip:"Get IP upgrade 33.",
+            done()  {
+                if (hasUpgrade('IP',33)) return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1))
+            }
+        },  
     }
     
 })
@@ -2043,6 +2068,7 @@ addLayer("FS", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:1000,
     exponent(){
+        if(player.FS.points>=3) return 1.5
 return 1
     },
     branches:["F"],
@@ -2081,7 +2107,8 @@ addLayer("IP", {
     baseAmount() {return player.NN.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent(){
-return 0.01
+        if(hasUpgrade('IP',13))return 0.005
+else return 0.01
     },
     branches:["NN","I"],
      // Prestige currency exponent
@@ -2136,24 +2163,119 @@ return 0.01
         },
 },
 21: {
+    title: "JashinFanatic (Easter Egg 1)",
     description: "Auto buy Negative numbers buyable and Infinity point boost Negative numbers gain.",
     cost: new Decimal(10),
     unlocked(){
         return hasUpgrade('IP',11)
     },
 },
+22: {
+    title: "_lx5=nitro (Easter Egg 1)",
+    description: "Remove the hardcap of -2 but nerf it.",
+    cost: new Decimal(100),
+    unlocked(){
+        return hasUpgrade('IP',12)&&hasUpgrade('IP',21)
+    },
+},
+13: {
+    title: "Elund (Easter Egg 1)",
+    description: "Remove the hardcap of -4 but nerf it and nerf IP gain.",
+    cost: new Decimal(3000),
+    unlocked(){
+        return hasUpgrade('IP',12)
+    },
+},
+23: {
+    title: "garnet420 (Easter Egg 1)",
+    description: "Unlock 2 Infinity point challenge.",
+    cost: new Decimal(200000),
+    unlocked(){
+        return hasUpgrade('IP',13)&&hasUpgrade('IP',22)
+    },
+},
+31: {
+    title: "♾InFiIipity♾ (Easter Egg 1)",
+    description: "Unlock 1 Infinity point challenge.",
+    cost: new Decimal(1e9),
+    unlocked(){
+        return hasUpgrade('IP',21)
+    },
+},
+32: {
+    title: "luenix (Easter Egg 1)",
+    description: "Boost '-4'",
+    cost: new Decimal(1e14),
+    unlocked(){
+        return hasUpgrade('IP',31)&&hasUpgrade('IP',22)
+    },
+},
+33: {
+    title: "Eternity308 (Easter Egg 1)",
+    description: "ENDGAME",
+    cost: new Decimal(1e15),
+    unlocked(){
+        return hasUpgrade('IP',32)&&hasUpgrade('IP',23)
+    },
+},
     },
     
     challenges:{
         11: {
-            name: "Infinity",
+            name: "Infinity 1",
             challengeDescription: "Number gain ^0.9 . ",
-            canComplete(){return player.NN.points.gte("1.8e308")},
-            goalDescription: "1.80e308 Negative numbers",
+            canComplete(){if(hasChallenge('IP',12)) return player.NN.points.gte("1e1000")
+            else return player.NN.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Negative numbers (1e1000 Negative numbers after complete Infinity 2)",
             rewardDescription(){return "Negative numbers ^1.1."},
           unlocked(){return hasUpgrade('IP',12)},
         },
+          12: {
+            name: "Infinity 2",
+            challengeDescription: "'-4' is no effect. ",
+            canComplete(){ if(hasChallenge('IP',11)) return player.NN.points.gte("1e1000")
+            else return player.NN.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Negative numbers (1e1000 Negative numbers after complete Infinity 1)",
+            rewardDescription(){return "Negative numbers ^1.15."},
+          unlocked(){return hasUpgrade('IP',31)},
+        },
+        21: {
+            name: "Eternity 1",
+            challengeDescription: "Number gain ^0.5 . ",
+            canComplete(){
+                if(hasChallenge('IP',22)) return player.NN.points.gte("1e1000")
+                else return player.NN.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Negative numbers (1e1000 Negative numbers after complete Eternity 2)",
+            rewardDescription(){return "Negative numbers ^1.2."},
+          unlocked(){return hasUpgrade('IP',23)},
+
+        },
+        22: {
+            name: "Eternity 2",
+            challengeDescription: "'-2' is no effect' . ",
+            canComplete(){
+                if(hasChallenge('IP',21)) return player.NN.points.gte("1e1000")
+                else return player.NN.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Negative numbers (1e1000 Negative numbers after complete Eternity 1)",
+            rewardDescription(){return "Negative numbers ^1.25."},
+          unlocked(){return hasUpgrade('IP',23)},
+        },
     },
+    clickables: {
+        12:{
+        display() {return "Reset Eternity challenge"},
+        canClick(){return true},
+        onClick(){player.IP.challenges[21] = 0
+            player.IP.challenges[22] = 0 }
+        },
+        11:{
+            display() {return "Reset Infinity challenge"},
+            canClick(){return true},
+            onClick(){player.IP.challenges[11] = 0
+                player.IP.challenges[12] = 0 }
+            },
+    },
+
     row: 2, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('NN',1.79e308)||hasMilestone('IP',1)},
     tabFormat: {
@@ -2188,8 +2310,11 @@ return 0.01
           "blank",
           "blank",
           "challenges",
+          "clickables",
+
         ]
     },
+
     
       },
 })
