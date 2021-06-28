@@ -22,7 +22,7 @@ let changelog = `<h1>Changelog:</h1><br>
 - Added 6 IP upgrades.<br>
 - Added 3 IP challenge.<br>
 - Added 2 IP clickable that reset challenge.<br>
-- Endgame: Get IP upgrade 33.
+- Endgame: Get IP upgrade 33.<br>
 <h3>v0.1.8.1</h3><br>
 - Added a hardcap for x.<br>
 - Added 2 achievements.<br>
