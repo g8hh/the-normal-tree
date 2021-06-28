@@ -525,6 +525,7 @@ addLayer("N", {
            if (hasUpgrade('N',41)&&(!hasUpgrade('N',36))&&eff<=1e85) eff  = new Decimal(player.N.points.add(1).log(10).pow(0.65).add(1)).pow(getBuyableAmount("N", 13))
             
          else if(!hasUpgrade('N',36)&&eff<=1e85) return eff  = new Decimal(player.N.points.add(1).log(10).pow(0.5).add(1)).pow(getBuyableAmount("N", 13))
+         else if(!hasUpgrade('F',26)&&!hasUpgrade('N',36)&&eff>=1e85) return eff = new Decimal("1e85")
         else if(hasUpgrade('N',36)&&!hasUpgrade('F',26)) return eff = new Decimal("1e100")
         if(hasUpgrade('F',26)) return eff = new Decimal("1.79e308")
         return eff=eff
