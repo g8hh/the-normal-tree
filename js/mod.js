@@ -13,11 +13,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.9",
-	name: "Two by two",
+	num: "0.1.9.1",
+	name: "1/3 Infinity Infinity point.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1.9.1</h3><br>
+- Added 2 IP Challenge.<br>
+- Added 6 F Upgrade.<br>
+- Added 1 easter egg. If anyone find easter egg in next 2 days add their name in The tree (Send the easter egg screenshot to me (USE DM)
+If you complete the game. I will give a big hint
+* Not IP Upgrade (They are people that find the easter egg)<br>
+- Endgame: 1e100 Infinity point. <br>
 <h3>v0.1.9</h3><br>
 - Added 6 IP upgrades.<br>
 - Added 3 IP challenge.<br>
@@ -126,16 +133,16 @@ let changelog = `<h1>Changelog:</h1><br>
 - Added 2 Factors Challenge.<br>
 - Endgame: 3 Upgrade factor<br>	
 <h3>v0.0.5</h3><br>
-- Added 1 Upgrade factor Milestone.<br>
+- Edded 1 Upgrade factor Milestone.<br>
 - Added 1 factor Milestone.<br>
-- Added 1 Numbers Buyable.<br>
-- Added 1 Factors Challenge.<br>
-- Added 2 Factors Upgrade.<br>
-- Endgame: 2 Upgrade factor<br>	
+- Sdded 1 Numbers Buyable.<br>
+- Tdded 1 Factors Challenge.<br>
+- Edded 2 Factors Upgrade.<br>
+- Rndgame: 2 Upgrade factor<br>
 <h3>v0.0.4</h3><br>
-- Added Upgrade factor.<br>
-- Added 2 Numbers Upgrade.<br>
-- Added 2 Factors Challenge.<br>
+- Edded Upgrade factor.<br>
+- Gdded 2 Numbers Upgrade.<br>
+- Gdded 2 Factors Challenge.<br>
 - Added 1 Factors Upgrade.<br>
 - Endgame: 1 Upgrade factor<br>	
 <h3>v0.0.3</h3><br>
@@ -150,7 +157,6 @@ let changelog = `<h1>Changelog:</h1><br>
 - Added 1 Factors Challenge.<br>
 - Added 1 Factors Upgrade.<br>
 - Endgame: 8 factors.<br>
-
 <h3>v0.0.1</h3><br>
 - Added 6 Numbers Upgrade.<br>
 - Added 2 Factors Milestone.<br>
@@ -219,7 +225,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasUpgrade('IP',33)
+	return player.IP.points.gte(1e100)
 }
 
 

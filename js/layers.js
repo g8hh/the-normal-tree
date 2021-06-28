@@ -54,13 +54,17 @@ addLayer("N", {
         if (hasMilestone('I',2)) mult = mult.times(1.05)
         if (inChallenge('IP',11)) mult = mult.times(0.9)
         if (inChallenge('IP',21)) mult = mult.times(0.5)
+        if (inChallenge('IP',31)) mult = mult.times(0.15)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
         if (inChallenge('I',21)) mult = mult.times(0.166666)
         if (hasChallenge('I',11)) mult = mult.times(1.1)
+        if (hasUpgrade('F',45)) mult = mult.times(1.1)
         if (hasChallenge('I',12)) mult = mult.times(1.2)
         if (hasChallenge('I',21)) mult = mult.times(1.3)
         if (hasChallenge('I',31)) mult = mult.times(1.4)
+        if (hasChallenge('IP',31)) mult = mult.times(1.3)
+        if (hasChallenge('IP',32)) mult = mult.times(1.35)
         if (hasUpgrade('F',31)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         if (hasUpgrade('F',43)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         return mult
@@ -440,7 +444,8 @@ addLayer("N", {
                 if (eff>=1e50 &&(!hasMilestone('F',6000))&&(!hasUpgrade('N',16))&&(!hasMilestone('F',12500))&&!inChallenge('I',12)) return eff = new Decimal("1e50")
              else if (eff>=1e64&&(hasMilestone('F',6000))&&(!hasMilestone('F',12500))&&(!hasUpgrade('N',16))&&!inChallenge('I',12)) return eff = new Decimal("1e64")
                 else if (eff>=1e75&&(hasMilestone('F',12500))&&(!hasUpgrade('N',16))&&!inChallenge('I',12)) return eff = new Decimal("1e75")
-                else if (hasUpgrade('N',16)&&!inChallenge('I',12)) return eff = new Decimal("1e120")
+                else if (hasUpgrade('N',16)&&!inChallenge('I',12)&&!hasUpgrade('F',16)) return eff = new Decimal("1e120")
+                else if (hasUpgrade('F',16)) return eff = new Decimal("1.79e308")
                 else if (inChallenge('I',12))return eff = new Decimal("1")
                 else return eff = eff
                 
@@ -512,7 +517,8 @@ addLayer("N", {
            if (hasUpgrade('N',41)&&(!hasUpgrade('N',36))&&eff<=1e85) eff  = new Decimal(player.N.points.add(1).log(10).pow(0.65).add(1)).pow(getBuyableAmount("N", 13))
             
          else if(!hasUpgrade('N',36)&&eff<=1e85) return eff  = new Decimal(player.N.points.add(1).log(10).pow(0.5).add(1)).pow(getBuyableAmount("N", 13))
-        else if(hasUpgrade('N',36)) return eff = new Decimal("1e100")
+        else if(hasUpgrade('N',36)&&!hasUpgrade('F',26)) return eff = new Decimal("1e100")
+        if(hasUpgrade('F',26)) return eff = new Decimal("1.79e308")
         return eff=eff
 
                   
@@ -544,7 +550,8 @@ addLayer("N", {
                 eff = new Decimal("1").add(0.04).pow(getBuyableAmount("N", 21)) 
                 if (inChallenge('I',12)) eff = new Decimal("1")
                 else if (eff>=2&&(!hasUpgrade('N',46))) return eff = new Decimal("2")
-                else if(hasUpgrade('N',46)) return eff = new Decimal("2.1") 
+                else if(hasUpgrade('N',46)&&!hasUpgrade('F',36)) return eff = new Decimal("2.1") 
+                else if(hasUpgrade('F',36)) return eff = new Decimal("3.08") 
                 return eff = eff
                   
             }
@@ -677,6 +684,7 @@ addLayer("NN", {
             description:"Negative numbers boost point gain.",
             cost: new Decimal(5),
             effect() {
+                if(inChallenge('IP',32))return new Decimal("1")
                 if(inChallenge('IP',22))return new Decimal("1")
                 else if (player.NN.points.gte("1e1000")) return new Decimal("1e5000")
                 else if(hasUpgrade('IP',22)) return player.NN.points.add(1).pow(5)
@@ -704,6 +712,7 @@ addLayer("NN", {
             description: " Points boost themselves",
             cost: new Decimal(25),
             effect() {
+                if(inChallenge('IP',32))return new Decimal("1")
                 if (player.points.gte("1e10000")) return new Decimal("1e2000")
                 else if(hasUpgrade('IP',32)) return player.points.add(1).pow(0.2)
                 else if (hasUpgrade('NN',31)) return player.points.add(1).pow(0.15)
@@ -719,6 +728,7 @@ addLayer("NN", {
         description: "Negative Numbers boost themselves",
         cost: new Decimal(15),
         effect() {
+            if(inChallenge('IP',32))return new Decimal("1")
             if(inChallenge('IP',12))return new Decimal("1")
             else if (player.NN.points.gte("1e2000")) return new Decimal("1e600")
             else if(hasUpgrade('IP',13)) return player.NN.points.pow(0.3).add(1)
@@ -956,6 +966,7 @@ addLayer("UF", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:1e10,
     exponent(){
+        if(hasUpgrade('F',44))return 0.5
         if(hasUpgrade('F',41))return 0.6
         if(hasUpgrade('N',43))return 0.9
         else return 1.25
@@ -1112,6 +1123,8 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if (player.FS.points.gte(4)) return 0.18
+        if (player.IP.points.gte(1e26)) return 0.2
         if (player.FS.points.gte(3)) return 0.25
         if(hasUpgrade('N',62))return 0.271
         if (player.FS.points.gte(2)) return 0.29
@@ -1412,7 +1425,54 @@ addLayer("F", {
         return hasUpgrade("F", 42)
     },
 },
-
+44: {
+    title: "Factor Upsilon",
+    description: "Upgrade factors are cheaper." ,
+    cost: new Decimal(2.5e27),
+    unlocked(){
+        return hasUpgrade("F", 43)
+    },
+},
+45: {
+    title: "Factor Phi",
+    description: "Unlock 4 upgrade and Number ^1.1" ,
+    cost: new Decimal(2.6e27),
+    unlocked(){
+        return hasUpgrade("F", 44)
+    },
+},
+16: {
+    title: "Factor Chi",
+    description: "The '+' effect is always 1.79e308" ,
+    cost: new Decimal(7.9e27),
+    unlocked(){
+        return hasUpgrade("F", 45)
+    },
+},
+26: {
+    title: "Factor Psi",
+    description: "The 'x' effect is always 1.79e308" ,
+    cost: new Decimal(1e28),
+    unlocked(){
+        return hasUpgrade("F", 45)
+    },
+},
+36: {
+    title: "Factor Omega",
+    description: "The '/' effect is always 3.08" ,
+    cost: new Decimal(1.35e28),
+    unlocked(){
+        return hasUpgrade("F", 45)
+    },
+},
+46: {
+    title: "Mathematics Symbol ",
+    description: "Unlock Mathematics Symbol (not yet) and Infinity point gain x100." ,
+    cost: new Decimal(1e31),
+    unlocked(){
+        return hasUpgrade("F", 45)
+    },
+},
 },
     challenges: {
         11: {
@@ -2115,8 +2175,8 @@ else return 0.01
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         
-
-        return mult
+if(hasUpgrade('F',46)) mult = mult.times(100)
+        return mult 
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
@@ -2141,6 +2201,11 @@ else return 0.01
             requirementDescription: "6 Infinity points",
             effectDescription: "gain 100% of Negative numbers on reset per second and keep upgrade factor milestone on reset.",
             done() { return player.IP.points.gte(6) }
+        },
+        26: {
+            requirementDescription: "1e26 Infinity points",
+            effectDescription: "Factor are cheaper.",
+            done() { return player.IP.points.gte(1e26) }
         },
     },
     upgrades:{
@@ -2212,7 +2277,7 @@ else return 0.01
 },
 33: {
     title: "Eternity308 (Easter Egg 1)",
-    description: "ENDGAME",
+    description: "Unlock 2 Infinity point Challenge.",
     cost: new Decimal(1e15),
     unlocked(){
         return hasUpgrade('IP',32)&&hasUpgrade('IP',23)
@@ -2260,20 +2325,47 @@ else return 0.01
             rewardDescription(){return "Negative numbers ^1.25."},
           unlocked(){return hasUpgrade('IP',23)},
         },
+        31: {
+            name: "Reality 1",
+            challengeDescription: "Number gain ^0.15 .",
+            canComplete(){
+                if(hasChallenge('IP',32)) return player.NN.points.gte("1e1000")
+                else return player.NN.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Negative numbers (1e1000 Negative numbers after complete Reality 2)",
+            rewardDescription(){return "Numbers ^1.3."},
+          unlocked(){return hasUpgrade('IP',33)},
+        },
+        32: {
+            name: "Reality 2",
+            challengeDescription: "'-2', '-3' and '-4' is no effect.",
+            canComplete(){
+                if(hasChallenge('IP',31)) return player.NN.points.gte("1e1000")
+                else return player.NN.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Negative numbers (1e1000 Negative numbers after complete Reality 1)",
+            rewardDescription(){return "Numbers ^1.35."},
+          unlocked(){return hasUpgrade('IP',33)},
+        },
     },
     clickables: {
-        12:{
-        display() {return "Reset Eternity challenge"},
-        canClick(){return true},
-        onClick(){player.IP.challenges[21] = 0
-            player.IP.challenges[22] = 0 }
-        },
         11:{
             display() {return "Reset Infinity challenge"},
             canClick(){return true},
             onClick(){player.IP.challenges[11] = 0
                 player.IP.challenges[12] = 0 }
             },
+        12:{
+        display() {return "Reset Eternity challenge"},
+        canClick(){return true},
+        onClick(){player.IP.challenges[21] = 0
+            player.IP.challenges[22] = 0 }
+        },
+        13:{
+            display() {return "Reset Reality challenge"},
+            canClick(){return true},
+            onClick(){player.IP.challenges[31] = 0
+                player.IP.challenges[32] = 0 }
+            },
+     
     },
 
     row: 2, // Row the layer is in on the tree (0 is the first row)
