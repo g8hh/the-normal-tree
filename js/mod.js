@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.9.1",
-	name: "1/3 Infinity Infinity point.",
+	num: "0.2",
+	name: "+ - x / ^ ...",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2</h3><br>
+- Added Mathematics Symbol.<br>
+- Added 1 I challenge<br>
+- Added 1 MS upgrade<br>
+- Endgame: 1 MS and 1e1800 IP
 <h3>v0.1.9.1</h3><br>
 - Added 2 IP Challenge.<br>
 - Added 6 F Upgrade.<br>
@@ -225,7 +230,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.IP.points.gte(1e100)
+	return player.MS.points.gte(1)&&player.IP.points.gte("1e1800")
 }
 
 

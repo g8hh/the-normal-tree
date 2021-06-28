@@ -33,6 +33,7 @@ addLayer("N", {
         if (hasUpgrade('NN', 11)) mult = mult.times(1e4)
         if (hasChallenge('F', 22)) mult = mult.times(2)
         if (hasAchievement("A", 12)) mult = mult.times(3)
+        if (hasAchievement("A", 45)) mult = mult.times(1e5)
         if (hasUpgrade('F',12)) mult = mult.times(upgradeEffect('F', 12))
         if (inChallenge('F', 11)) mult = mult.times(0.3)
         if (inChallenge('F', 13)) mult = mult.times(0.3)
@@ -41,6 +42,7 @@ addLayer("N", {
        if (hasUpgrade('N',14)) mult = mult.times(upgradeEffect('N', 14))
        if (hasUpgrade('F',11)) mult = mult.times(upgradeEffect('F', 11))
         if (hasMilestone('F', 1)) mult = mult.times(player.F.points.add(1))
+        if (hasMilestone('MS', 1)) mult = mult.times(1e20)
         if (hasMilestone('F', 1100)) mult = mult.times(player.F.points.add(1))
         if (hasMilestone('UF', 52)) mult = mult.times(player.UF.points.pow(3).add(1))
         if (hasMilestone('UF', 128)) mult = mult.times(player.UF.points.pow(3).add(1))
@@ -57,18 +59,24 @@ addLayer("N", {
         if (inChallenge('IP',31)) mult = mult.times(0.15)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
+        if (inChallenge('I',41)) mult = mult.times(0.011)
         if (inChallenge('I',21)) mult = mult.times(0.166666)
         if (hasChallenge('I',11)) mult = mult.times(1.1)
         if (hasUpgrade('F',45)) mult = mult.times(1.1)
         if (hasChallenge('I',12)) mult = mult.times(1.2)
         if (hasChallenge('I',21)) mult = mult.times(1.3)
         if (hasChallenge('I',31)) mult = mult.times(1.4)
+        if (hasChallenge('I',41)) mult = mult.times(1.5)
         if (hasChallenge('IP',31)) mult = mult.times(1.3)
         if (hasChallenge('IP',32)) mult = mult.times(1.35)
         if (hasUpgrade('F',31)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         if (hasUpgrade('F',43)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         return mult
 
+    },
+    autoUpgrade(){
+        if  (hasMilestone('MS',1)) return true
+        else return false
     },
 
 
@@ -1720,11 +1728,15 @@ addLayer("F", {
           if(layers.F.buyables[13].canAfford())setBuyableAmount("F",13,player.F.points.log(12).floor().add(1))
         }
     },
+    autoUpgrade(){
+        if  (hasMilestone('MS',1)) return true
+        else return false
+    },
       
       
 
 
-      layerShown(){return hasUpgrade('N',15)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('F',1)||hasMilestone('UF',1)||hasMilestone('I',1)},
+      layerShown(){return hasUpgrade('N',14)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('F',1)||hasMilestone('UF',1)||hasMilestone('I',1)},
 })
 addLayer("I", {
     name: "Infinity", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1845,6 +1857,14 @@ addLayer("I", {
             rewardDescription(){return "Number ^1.4."},
           unlocked(){return hasUpgrade("NN", 33)},
         },
+        41: {
+            name: "IC7",
+            challengeDescription: "Number gain ^0.011. ",
+            canComplete(){return player.N.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Numbers",
+            rewardDescription(){return "Number ^1.5."},
+          unlocked(){return hasAchievement("A", 45)},
+        },
 
     },
     tabFormat: {
@@ -1875,7 +1895,7 @@ addLayer("I", {
     canBuyMax(){
         return hasMilestone('I',8) 
       },
-    layerShown(){return hasMilestone('UF',11)||hasMilestone('IP',1)||hasMilestone('FS',1)}
+    layerShown(){return hasMilestone('UF',11)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('I',1)}
 })
 addLayer("Link", {
 	startData() { return {unlocked: true}},
@@ -2006,7 +2026,7 @@ addLayer("A", {
                 if (hasUpgrade('N',43)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },
         32:{
@@ -2016,7 +2036,7 @@ addLayer("A", {
                 if (hasMilestone('I',2)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },
         33:{
@@ -2026,7 +2046,7 @@ addLayer("A", {
                 if (hasMilestone('I',3)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },
         34:{
@@ -2036,7 +2056,7 @@ addLayer("A", {
                 if (player.points.gte(1.79e308)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },
         35:{
@@ -2046,7 +2066,7 @@ addLayer("A", {
                 if (player.N.points.gte(1.79e258)&&inChallenge('I',12)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },  
         36:{
@@ -2056,7 +2076,7 @@ addLayer("A", {
                 if (player.FS.points.gte(1)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },  
         37:{
@@ -2066,7 +2086,7 @@ addLayer("A", {
                 if (hasUpgrade('NN',13)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },  
         41:{
@@ -2076,7 +2096,7 @@ addLayer("A", {
                 if (player.NN.points.gte(1e50)&&inChallenge('I',31)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },  
         42:{
@@ -2086,7 +2106,7 @@ addLayer("A", {
                 if (player.IP.points.gte(1)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },  
         43:{
@@ -2096,7 +2116,7 @@ addLayer("A", {
                 if (hasChallenge('IP',11)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },  
         44:{
@@ -2106,9 +2126,39 @@ addLayer("A", {
                 if (hasUpgrade('IP',33)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         },  
+        45:{
+            name: "Omega Upgrade",
+            tooltip:"Get 23 Factor Upgrade.Reward:Number x1e5",
+            done()  {
+                if (hasUpgrade('F',36)) return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
+            }
+        }, 
+        46:{
+            name: "Don't forget achievements again.",
+            tooltip:"Get 1e25000 Number in IC5. Reward: Unlock 1 Infinity challenge.",
+            done()  {
+                if (player.N.points.gte("1e25000")&&inChallenge('I',21))  return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
+            }
+        }, 
+        47:{
+            name: "+ - x / ^",
+            tooltip:"Get 1 Mathematics Symbol",
+            done()  {
+                if (hasMilestone('MS',1))  return true
+            },
+            unlocked(){
+                return (hasMilestone('I',1)||hasMilestone('MS',1))
+            }
+        }, 
     }
     
 })
@@ -2128,8 +2178,9 @@ addLayer("FS", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:1000,
     exponent(){
-        if(player.FS.points>=3) return 1.5
-return 1
+        if(player.FS.points>=4) return 2
+        else if(player.FS.points>=3) return 1.5
+        else return 1
     },
     branches:["F"],
      // Prestige currency exponent
@@ -2141,6 +2192,9 @@ return 1
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
+    },
+    resetsNothing(){
+        return hasMilestone('MS',1);
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     milestones: {
@@ -2193,14 +2247,14 @@ if(hasUpgrade('F',46)) mult = mult.times(100)
             done() { return player.IP.points.gte(2) }
         },
         4: {
-            requirementDescription: "4 Infinity points",
+            requirementDescription: "3 Infinity points",
             effectDescription: "Keep factor upgrades and milestone on reset.",
-            done() { return player.IP.points.gte(4) }
+            done() { return player.IP.points.gte(3) }
         },
         6: {
-            requirementDescription: "6 Infinity points",
+            requirementDescription: "4 Infinity points",
             effectDescription: "gain 100% of Negative numbers on reset per second and keep upgrade factor milestone on reset.",
-            done() { return player.IP.points.gte(6) }
+            done() { return player.IP.points.gte(4) }
         },
         26: {
             requirementDescription: "1e26 Infinity points",
@@ -2210,7 +2264,7 @@ if(hasUpgrade('F',46)) mult = mult.times(100)
     },
     upgrades:{
         11: {
-            title: "UltraLuigi (Easter Egg 1)",
+            title: "UltraLuigi (Easter Egg 1 and 2)",
             description: "Unlock 1 Negative numbers buyable.",
             cost: new Decimal(5),
             unlocked(){
@@ -2268,10 +2322,10 @@ if(hasUpgrade('F',46)) mult = mult.times(100)
     },
 },
 32: {
-    title: "luenix (Easter Egg 1)",
+    title: "luenix (Easter Egg 1 and 2)",
     description: "Boost '-4'",
     cost: new Decimal(1e14),
-    unlocked(){
+    unlocked(){ 
         return hasUpgrade('IP',31)&&hasUpgrade('IP',22)
     },
 },
@@ -2409,4 +2463,44 @@ if(hasUpgrade('F',46)) mult = mult.times(100)
 
     
       },
+})
+addLayer("MS", {
+    name: "Mathematics Symbol", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "MS", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#8000ff",
+    requires: new Decimal("1e1800"), // Can be a function that takes requirement increases into account
+    resource: "Mathematics Symbol", // Name of prestige currency
+    baseResource: "Infinity point", // Name of resource prestige is based on
+    baseAmount() {return player.IP.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    base:new Decimal("1e1000"),
+    exponent(){
+        return 2
+        
+    },
+    branches:["IP","I","FS"],
+     // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        
+
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 3, // Row the layer is in on the tree (0 is the first row)
+    milestones: {
+        1: {
+            requirementDescription: "1 Mathematics Symbol",
+            effectDescription: "Auto buy Number upgrade and Factor Upgrade and Number x1e20, FS reset nothing.",
+            done() { return player.MS.points.gte(1) }
+        },
+    },
+    layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)}
 })
