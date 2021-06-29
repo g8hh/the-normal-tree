@@ -60,6 +60,7 @@ addLayer("N", {
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
         if (inChallenge('I',41)) mult = mult.times(0.011)
+        if (inChallenge('I',42)) mult = mult.times(0.001)
         if (inChallenge('I',21)) mult = mult.times(0.166666)
         if (hasChallenge('I',11)) mult = mult.times(1.1)
         if (hasUpgrade('F',45)) mult = mult.times(1.1)
@@ -363,7 +364,7 @@ addLayer("N", {
         description: "The '+' effect is always 1e120",
         cost: new Decimal("1e487"),
         unlocked(){
-            {return hasUpgrade('N',45)|hasMilestone("I", 2)}
+            {return hasUpgrade('N',45)|hasMilestone("I", 2)&&!hasUpgrade("F", 51)}
         },
     },
     26: {
@@ -371,7 +372,7 @@ addLayer("N", {
         description: "The '-' effect is always 1e50",
         cost: new Decimal("1e785"),
         unlocked(){
-            {return hasMilestone('I',2)}
+            {return hasMilestone('I',2)&&!hasUpgrade("F", 51)}
         },
     },
     36: {
@@ -379,7 +380,7 @@ addLayer("N", {
         description: "The 'x' effect is always 1e100",
         cost: new Decimal("3.14e845"),
         unlocked(){
-            {return hasMilestone('UF',128)}
+            {return hasMilestone('UF',128)&&!hasUpgrade("F", 51)}
         },
     },
     46: {
@@ -387,7 +388,7 @@ addLayer("N", {
         description: "The '/' effect is always 2.1 ",
         cost: new Decimal("1e895"),
         unlocked(){
-            {return hasMilestone('UF',128)}
+            {return hasMilestone('UF',128)&&!hasUpgrade("F", 51)}
         },
     },
     51: {
@@ -581,8 +582,8 @@ addLayer("N", {
                 setBuyableAmount("N", 22, getBuyableAmount("N", 22).add(1))
             },
             effect() { 
-
-                eff = new Decimal("10").pow(getBuyableAmount("N", 22)) 
+                if(hasUpgrade('IP',44))  eff = new Decimal("1")
+                else eff = new Decimal("10").pow(getBuyableAmount("N", 22)) 
                 return eff = eff
                   
             }
@@ -659,6 +660,7 @@ addLayer("NN", {
         if (hasAchievement('A',41)) mult = mult.times(buyableEffect('N',22))
         if (hasUpgrade('F', 42)) mult = mult.times(player.F.points.add(1))
          if (hasMilestone('I',4)) mult = mult.times(10)
+         if (hasUpgrade('IP',44)) mult = mult.times("1e80000")
         if (hasUpgrade('NN',14)) mult = mult.times(upgradeEffect('NN', 14))
         if (hasUpgrade('IP', 21)) mult = mult.times(player.IP.points.pow(10).add(1))
         return mult
@@ -679,6 +681,8 @@ addLayer("NN", {
         unlocked() {return hasMilestone('I', 3)} // Determines if you can use the hotkey, optional
     },
     ],
+    softcap(){return new Decimal("1e450000") },
+    softcapPower(){return new Decimal("0.00000001") },
   
     upgrades: {
         rows: 5,
@@ -887,7 +891,7 @@ addLayer("NN", {
         rows: 2,
         cols: 3,
         11: {
-            title: "+",
+            title: "-+",
             display() {
                return "Boosts Negative numbers gain by " + format(tmp.NN.buyables[11].effect) + "x<br>Cost : " + format(new Decimal("1e20").pow(getBuyableAmount("NN", 11).add(1))) + " Negative numbers"
             },
@@ -902,7 +906,8 @@ addLayer("NN", {
                 setBuyableAmount("NN", 11, getBuyableAmount("NN", 11).add(1))
             },
             effect() { 
-        eff = new Decimal("50").pow(getBuyableAmount("NN", 11))   
+                if(hasUpgrade('IP',44))  eff = new Decimal("1")
+        else  eff = new Decimal("50").pow(getBuyableAmount("NN", 11))   
         return eff
             }
         },
@@ -1319,7 +1324,7 @@ addLayer("F", {
     description: "Remove the second hardcap of '3'",
     cost: new Decimal(36),
     unlocked(){
-        return hasMilestone("UF", 1)|hasMilestone("I", 1)
+        return hasMilestone("UF", 1)|hasMilestone("I", 1)&&!hasUpgrade("F", 51)
     },
 },
 15: {
@@ -1351,7 +1356,7 @@ addLayer("F", {
     description: "Remove the fourth hardcap of '2'.",
     cost: new Decimal(169),
     unlocked(){
-        return hasMilestone("I", 1)|hasUpgrade('F',22)
+        return hasMilestone("I", 1)|hasUpgrade('F',22)&&!hasUpgrade("F", 51)
     },
 },
 24: {
@@ -1387,7 +1392,7 @@ addLayer("F", {
     },
 },
 33: {
-    title: "Factor Xi",
+    title: "Factor Nu",
     description: "Factor is cheaper." ,
     cost: new Decimal(1.11e9),
     unlocked(){
@@ -1395,7 +1400,7 @@ addLayer("F", {
     },
 },
 34: {
-    title: "Factor Omicron",
+    title: "Factor Xi",
     description: "Unlock 1 Negative number Upgrade" ,
     cost: new Decimal(2.09e10),
     unlocked(){
@@ -1403,7 +1408,7 @@ addLayer("F", {
     },
 },
 35: {
-    title: "Factor Pi",
+    title: "Factor Omicron",
     description: "Unlock 1 number Upgrade" ,
     cost: new Decimal(2.7e10),
     unlocked(){
@@ -1411,7 +1416,7 @@ addLayer("F", {
     },
 },
 41: {
-    title: "Factor Rho",
+    title: "Factor Pi",
     description: "Upgrade Factors are cheaper and you can buy max it." ,
     cost: new Decimal(9.5e10),
     unlocked(){
@@ -1419,7 +1424,7 @@ addLayer("F", {
     },
 },
 42: {
-    title: "Factor Sigma",
+    title: "Factor Rho",
     description: "Factor boost Negative numbers gain and unlock 1 upgrade." ,
     cost: new Decimal(8.55e11),
     unlocked(){
@@ -1427,7 +1432,7 @@ addLayer("F", {
     },
 },
 43: {
-    title: "Factor Tau",
+    title: "Factor Sigma",
     description: "Boost 'Factor Lambda'" ,
     cost: new Decimal(1.25e16),
     unlocked(){
@@ -1435,7 +1440,7 @@ addLayer("F", {
     },
 },
 44: {
-    title: "Factor Upsilon",
+    title: "Factor Tau",
     description: "Upgrade factors are cheaper." ,
     cost: new Decimal(2.5e27),
     unlocked(){
@@ -1443,7 +1448,7 @@ addLayer("F", {
     },
 },
 45: {
-    title: "Factor Phi",
+    title: "Factor Upsilon",
     description: "Unlock 4 upgrade and Number ^1.1" ,
     cost: new Decimal(2.6e27),
     unlocked(){
@@ -1451,7 +1456,7 @@ addLayer("F", {
     },
 },
 16: {
-    title: "Factor Chi",
+    title: "Factor Phi",
     description: "The '+' effect is always 1.79e308" ,
     cost: new Decimal(7.9e27),
     unlocked(){
@@ -1459,7 +1464,7 @@ addLayer("F", {
     },
 },
 26: {
-    title: "Factor Psi",
+    title: "Factor Chi",
     description: "The 'x' effect is always 1.79e308" ,
     cost: new Decimal(1e28),
     unlocked(){
@@ -1467,7 +1472,7 @@ addLayer("F", {
     },
 },
 36: {
-    title: "Factor Omega",
+    title: "Factor Psi",
     description: "The '/' effect is always 3.08" ,
     cost: new Decimal(1.35e28),
     unlocked(){
@@ -1475,14 +1480,24 @@ addLayer("F", {
     },
 },
 46: {
-    title: "Mathematics Symbol ",
-    description: "Unlock Mathematics Symbol (not yet) and Infinity point gain x100." ,
+    title: "Factor Omega ",
+    description: "Unlock Mathematics Symbol and Infinity point gain x100." ,
     cost: new Decimal(1e31),
     unlocked(){
         return hasUpgrade("F", 45)
     },
 },
+
+51: {
+    title: "Ω",
+    description: "Remove some useless upgrade and IP ^2.",
+    cost: new Decimal("0"),
+    unlocked(){
+        {return hasChallenge('I',42)}
+    },
+    style: {width: "700px"}
 },
+    },
     challenges: {
         11: {
             name: "/ factor",
@@ -1866,6 +1881,15 @@ addLayer("I", {
             rewardDescription(){return "Number ^1.5."},
           unlocked(){return hasAchievement("A", 46)},
         },
+        42: {
+            name: "IC ♾",
+            challengeDescription: "Number gain ^0.001. ",
+            canComplete(){return player.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Points",
+            rewardDescription(){return "Unlock 1 Factor Upgrade."},
+          unlocked(){return hasMilestone("MS", 1)},
+          
+        },
 
     },
     tabFormat: {
@@ -2179,7 +2203,7 @@ addLayer("FS", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:1000,
     exponent(){
-        if(player.FS.points>=4) return 2
+        if(player.FS.points>=4) return 2.5
         else if(player.FS.points>=3) return 1.5
         else return 1
     },
@@ -2192,7 +2216,9 @@ addLayer("FS", {
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
+        let mult=new Decimal(1) 
+        if (hasUpgrade('F',51)) mult = mult.times(2)
+        return mult
     },
     resetsNothing(){
         return hasMilestone('MS',1);
@@ -2234,7 +2260,9 @@ if(hasUpgrade('F',46)) mult = mult.times(100)
         return mult 
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
+        let mult=new Decimal(1) 
+        if (hasUpgrade('F',51)) mult = mult.times(2)
+        return mult
     },
     milestones: {
         1: {
@@ -2336,6 +2364,13 @@ if(hasUpgrade('F',46)) mult = mult.times(100)
     cost: new Decimal(1e15),
     unlocked(){
         return hasUpgrade('IP',32)&&hasUpgrade('IP',23)
+    },
+},
+44: {
+    description: "Negative numbers x 1e80000 but '^' and '-+' have no effect",
+    cost: new Decimal("1e4100"),
+    unlocked(){
+        return hasUpgrade('IP',33)
     },
 },
     },
@@ -2479,7 +2514,7 @@ addLayer("MS", {
     baseResource: "Infinity point", // Name of resource prestige is based on
     baseAmount() {return player.IP.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    base:new Decimal("1e1000"),
+    base:new Decimal("1e2700"),
     exponent(){
         return 2
         
@@ -2499,7 +2534,7 @@ addLayer("MS", {
     milestones: {
         1: {
             requirementDescription: "1 Mathematics Symbol",
-            effectDescription: "Auto buy Number upgrade and Factor Upgrade and Number x1e20, FS reset nothing.",
+            effectDescription: "Auto buy Number upgrade and Factor Upgrade and Number, points x1e20, FS reset nothing and Unlock 1 IC.",
             done() { return player.MS.points.gte(1) }
         },
     },

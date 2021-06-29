@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2 Bugfix^2",
+	num: "0.2.0.1",
 	name: "+ - x / ^ ...",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.0.1</h3><br>
+- Added 1 I Challenge.<br>
+- Added 1 F Upgrade.<br>
+- Added 1 IP Upgrade.<br>
+- Endgame: 2 MS.<br>
 <h3>v0.2</h3><br>
 - Added Mathematics Symbol.<br>
 - Added 1 I challenge<br>
@@ -138,16 +143,16 @@ If you complete the game. I will give a big hint
 - Added 2 Factors Challenge.<br>
 - Endgame: 3 Upgrade factor<br>	
 <h3>v0.0.5</h3><br>
-- Edded 1 Upgrade factor Milestone.<br>
+- Added 1 Upgrade factor Milestone.<br>
 - Added 1 factor Milestone.<br>
-- Sdded 1 Numbers Buyable.<br>
-- Tdded 1 Factors Challenge.<br>
-- Edded 2 Factors Upgrade.<br>
-- Rndgame: 2 Upgrade factor<br>
+- Added 1 Numbers Buyable.<br>
+- Added 1 Factors Challenge.<br>
+- Added 2 Factors Upgrade.<br>
+- Endgame: 2 Upgrade factor<br>
 <h3>v0.0.4</h3><br>
-- Edded Upgrade factor.<br>
-- Gdded 2 Numbers Upgrade.<br>
-- Gdded 2 Factors Challenge.<br>
+- Added Upgrade factor.<br>
+- Added 2 Numbers Upgrade.<br>
+- Added 2 Factors Challenge.<br>
 - Added 1 Factors Upgrade.<br>
 - Endgame: 1 Upgrade factor<br>	
 <h3>v0.0.3</h3><br>
@@ -197,6 +202,7 @@ function getPointGen() {
 	if (inChallenge('F', 33)|inChallenge('F',43)) gain = gain.times(0.000001)
 	if (inChallenge('F', 31)) gain = gain.times(0.000001)
 	if (hasMilestone('UF', 1)) gain = gain.times(2)
+	if (hasMilestone('MS', 1)) gain = gain.times(1e20)
 	if (hasChallenge('F', 22)) gain = gain.times(2)
 	if (hasChallenge('F', 12)) gain = gain.times(3)
 	if (inChallenge('F', 11)) gain = gain.times(0.3)
@@ -230,7 +236,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.MS.points.gte(1)&&player.IP.points.gte("1e1800")
+	return player.MS.points.gte(2)
 }
 
 
