@@ -1358,7 +1358,7 @@ addLayer("F", {
     description: "Unlock 1 factor challenge",
     cost: new Decimal(125),
     unlocked(){
-        return player.UF.best.gte(3) |hasMilestone("I", 1)
+        return player.UF.best.gte(3) ||hasMilestone("I", 1) ||hasMilestone("MS", 1)
     },
 },
 22: {
@@ -1366,7 +1366,7 @@ addLayer("F", {
     description: "Unlock the first upgrade factor challenge.",
     cost: new Decimal(135),
     unlocked(){
-        return hasMilestone("I", 1)|(hasUpgrade('F',21)&&hasChallenge('F',33))
+        return hasMilestone("I", 1)||(hasUpgrade('F',21)&&hasChallenge('F',33))||hasMilestone("MS", 1)
     },
 },
 23: {
@@ -1374,7 +1374,7 @@ addLayer("F", {
     description: "Remove the fourth hardcap of '2'.",
     cost: new Decimal(169),
     unlocked(){
-        return hasMilestone("I", 1)|hasUpgrade('F',22)&&!hasUpgrade("F", 51)
+        return hasMilestone("I", 1)||hasUpgrade('F',22)&&!hasUpgrade("F", 51)||hasMilestone("MS", 1)
     },
 },
 24: {
@@ -1382,7 +1382,7 @@ addLayer("F", {
     description: "Boost 'Factor Beta' and unlock 1 more factor upgrade." ,
     cost: new Decimal(375),
     unlocked(){
-        return hasMilestone("I", 1)|hasMilestone('UF',6)
+        return hasMilestone("I", 1)||hasMilestone('UF',6)||hasMilestone("MS", 1)
     },
 },
 25: {
@@ -1390,7 +1390,7 @@ addLayer("F", {
     description: "Unlock 2 factor challenges." ,
     cost: new Decimal(460),
     unlocked(){
-        return hasMilestone("I", 1)|hasUpgrade('F',24)
+        return hasMilestone("I", 1)||hasUpgrade('F',24)||hasMilestone("MS", 1)
     },
 },
 31: {
