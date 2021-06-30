@@ -56,6 +56,8 @@ addLayer("N", {
         if (hasMilestone('I',2)) mult = mult.times(1.05)
         if (inChallenge('IP',11)) mult = mult.times(0.9)
         if (inChallenge('IP',21)) mult = mult.times(0.5)
+        if (inChallenge('I',51)) mult = mult.times(0.9)
+        if (inChallenge('I',52)) mult = mult.times(0.75)
         if (inChallenge('IP',31)) mult = mult.times(0.15)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
@@ -70,8 +72,10 @@ addLayer("N", {
         if (hasChallenge('I',41)) mult = mult.times(1.5)
         if (hasChallenge('IP',31)) mult = mult.times(1.3)
         if (hasChallenge('IP',32)) mult = mult.times(1.35)
-        if (hasUpgrade('F',31)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
-        if (hasUpgrade('F',43)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
+        if (hasUpgrade('F',31)&&!hasUpgrade('IP',56)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
+        if (hasUpgrade('F',43)&&!hasUpgrade('IP',56)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
+        if (hasUpgrade('IP',46)) mult = mult.times(player.I.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
+        if (hasUpgrade('IP',56)) mult = mult.times(1.75)
         return mult
 
     },
@@ -671,6 +675,9 @@ addLayer("NN", {
         if (hasChallenge('IP',12)) mult = mult.times(1.15)
         if (hasChallenge('IP',21)) mult = mult.times(1.2)
         if (hasChallenge('IP',22)) mult = mult.times(1.25)
+        if (inChallenge('I',51)) mult = mult.times(1.2)
+        if (inChallenge('I',52)) mult = mult.times(1.4)
+        if (hasMilestone('IP',10000)) mult = mult.times(1.05)
         
         return mult
     },
@@ -681,7 +688,8 @@ addLayer("NN", {
         unlocked() {return hasMilestone('I', 3)} // Determines if you can use the hotkey, optional
     },
     ],
-    softcap(){return new Decimal("1e450000") },
+    softcap(){if (hasMilestone('MS',2))return new Decimal("eee1000") 
+else return new Decimal("1e450000") },
     softcapPower(){return new Decimal("0.00000001") },
   
     upgrades: {
@@ -912,6 +920,7 @@ addLayer("NN", {
             }
         },
     },
+
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("milestones")
@@ -1038,12 +1047,12 @@ addLayer("UF", {
         16: {
             requirementDescription: "16 Upgrade Factor",
             effectDescription: "Auto buy Upgrade Factor, unlock 1 challenge and 5 upgrade.",
-            done() { return player.UF.points.gte(16) }
+            done() { return player.UF.points.gte(16)||hasMilestone("MS", 2) }
         },
         18: {
             requirementDescription: "18 Upgrade Factor",
             effectDescription: "Upgrade factor reset nothing.",
-            done() { return player.UF.points.gte(18) }
+            done() { return player.UF.points.gte(18)||hasMilestone("MS", 2) }
         },
         52: {
             requirementDescription: "52 Upgrade Factor",
@@ -1198,7 +1207,7 @@ addLayer("F", {
         5: {
             requirementDescription: "5 factors",
             effectDescription: "Unlock factors upgrades and gain 100% of numbers on reset per second",
-            done() { return player.F.points.gte(5)}
+            done() { return player.F.points.gte(5)||hasMilestone("MS", 2)}
         },
         8: {
             requirementDescription: "8 factors",
@@ -1259,7 +1268,7 @@ addLayer("F", {
         6000: {
             requirementDescription: "6000 factors",
             effectDescription: "Remove the first hardcap of '+', auto buy factor, and factor reset nothing",
-            done() { return player.F.points.gte(6000)|hasMilestone("I", 1)}
+            done() { return player.F.points.gte(6000)||hasMilestone("I", 1)||hasMilestone("MS", 2)}
         },  
         12500: {
             requirementDescription: "12500 factors",
@@ -1735,6 +1744,9 @@ addLayer("F", {
         if (hasMilestone("IP", 4) && resettingLayer=="IP") keep.push("upgrades")
         if (hasMilestone("IP", 4) && resettingLayer=="IP") keep.push("milestones")
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("upgrades")
+        if (hasMilestone("MS", 3) && resettingLayer=="MS") keep.push("upgrades")
+        if (hasMilestone("MS", 3) && resettingLayer=="MS") keep.push("milestones")
+        if (hasMilestone("MS", 3) && resettingLayer=="MS") keep.push("challenges")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
       },
       automateStuff(){
@@ -1891,6 +1903,23 @@ addLayer("I", {
           
         },
 
+      
+            51: {
+                name: "Boost or nerf 1",
+                challengeDescription: "Number ^0.9 but NN ^1.2",
+                canComplete(){return player.N.points.gte(1e1000)},
+                goalDescription: "Do IP reset in this challenge to get more IP",
+              unlocked(){return hasUpgrade('IP',45)},
+            },
+            52: {
+                name: "Boost or nerf 2",
+                challengeDescription: "Number ^0.75 but NN ^1.4",
+                canComplete(){return player.N.points.gte(1e1000)},
+                goalDescription: "Do IP reset in this challenge to get more IP",
+              unlocked(){return hasUpgrade('IP',45)},
+            },
+
+
     },
     tabFormat: {
         "Milestones":{
@@ -1905,7 +1934,7 @@ addLayer("I", {
         "milestones",
           ]},
       
-      "Challenges":{
+      "Normal Challenges":{
         unlocked(){return hasMilestone('NN',4e21)},
         content:[
           "main-display",
@@ -1913,7 +1942,20 @@ addLayer("I", {
         ["prestige-button",function(){return ""}],
           "blank",
           "blank",
-          "challenges",
+          ["row", [ ["challenge", 11], ["challenge", 12]]], ["row", [ ["challenge", 21]]], ["row", [ ["challenge", 31]]], ["row", [ ["challenge", 41],["challenge", 42]]]
+       ],
+      },
+        
+    
+    "Boost or nerf":{
+        unlocked(){return hasUpgrade('IP',45)},
+        content:[
+          "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+          "blank",
+          "blank",
+          ["row", [ ["challenge", 51], ["challenge", 52]]]
         ]
     },
       },
@@ -2184,6 +2226,16 @@ addLayer("A", {
                 return (hasMilestone('I',1)||hasMilestone('MS',1))
             }
         }, 
+        51:{
+            name: "Five 1",
+            tooltip:"Get e11111 IP, reward: IP gain ^1.05 and x 1e40",
+            done()  {
+                if (player.IP.points.gte("1e11111"))  return true
+            },
+            unlocked(){
+                return hasMilestone('MS',1)
+            }
+        }, 
     }
     
 })
@@ -2257,11 +2309,16 @@ else return 0.01
         mult = new Decimal(1)
         
 if(hasUpgrade('F',46)) mult = mult.times(100)
+if(hasAchievement('A',51)) mult = mult.times(1e40)
         return mult 
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         let mult=new Decimal(1) 
         if (hasUpgrade('F',51)) mult = mult.times(2)
+        if (hasUpgrade('IP',54)) mult = mult.times(1.1)
+        if (hasUpgrade('IP',55)) mult = mult.times(1.05)
+        if (hasAchievement('A',51)) mult = mult.times(1.05)
+        if (hasMilestone('MS',2)) mult = mult.times(1.1)
         return mult
     },
     milestones: {
@@ -2283,12 +2340,17 @@ if(hasUpgrade('F',46)) mult = mult.times(100)
         6: {
             requirementDescription: "4 Infinity points",
             effectDescription: "gain 100% of Negative numbers on reset per second and keep upgrade factor milestone on reset.",
-            done() { return player.IP.points.gte(4) }
+            done() { return player.IP.points.gte(4)||hasMilestone("MS", 2) }
         },
         26: {
             requirementDescription: "1e26 Infinity points",
             effectDescription: "Factor are cheaper.",
             done() { return player.IP.points.gte(1e26) }
+        },
+        10000: {
+            requirementDescription: "1e10000 Infinity points",
+            effectDescription: "NN gain ^1.05",
+            done() { return player.IP.points.gte("1e10000") }
         },
     },
     upgrades:{
@@ -2371,6 +2433,41 @@ if(hasUpgrade('F',46)) mult = mult.times(100)
     cost: new Decimal("1e4100"),
     unlocked(){
         return hasUpgrade('IP',33)
+    },
+},
+45: {
+    description: "Unlock 2 Infinity challenge  ",
+    cost: new Decimal("1e5500"),
+    unlocked(){
+        return hasUpgrade('IP',44)
+    },
+},
+46: {
+    description: "Boost Number gain base on Infinity.",
+    cost: new Decimal("1e6400"),
+    unlocked(){
+        return hasUpgrade('IP',45)
+    },
+},
+54: {
+    description: "IP gain ^1.1",
+    cost: new Decimal("1e7900"),
+    unlocked(){
+        return hasUpgrade('IP',45)
+    },
+},
+55: {
+    description: "IP gain ^1.05",
+    cost: new Decimal("1e9300"),
+    unlocked(){
+        return hasUpgrade('IP',54)
+    },
+},
+56: {
+    description: "'Factor Lambda' has no effect but Number gain ^1.75",
+    cost: new Decimal("1e10700"),
+    unlocked(){
+        return hasUpgrade('IP',55)
     },
 },
     },
@@ -2536,6 +2633,16 @@ addLayer("MS", {
             requirementDescription: "1 Mathematics Symbol",
             effectDescription: "Auto buy Number upgrade and Factor Upgrade and Number, points x1e20, FS reset nothing and Unlock 1 IC.",
             done() { return player.MS.points.gte(1) }
+        },
+        2: {
+            requirementDescription: "2 Mathematics Symbol",
+            effectDescription: "Keep IP milestone 4, F milestone 4, 16 and UF milestone 6 and 7 on reset. IP gain ^1.1. Remove the hardcap of NN gain.",
+            done() { return player.MS.points.gte(2) }
+        },
+        3: {
+            requirementDescription: "3 Mathematics Symbol",
+            effectDescription: "Keep F content on reset",
+            done() { return player.MS.points.gte(3) }
         },
     },
     layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)}
