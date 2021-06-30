@@ -2385,6 +2385,11 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
             effectDescription: "Unlock Exponentiation.",
             done() { return player.IP.points.gte("1e17000") }
         },
+        20000: {
+            requirementDescription: "1e20000 Infinity points",
+            effectDescription: "Unlock Exponentiation prestige.",
+            done() { return player.IP.points.gte("1e20000") }
+        },
     },
     upgrades:{
         11: {
@@ -2642,6 +2647,8 @@ addLayer("MS", {
         xgain: new Decimal(0),
         ygain: new Decimal(0),
         Exponentiation: new Decimal(0),
+        Prestige: new Decimal(0),
+        gainb:new Decimal(0),
     }},
     color: "#8000ff",
     requires: new Decimal("1e1800"), // Can be a function that takes requirement increases into account
@@ -2682,22 +2689,38 @@ addLayer("MS", {
             effectDescription: "Keep F content and I milestones on reset, IP boost point gain.",
             done() { return player.MS.points.gte(3) }
         },
+        4: {
+            requirementDescription: "1 prestige point",
+            effectDescription: "Boost X and Y gain based on Prestige points and X, Y gain x2.",
+            done() { return player.MS.Prestige.gte(1) }
+        },
+        8: {
+            requirementDescription: "8 prestige point",
+            effectDescription: "You can't get any prestige point.",
+            done() { return player.MS.Prestige.gte(8) }
+        },
     },
     update(diff){
         let xgain = new Decimal(0)
+
         let ygain = new Decimal(0)
- 
-        player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
+        if(player.MS.Exponentiation.gte("1e2500")) return player.MS.Exponentiation=new Decimal("1e2500")
+        else player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         if(hasUpgrade("MS",11))xgain=new Decimal(1)
         if(hasUpgrade("MS",12))ygain=new Decimal(0.01)
-         if (hasUpgrade('MS',14))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.log(10).add(1).log(10).add(1).log(10).add(1)))
+        if(hasMilestone('MS',4))  player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(6).times(player.MS.Prestige.add(1)))
+        else if (hasUpgrade('MS',25))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(3))
+        else if (hasUpgrade('MS',24)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(2))
+        else if (hasUpgrade('MS',22))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)))
+        else if (hasUpgrade('MS',14))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)))
         else player.MS.y=player.MS.y.plus(ygain.times(diff))
-        if (hasUpgrade('MS',15))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)))
+        if(hasMilestone('MS',4)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(5).times(player.MS.Prestige.add(1)))
+        else if (hasUpgrade('MS',25))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(2.5))
+        else if (hasUpgrade('MS',23))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25))
+        else if (hasUpgrade('MS',21))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)))
+        else if (hasUpgrade('MS',15))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)))
         else if (hasUpgrade('MS',13)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)))
         else  player.MS.x=player.MS.x.plus(xgain.times(diff))
- 
-       
-
     },
     upgrades: {
         11: {
@@ -2740,8 +2763,68 @@ addLayer("MS", {
             currencyLayer:"MS",
             currencyInternalName:"Exponentiation"
         },
+        21: {
+            title: "^6",
+            description: "Exponentiation points boost X gain",
+            cost: new Decimal("1e20"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+     
+        },
+        22: {
+            title: "^7",
+            description: "Exponentiation points boost Y gain",
+            cost: new Decimal("1e35"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+     
+        },
+        23: {
+            title: "^8",
+            description: "X gain ^1.25",
+            cost: new Decimal("1e50"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+     
+        },
+        24: {
+            title: "^9",
+            description: "Y gain *2",
+            cost: new Decimal("1e70"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+     
+        },
+        25: {
+            title: "^10",
+            description: "Boost point gain base on exponentiation point and X gain x2.5, Y gain *1.5.",
+            cost: new Decimal("1e90"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+     
+        },
   
     },
+    clickables:{
+        
+            11:{
+                display() {return "Reset Your x and y for 1 Prestige point (Req: 1e150 Exponentiation points)."},
+                canClick(){return player.MS.Exponentiation.gte("1e150")&&(!hasMilestone('MS',8))},
+                onClick(){
+                    player.MS.Prestige=player.MS.Prestige.plus(1)
+                    player.MS.x=new Decimal(1)
+
+                    player.MS.y=new Decimal(1) 
+                    player.MS.Exponentiation=new Decimal(1) 
+                },
+        
+    },
+},
     layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)},
     tabFormat: {
         "Milestones": {
@@ -2753,6 +2836,9 @@ addLayer("MS", {
             ]
         },
         "Exponentiation": {
+            unlocked(){
+hasMilestone('IP',17000)
+            },
             content: [
                 "main-display",
                 "prestige-button",
@@ -2774,7 +2860,35 @@ addLayer("MS", {
              "upgrades",
             ],
         },
+        "Prestige": {
+            unlocked(){
+                hasMilestone('IP',20000)
+                            },
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+    
+            ["display-text",function(){
+              let s=""
+              s+="Your x is "+format(player.MS.x)+"<br>"
+              s+="Your y is "+format(player.MS.y)+"<br>"
+           
+              s+="x^y = "+format(Decimal.pow(player.MS.x,player.MS.y))+"<br>"
+             
+              return s
+            }],
+        "blank",
+            ["display-text",function(){
+              let s="You have "+format(Decimal.pow(player.MS.x,player.MS.y))+" Exponentiation points.<br>"
+              s+="Your have  "+format(player.MS.Prestige)+" prestige point<br>"
+              return s}],
+              "blank",
+             "clickables",
+            ],
+        },
     },
+   
 
 
         

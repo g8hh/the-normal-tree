@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.1.1",
-	name: "X^Y",
+	num: "0.2.1.2",
+	name: "X^Y again",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.1.2</h3><br>
+- Added 5 MS upgrade.<br>
+- Added 2 MS milestone.<br>
+- Endgame: 4 MS.<br>
 <h3>v0.2.1.1</h3><br>
 - Added Exponentiation (a thing in MS).<br>
 - Added 1 IP milestone.<br>
@@ -227,6 +231,7 @@ function getPointGen() {
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
 	if (hasMilestone('MS', 3)) gain = gain.times(player.IP.points.add(1))
+	if (hasUpgrade('MS', 25)) gain = gain.times(player.MS.Exponentiation.pow(100).add(1))	
 	if (hasMilestone('UF', 52)) gain = gain.times(player.UF.points.pow(3).add(1))
 	if (hasMilestone('UF', 128)) gain = gain.times(player.UF.points.pow(3).add(1))
 	
@@ -247,7 +252,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.IP.points.gte("1e19000")&&player.MS.x.gte(10000)
+	return player.MS.points.gte("4")
 }
 
 
