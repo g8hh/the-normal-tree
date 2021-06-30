@@ -58,6 +58,8 @@ addLayer("N", {
         if (inChallenge('IP',21)) mult = mult.times(0.5)
         if (inChallenge('I',51)) mult = mult.times(0.9)
         if (inChallenge('I',52)) mult = mult.times(0.75)
+        if (inChallenge('I',61)) mult = mult.times(0.6)
+        if (inChallenge('I',62)) mult = mult.times(0.45)
         if (inChallenge('IP',31)) mult = mult.times(0.15)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
@@ -677,6 +679,8 @@ addLayer("NN", {
         if (hasChallenge('IP',22)) mult = mult.times(1.25)
         if (inChallenge('I',51)) mult = mult.times(1.2)
         if (inChallenge('I',52)) mult = mult.times(1.4)
+        if (inChallenge('I',61)) mult = mult.times(1.8)
+        if (inChallenge('I',62)) mult = mult.times(2.4)
         if (hasMilestone('IP',10000)) mult = mult.times(1.05)
         
         return mult
@@ -1275,6 +1279,11 @@ addLayer("F", {
             effectDescription: "Remove the second hardcap of '+'.",
             done() { return player.F.points.gte(12500)}
         },  
+        1.25e40: {
+            requirementDescription: "1.25e40 factors",
+            effectDescription: "IP gain x 1e15.",
+            done() { return player.F.points.gte(1.25e40)}
+        }, 
 
     },
     upgrades: {
@@ -1851,6 +1860,11 @@ addLayer("I", {
             effectDescription: "Infinity boost Negative Numbers gain and auto buy factor and number buyable.",
             done() { return player.I.points.gte(69) }
         },
+        90000: {
+            requirementDescription: "90000 Infinity ",
+            effectDescription: "Unlock 2 Infinity challenge.",
+            done() { return player.I.points.gte(90000) }
+        },
     },
     challenges: {
         11: {
@@ -1918,6 +1932,14 @@ addLayer("I", {
                 goalDescription: "Do IP reset in this challenge to get more IP",
               unlocked(){return hasUpgrade('IP',45)},
             },
+    
+            61: {
+                name: "Boost or nerf 3",
+                challengeDescription: "Number ^0.45 but NN ^2.4",
+                canComplete(){return player.N.points.gte(1e1000)},
+                goalDescription: "Do IP reset in this challenge to get more IP",
+              unlocked(){return hasMilestone('I',90000)},
+            },
 
 
     },
@@ -1955,14 +1977,19 @@ addLayer("I", {
         ["prestige-button",function(){return ""}],
           "blank",
           "blank",
-          ["row", [ ["challenge", 51], ["challenge", 52]]]
+          ["row", [ ["challenge", 51], ["challenge", 52]]],["row", [ ["challenge", 61], ["challenge", 62]]]
         ]
     },
       },
     canBuyMax(){
         return hasMilestone('I',8) 
       },
-    layerShown(){return hasMilestone('UF',11)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('I',1)}
+    layerShown(){return hasMilestone('UF',11)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('I',1)},
+    doReset(resettingLayer) {
+        let keep = [];
+        if (hasMilestone("MS", 3) && resettingLayer=="MS") keep.push("milestones")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
 })
 addLayer("Link", {
 	startData() { return {unlocked: true}},
@@ -2307,9 +2334,10 @@ else return 0.01
      // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        
+        if(hasUpgrade('F',46)) mult = mult.times(1e15)
 if(hasUpgrade('F',46)) mult = mult.times(100)
 if(hasAchievement('A',51)) mult = mult.times(1e40)
+if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
         return mult 
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -2351,6 +2379,11 @@ if(hasAchievement('A',51)) mult = mult.times(1e40)
             requirementDescription: "1e10000 Infinity points",
             effectDescription: "NN gain ^1.05",
             done() { return player.IP.points.gte("1e10000") }
+        },
+        17000: {
+            requirementDescription: "1e17000 Infinity points",
+            effectDescription: "Unlock Exponentiation.",
+            done() { return player.IP.points.gte("1e17000") }
         },
     },
     upgrades:{
@@ -2604,6 +2637,11 @@ addLayer("MS", {
     startData() { return {
         unlocked: false,
 		points: new Decimal(0),
+        x: new Decimal(1),
+        y: new Decimal(1),
+        xgain: new Decimal(0),
+        ygain: new Decimal(0),
+        Exponentiation: new Decimal(0),
     }},
     color: "#8000ff",
     requires: new Decimal("1e1800"), // Can be a function that takes requirement increases into account
@@ -2641,9 +2679,103 @@ addLayer("MS", {
         },
         3: {
             requirementDescription: "3 Mathematics Symbol",
-            effectDescription: "Keep F content on reset",
+            effectDescription: "Keep F content and I milestones on reset, IP boost point gain.",
             done() { return player.MS.points.gte(3) }
         },
     },
-    layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)}
+    update(diff){
+        let xgain = new Decimal(0)
+        let ygain = new Decimal(0)
+ 
+        player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
+        if(hasUpgrade("MS",11))xgain=new Decimal(1)
+        if(hasUpgrade("MS",12))ygain=new Decimal(0.01)
+         if (hasUpgrade('MS',14))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.log(10).add(1).log(10).add(1).log(10).add(1)))
+        else player.MS.y=player.MS.y.plus(ygain.times(diff))
+        if (hasUpgrade('MS',15))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)))
+        else if (hasUpgrade('MS',13)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)))
+        else  player.MS.x=player.MS.x.plus(xgain.times(diff))
+ 
+       
+
+    },
+    upgrades: {
+        11: {
+            title: "^",
+            description: "x +1 per second",
+            cost: new Decimal("1"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation"
+        },
+        12: {
+            title: "^2",
+            description: "y +0.01 per second",
+            cost: new Decimal("30"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation"
+        },
+        13: {
+            title: "^3",
+            description: "IP boost X gain and X boost IP gain.",
+            cost: new Decimal("1000"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation"
+        },
+        14: {
+            title: "^4",
+            description: "X boost Y gain.",
+            cost: new Decimal("1000000"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation"
+        },
+        15: {
+            title: "^5",
+            description: "Y boost X gain",
+            cost: new Decimal("1e10"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation"
+        },
+  
+    },
+    layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)},
+    tabFormat: {
+        "Milestones": {
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                "milestones"
+            ]
+        },
+        "Exponentiation": {
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+
+            ["display-text",function(){
+              let s=""
+              s+="Your x is "+format(player.MS.x)+"<br>"
+              s+="Your y is "+format(player.MS.y)+"<br>"
+           
+              s+="x^y = "+format(Decimal.pow(player.MS.x,player.MS.y))+"<br>"
+              return s
+            }],
+        "blank",
+            ["display-text",function(){
+              let s="You have "+format(Decimal.pow(player.MS.x,player.MS.y))+" Exponentiation points."
+              return s}],
+              "blank",
+             "upgrades",
+            ],
+        },
+    },
+
+
+        
 })
