@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.1.2",
-	name: "X^Y again",
+	num: "0.2.2",
+	name: "Negative XXX",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.2</h3><br>
+- Added 3 NN challenges.<br>
+- Added 1 easter egg. If anyone find easter egg in next 2 days add their name in The tree (Send the easter egg screenshot to me (USE DM)
+If you complete the game. I will give a big hint
+* Not IP Upgrade (They are people that find the easter egg)<br>
+- Endgame: 1e82500 IP.<br>
 <h3>v0.2.1.2</h3><br>
 - Added 5 MS upgrade.<br>
 - Added 2 MS milestone.<br>
@@ -211,8 +217,8 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
 
-	if (hasChallenge('F',31)) gain = gain.times(buyableEffect('N',12))
-	if (hasUpgrade('N',44)) gain = gain.times(buyableEffect('F',12))
+	if (hasChallenge('F',31)&&(!inChallenge("NN", 21)&&!hasChallenge("NN", 21))) gain = gain.times(buyableEffect('N',12))
+	if (hasUpgrade('N',44)&&(!inChallenge("NN", 21)&&!hasChallenge("NN", 21))) gain = gain.times(buyableEffect('F',12))
 	if (inChallenge('F', 33)|inChallenge('F',43)) gain = gain.times(0.000001)
 	if (inChallenge('F', 31)) gain = gain.times(0.000001)
 	if (hasMilestone('UF', 1)) gain = gain.times(2)
@@ -252,7 +258,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.MS.points.gte("4")
+	return player.IP.points.gte("1e82500")
 }
 
 
