@@ -2740,6 +2740,7 @@ addLayer("MS", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:new Decimal("1e2700"),
     exponent(){
+        if(player.MS.points>=4)  return 20
         return 2
         
     },
