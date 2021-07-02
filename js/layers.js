@@ -1205,6 +1205,34 @@ upgrades: {
             currencyInternalName:"points",
             currencyLayer:"N",
         },
+        12: {
+            title: "2",
+            description: "Numbers boost point gain.",
+            cost: new Decimal("e6.823e11"),
+            currencyDisplayName: "Numbers",
+            currencyInternalName:"points",
+            currencyLayer:"N",
+            unlocked(){return hasUpgrade('UF',73)},
+            effect(){return player.N.points.pow(0.00001).add(1)
+              
+        },
+        effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+
+        },
+        13: {
+            title: "3",
+            description: "point boost point gain.",
+            cost: new Decimal("e1.370e12"),
+            currencyDisplayName: "Numbers",
+            currencyInternalName:"points",
+            currencyLayer:"N",
+            unlocked(){return hasUpgrade('UF',73)},
+            effect(){return player.points.add(1).log(2).pow(1000000).add(1)
+              
+        },
+        effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+
+        },
         71: {
             title: "Factor alpha",
             description: "Factor alpha effect is better",
@@ -1220,6 +1248,16 @@ upgrades: {
             currencyDisplayName: "Factors",
             currencyInternalName:"points",
             currencyLayer:"F",
+            unlocked(){return hasUpgrade('UF',71)},
+        },
+        73: {
+            title: "Factor gamma",
+            description: "Factor gamma effect is better",
+            cost: new Decimal("4e11"),
+            currencyDisplayName: "Factors",
+            currencyInternalName:"points",
+            currencyLayer:"F",
+            unlocked(){return hasUpgrade('UF',72)},
         },
 },
 
@@ -1255,7 +1293,7 @@ tabFormat: {
     ["prestige-button",function(){return ""}],
       "blank",
       "blank",
-      ["microtabs", "A"], ["microtabs", "B"]
+      ["microtabs", "A"]
     ],
   },
 },
@@ -1263,7 +1301,7 @@ microtabs: {
     "A": {
             "Number": {
                     content: [
-                            ["upgrade",11],
+                        ["row", [ ["upgrade",11],["upgrade",12], ["upgrade",13],]]
                     ],
                     unlocked(){
                             return true
@@ -1271,10 +1309,10 @@ microtabs: {
             },
             "Factor": {
                 content: [
-                    ["row", [ ["upgrade",71], ["upgrade",72]]]
+                    ["row", [ ["upgrade",71], ["upgrade",72], ["upgrade",73],]]
                 ],
                 unlocked(){
-                        return true
+                        return  hasUpgrade('UF',11)
                 },
         },
           
@@ -1490,7 +1528,9 @@ addLayer("F", {
     },
     13: {
         title: "Factor Gamma",
-        description: "Unlock 2 Number upgrades and 2 challenges, you can buy max factor.",
+        description(){if(hasUpgrade('UF',73)) return "unlock 2 Number upgrades."
+    else return "Unlock 2 Number upgrades and 2 challenges, you can buy max factor."
+    },
         cost: new Decimal(15),
         unlocked(){
             return hasUpgrade("F", 12)|hasMilestone("I", 1)
