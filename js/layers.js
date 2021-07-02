@@ -3087,7 +3087,7 @@ addLayer("MS", {
         
             11:{
                 display() {return "Reset Your x and y for 1 Prestige point (Req: 1e150 Exponentiation points)."},
-                canClick(){return player.MS.Exponentiation.gte("1e150")&&((!hasMilestone('MS',8))||(hasUpgrade('IP',66)))},
+                canClick(){return player.MS.Exponentiation.gte("1e150")&&((!hasMilestone('MS',8))||(hasMilestone('IP',1000000)))},
                 onClick(){
                     player.MS.Prestige=player.MS.Prestige.plus(1)
                     player.MS.x=new Decimal(1)
