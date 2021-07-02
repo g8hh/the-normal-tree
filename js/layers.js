@@ -2634,7 +2634,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 },
 13: {
-    title: "Elund (Easter Egg 1 and 2)",
+    title: "Elund (Easter Egg 1, 2 and 3)",
     description: "Remove the hardcap of -4 but nerf it and nerf IP gain.",
     cost: new Decimal(3000),
     unlocked(){
