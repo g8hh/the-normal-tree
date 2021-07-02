@@ -2594,7 +2594,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
         },
         1000000: {
             requirementDescription: "1e1000000 Infinity points",
-            effectDescription: "Remove the hardcap of Exponentiation point gain.",
+            effectDescription: "Remove the hardcap of Exponentiation point and prestige point gain.",
             done() { return player.IP.points.gte("1e1000000") }
         },
         6000000: {
