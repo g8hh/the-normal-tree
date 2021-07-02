@@ -2592,6 +2592,11 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
             effectDescription: "Unlock Negative numbers Challenge.",
             done() { return player.IP.points.gte("1e38500") }
         },
+        1000000: {
+            requirementDescription: "1e1000000 Infinity points",
+            effectDescription: "Remove the hardcap of Exponentiation point gain.",
+            done() { return player.IP.points.gte("1e1000000") }
+        },
         6000000: {
             requirementDescription: "1e6000000 Infinity points",
             effectDescription: "IP upgrade 43 has no effect but Number gain ^3.",
@@ -2958,7 +2963,7 @@ addLayer("MS", {
 
         let ygain = new Decimal(0)
         if(player.MS.Exponentiation.gte("1e6000")) return player.MS.Exponentiation=new Decimal("1e6000")
-        else if(hasUpgrade('IP',66)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
+        else if(hasMilestone('IP',1000000)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         else if(player.MS.Exponentiation.gte("1e2500")&&!hasUpgrade('IP',66)) return player.MS.Exponentiation=new Decimal("1e2500")
         else player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         if(hasUpgrade("MS",11))xgain=new Decimal(1)
