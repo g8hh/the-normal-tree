@@ -59,11 +59,12 @@ addLayer("N", {
         if (inChallenge('I',51)) mult = mult.times(0.9)
         if (inChallenge('I',52)) mult = mult.times(0.75)
         if (inChallenge('I',61)) mult = mult.times(0.6)
-        if (inChallenge('I',62)) mult = mult.times(0.45)
+        if (inChallenge('I',62)) mult = mult.times(0.1)
         if (inChallenge('NN',11)) mult = mult.times(0.234)
         if (inChallenge('NN',12)) mult = mult.times(0.123)
         if (inChallenge('NN',21)) mult = mult.times(0.012)
         if (inChallenge('NN',22)) mult = mult.times(0.023)
+        if (inChallenge('NN',31)) mult = mult.times(0.034)
         if (inChallenge('IP',31)) mult = mult.times(0.15)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
@@ -84,13 +85,14 @@ addLayer("N", {
         if (hasChallenge('IP',32)) mult = mult.times(1.35)
         if (hasUpgrade('F',31)&&!hasUpgrade('IP',56)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         if (hasUpgrade('F',43)&&!hasUpgrade('IP',56)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
-        if (hasUpgrade('IP',46)) mult = mult.times(player.I.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
+        if (hasUpgrade('IP',46)&&(!hasMilestone('IP',6000000))) mult = mult.times(player.I.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         if (hasUpgrade('IP',56)) mult = mult.times(1.75)
         if (hasChallenge('NN',11)) mult = mult.times(2)
         if (hasChallenge('NN',12)) mult = mult.times(2)
         if (hasChallenge('NN',21)) mult = mult.times(8)
+        if (hasChallenge('NN',31)) mult = mult.times(1.5)
         if (hasChallenge('NN',22)) mult = mult.times(player.FS.points.add(1).pow(0.5))
-        
+        if  (hasMilestone('IP',6000000)) mult = mult.times(3)
         return mult
 
     },
@@ -125,7 +127,8 @@ addLayer("N", {
     upgrades: {
         11: {
             title: "1",
-            description: "Points gain x4.",
+            description(){ if(hasUpgrade('UF',11))  return "Points gain ^4."
+                else return "Points gain x4."},
             cost: new Decimal(2),
         },
         12: {
@@ -696,7 +699,7 @@ addLayer("NN", {
         if (inChallenge('I',51)) mult = mult.times(1.2)
         if (inChallenge('I',52)) mult = mult.times(1.4)
         if (inChallenge('I',61)) mult = mult.times(1.8)
-        if (inChallenge('I',62)) mult = mult.times(2.4)
+        if (inChallenge('I',62)) mult = mult.times(3)
         if (hasMilestone('IP',10000)) mult = mult.times(1.05)
         
         return mult
@@ -798,7 +801,7 @@ else return new Decimal("1e450000") },
         cost: new Decimal(3141),
      
         unlocked(){
-            return hasUpgrade("NN", 14)
+            return hasUpgrade("NN", 14)&&!inChallenge('NN',11)&&!hasChallenge('NN',11)
         },
     },
     21: {
@@ -807,7 +810,7 @@ else return new Decimal("1e450000") },
         cost: new Decimal(111111),
      
         unlocked(){
-            return hasUpgrade("NN", 15)
+            return hasUpgrade("NN", 15)&&!inChallenge('NN',11)&&!hasChallenge('NN',11)
         },
     },
     22: {
@@ -816,7 +819,7 @@ else return new Decimal("1e450000") },
         cost: new Decimal(4.20e9),
      
         unlocked(){
-            return hasUpgrade("N", 51)
+            return hasUpgrade("N", 51)&&!inChallenge('NN',11)&&!hasChallenge('NN',11)
         },
     },
     23: {
@@ -825,7 +828,7 @@ else return new Decimal("1e450000") },
         cost: new Decimal(1e18),
      
         unlocked(){
-            return hasUpgrade("NN", 22)
+            return hasUpgrade("NN", 22)&&!inChallenge('NN',11)&&!hasChallenge('NN',11)
         },
     },
     24: {
@@ -836,7 +839,7 @@ else return new Decimal("1e450000") },
             return new Decimal(3.14e9);
         },
         unlocked(){
-            return (hasMilestone('I',6))
+            return (hasMilestone('I',6))&&!inChallenge('NN',11)&&!hasChallenge('NN',11)
         
         },
         
@@ -849,7 +852,7 @@ else return new Decimal("1e450000") },
             return new Decimal(3.14e9);
         },
         unlocked(){
-            return (hasMilestone('I',7))
+            return (hasMilestone('I',7))&&!inChallenge('NN',11)&&!hasChallenge('NN',11)
         },
         },
         31: {
@@ -860,7 +863,7 @@ else return new Decimal("1e450000") },
                 return new Decimal(3.14e9);
             },
             unlocked(){
-                return (hasUpgrade('F',34))
+                return (hasUpgrade('F',34))&&!inChallenge('NN',11)&&!hasChallenge('NN',11)
             },
             },
             32: {
@@ -887,7 +890,7 @@ else return new Decimal("1e450000") },
                 cost: new Decimal(1e177),
              
                 unlocked(){
-                    return hasUpgrade("NN", 33)
+                    return hasUpgrade("NN", 33)&&!inChallenge('NN',11)&&!hasChallenge('NN',11)
                 },
             },
 },
@@ -954,7 +957,7 @@ else return new Decimal("1e450000") },
         },
         12: {
             name: "Negative UFC",
-            challengeDescription: "Number gain ^0.123 and FC, UFC effect are disabled ",
+            challengeDescription: "Number gain ^0.123 and FC, UFC effect are disabled (You need to reload to complete FC after exit it.)",
             canComplete(){return player.N.points.gte("1e4414777")},
             goalDescription: "1e4,414,777 numbers",
             rewardDescription(){return "Number ^2 but FC, UFC effect are disabled and nerf factor beta."},
@@ -982,8 +985,16 @@ else return new Decimal("1e450000") },
             player.F.points=0
             player.UF.points=0 }
         },
+        31: {
+            name: "Negative upgrade factor",
+            challengeDescription: "Number gain ^0.034 and Remove UF layer. (You need to reload after enter it or exit it.)",
+            canComplete(){return player.N.points.gte("1e130828282")},
+            goalDescription: "1e130,828,282 numbers",
+            rewardDescription(){return "Number ^1.5 and unlock 1 feature in UF layer (not yet)."},
+          unlocked(){return hasUpgrade('IP',66)},
+         onEnter(){return player.UF.points=0},
     },
-
+    },
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("milestones")
@@ -1095,6 +1106,10 @@ addLayer("UF", {
         let keep = [];
         if (hasMilestone("I", 2) && resettingLayer=="I") keep.push("milestones")
         if (hasMilestone("IP", 6) && resettingLayer=="IP") keep.push("milestones")
+        if (hasUpgrade("UF", 11) && resettingLayer=="I") keep.push("upgrades")
+        if (hasUpgrade("UF", 11) && resettingLayer=="IP") keep.push("upgrades")
+        if (hasUpgrade("UF", 11) && resettingLayer=="FS") keep.push("upgrades")
+        if (hasUpgrade("UF", 11) && resettingLayer=="MS") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     milestones: {
@@ -1180,8 +1195,37 @@ addLayer("UF", {
 
 },
 },
+upgrades: {
+  
+        11: {
+            title: "1",
+            description: "1 effect is better",
+            cost: new Decimal("e5.7e9"),
+            currencyDisplayName: "Numbers",
+            currencyInternalName:"points",
+            currencyLayer:"N",
+        },
+        71: {
+            title: "Factor alpha",
+            description: "Factor alpha effect is better",
+            cost: new Decimal("1.15e11"),
+            currencyDisplayName: "Factors",
+            currencyInternalName:"points",
+            currencyLayer:"F",
+        },
+        72: {
+            title: "Factor beta",
+            description: "Factor beta effect is better",
+            cost: new Decimal("3.7e11"),
+            currencyDisplayName: "Factors",
+            currencyInternalName:"points",
+            currencyLayer:"F",
+        },
+},
+
 tabFormat: {
     "Milestones":{
+        unlocked(){return !hasChallenge('NN',31)},
       content:[
     "main-display",
       "blank",
@@ -1203,11 +1247,43 @@ tabFormat: {
       "challenges",
     ]
   },
+  "Upgrade power":{
+    unlocked(){return hasChallenge("NN",31)},
+    content:[
+      "main-display",
+      "blank",
+    ["prestige-button",function(){return ""}],
+      "blank",
+      "blank",
+      ["microtabs", "A"], ["microtabs", "B"]
+    ],
   },
+},
+microtabs: {
+    "A": {
+            "Number": {
+                    content: [
+                            ["upgrade",11],
+                    ],
+                    unlocked(){
+                            return true
+                    },
+            },
+            "Factor": {
+                content: [
+                    ["row", [ ["upgrade",71], ["upgrade",72]]]
+                ],
+                unlocked(){
+                        return true
+                },
+        },
+          
+    },
+},
   canBuyMax(){
     return hasUpgrade('F',41) 
   },
-  layerShown(){return hasChallenge('F',22)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('UF',1)||hasMilestone('I',1)},
+  layerShown(){return (hasChallenge('F',22)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('UF',1)||hasMilestone('I',1))&&!inChallenge('NN',31)},
 })
 addLayer("F", {
     name: "Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1367,7 +1443,7 @@ addLayer("F", {
             title: "Factor Alpha",
             description: "Boost points and numbers based on factors.",
             effect() {
-                
+                if (hasUpgrade('UF',71))  return player.F.points.pow(1e6).add(1)
                 if (inChallenge('F',42)|inChallenge('F',43)) return 1 
                 if (inChallenge('F',23)) return 1
                 if (inChallenge('F',22)) return 1 
@@ -1388,6 +1464,7 @@ addLayer("F", {
             title: "Factor Beta",
             description: "Number boost themselves.",
             effect() {
+                if (hasUpgrade('UF',72))  return player.N.points.pow(0.00001).add(1)
                 if (player.N.points.gte("ee9")) return new Decimal("1e50000")
                 if (hasChallenge('I',32))  return player.N.points.pow(0.00005).add(1)
                 if (hasChallenge('NN',21))  return player.N.points.pow(0.0001).add(1)
@@ -1779,6 +1856,7 @@ addLayer("F", {
         },
     tabFormat: {
         "Milestones":{
+    
           content:[
         "main-display",
           "blank",
@@ -1791,7 +1869,7 @@ addLayer("F", {
           ]},
       
       "Upgrades":{
-        unlocked(){return hasMilestone('F',5)|hasMilestone("I", 1)},
+        unlocked(){return hasMilestone('F',5)||hasMilestone("I", 1)},
         content:[
           "main-display",
           "blank",
@@ -2037,10 +2115,17 @@ addLayer("I", {
     
             61: {
                 name: "Boost or nerf 3",
-                challengeDescription: "Number ^0.45 but NN ^2.4",
+                challengeDescription: "Number ^0.6 but NN ^1.8",
                 canComplete(){return player.N.points.gte(1e1000)},
                 goalDescription: "Do IP reset in this challenge to get more IP",
               unlocked(){return hasMilestone('I',90000)},
+            },
+            62: {
+                name: "Boost or nerf 4",
+                challengeDescription: "Number ^0.1 but NN ^3.",
+                canComplete(){return player.N.points.gte(1e1000)},
+                goalDescription: "Do IP reset in this challenge to get more IP",
+              unlocked(){return hasUpgrade('IP',65)},
             },
 
 
@@ -2454,6 +2539,13 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
         if (hasMilestone('MS',40)) mult = mult.times(1.1)
         return mult
     },
+    softcap(){
+        if(player.IP.points.gte("1e6000000"))  return new Decimal("1e6000000")
+        else return new Decimal("1e1000000")},
+    softcapPower(){
+        if(player.IP.points.gte("1e6000000")) return new Decimal("0.002")
+        else if(hasUpgrade('MS',31)) return new Decimal("0.2")
+        else return new Decimal("0.00000001")},
     milestones: {
         1: {
             requirementDescription: "1 Infinity points",
@@ -2499,6 +2591,11 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
             requirementDescription: "1e38500 Infinity points",
             effectDescription: "Unlock Negative numbers Challenge.",
             done() { return player.IP.points.gte("1e38500") }
+        },
+        6000000: {
+            requirementDescription: "1e6000000 Infinity points",
+            effectDescription: "IP upgrade 43 has no effect but Number gain ^3.",
+            done() { return player.IP.points.gte("1e6000000") }
         },
     },
     upgrades:{
@@ -2634,10 +2731,17 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
 },
 65: {
     title: "Antimatter Dimensions player777 (Easter Egg 3)",
-    description: "Current endgame",
+    description: "Unlock 1 Infinity challenge.",
     cost: new Decimal("1e777777"),
     unlocked(){
         return hasUpgrade('IP',64)
+    },
+},
+66: {
+    description: "Unlock 1 NN challenge.",
+    cost: new Decimal("1e1161161"),
+    unlocked(){
+        return hasUpgrade('IP',65)
     },
 },
     },
@@ -2780,6 +2884,7 @@ addLayer("MS", {
         ygain: new Decimal(0),
         Exponentiation: new Decimal(0),
         Prestige: new Decimal(0),
+        Prestige2: new Decimal(0),
         gainb:new Decimal(0),
     }},
     color: "#8000ff",
@@ -2833,26 +2938,42 @@ addLayer("MS", {
             done() { return player.MS.Prestige.gte(8) }
         },
         40: {
-            requirementDescription: "4 Mathematics SymboL",
+            requirementDescription: "4 Mathematics Symbol",
             effectDescription: "IP ^1.1 and unlock 1 IC. Auto buy FS. Number x10.",
             done() { return player.MS.points.gte(4) }
+        },
+        41: {
+            requirementDescription: "1 Super prestige point.",
+            effectDescription: "Super prestige point boost X and Y gain.",
+            done() { return player.MS.Prestige2.gte(1) }
+        },
+        42: {
+            requirementDescription: "2 Super prestige point.",
+            effectDescription: "Get 25 prestige point on reset and unlock 1 upgrade.",
+            done() { return player.MS.Prestige2.gte(2) }
         },
     },
     update(diff){
         let xgain = new Decimal(0)
 
         let ygain = new Decimal(0)
-        if(player.MS.Exponentiation.gte("1e2500")) return player.MS.Exponentiation=new Decimal("1e2500")
+        if(player.MS.Exponentiation.gte("1e6000")) return player.MS.Exponentiation=new Decimal("1e6000")
+        else if(hasUpgrade('IP',66)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
+        else if(player.MS.Exponentiation.gte("1e2500")&&!hasUpgrade('IP',66)) return player.MS.Exponentiation=new Decimal("1e2500")
         else player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         if(hasUpgrade("MS",11))xgain=new Decimal(1)
         if(hasUpgrade("MS",12))ygain=new Decimal(0.01)
-        if(hasMilestone('MS',4))  player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(6).times(player.MS.Prestige.add(1)))
+        if(hasMilestone('MS',41)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).pow(player.MS.Prestige2.add(1).pow(0.5)))
+        else if(hasUpgrade('IP',66)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)))
+        else if(hasMilestone('MS',4))  player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(6).times(player.MS.Prestige.add(1)))
         else if (hasUpgrade('MS',25))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(3))
         else if (hasUpgrade('MS',24)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(2))
         else if (hasUpgrade('MS',22))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)))
         else if (hasUpgrade('MS',14))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)))
         else player.MS.y=player.MS.y.plus(ygain.times(diff))
-        if(hasMilestone('MS',4)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(5).times(player.MS.Prestige.add(1)))
+        if(hasMilestone('MS',41)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(15).times(player.MS.Prestige.add(1)).pow(player.MS.Prestige2.add(1).pow(0.5)))
+        else if(hasUpgrade('IP',66)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(15).times(player.MS.Prestige.add(1)))
+        else if(hasMilestone('MS',4)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(5).times(player.MS.Prestige.add(1)))
         else if (hasUpgrade('MS',25))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(2.5))
         else if (hasUpgrade('MS',23))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25))
         else if (hasUpgrade('MS',21))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)))
@@ -2946,13 +3067,22 @@ addLayer("MS", {
             currencyInternalName:"Exponentiation",
      
         },
+        31: {
+            title: "^^1",
+            description: "point gain ^2 and remove the hardcap of IP gain but nerf IP gain.",
+            cost: new Decimal("1e1600000"),
+            currencyDisplayName: "points",
+            currencyInternalName:"points",
+            unlocked(){return player.MS.Prestige2.gte(2)}
+     
+        },
   
     },
     clickables:{
         
             11:{
                 display() {return "Reset Your x and y for 1 Prestige point (Req: 1e150 Exponentiation points)."},
-                canClick(){return player.MS.Exponentiation.gte("1e150")&&(!hasMilestone('MS',8))},
+                canClick(){return player.MS.Exponentiation.gte("1e150")&&((!hasMilestone('MS',8))||(hasUpgrade('IP',66)))},
                 onClick(){
                     player.MS.Prestige=player.MS.Prestige.plus(1)
                     player.MS.x=new Decimal(1)
@@ -2962,6 +3092,21 @@ addLayer("MS", {
                 },
         
     },
+    12:{
+        display() {return "Reset Your x, y, prestige point and MS milestone for 1 Super Prestige point (Req: 1e4000 Exponentiation points and 25 prestige point.)."},
+        canClick(){return player.MS.Exponentiation.gte("1e4000")&&player.MS.Prestige.gte("25")&&!player.MS.Prestige2.gte("2")},
+        onClick(){
+         
+            player.MS.Prestige2=player.MS.Prestige2.plus(1)
+            player.MS.x=new Decimal(1)
+            player.MS.milestones = []
+            player.MS.y=new Decimal(1) 
+            player.MS.Exponentiation=new Decimal(1) 
+           if(hasMilestone('MS',42)) player.MS.Prestige=new Decimal(25) 
+
+        },
+
+},
 },
     layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)},
     tabFormat: {
@@ -3020,6 +3165,7 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
             ["display-text",function(){
               let s="You have "+format(Decimal.pow(player.MS.x,player.MS.y))+" Exponentiation points.<br>"
               s+="Your have  "+format(player.MS.Prestige)+" prestige point<br>"
+              s+="Your have  "+format(player.MS.Prestige2)+" super prestige point<br>"
               return s}],
               "blank",
              "clickables",

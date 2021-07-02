@@ -13,11 +13,21 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.2.1",
-	name: "Lucky 777777",
+	num: "0.2.2.2",
+	name: "Back to 0.1.6",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.2.2</h3><br>
+- Added 2 MS milestone.<br>
+- Added 1 IP milestones.<br>
+- Added 1 IP upgrade.<br>
+- Added 1 NN challenge.<br>
+- Added 3 UF upgrades.<br>
+- Endgame: 4e11 factor and Get 3 UF Upgrade.<br>
+- Added 1 easter egg. If anyone find easter egg in next 1 day add their name in The tree (Send the easter egg screenshot to me (USE DM)
+If you complete the game. I will give a big hint
+* Not IP Upgrade (They are people that find the easter egg)<br>
 <h3>v0.2.2.1</h3><br>
 - Added 1 NN challenge.<br>
 - Added 2 IP upgrade.<br>
@@ -91,11 +101,12 @@ If you complete the game. I will give a big hint
 <h3>v0.1.6.1</h3><br>
 - Fix a lot of wrongly spelling (Thanks to Ice Bear).<br>
 <h3>v0.1.6</h3><br>
-- Added 1 FS milestone.<br>
-- Added 1 NN upgrade.<br>
-- Added 5 F upgrade.<br>
-- Added 1 N upgrade.<br>
-- Endgame: 9.6e10 Factor.<br>
+- Added 1 FS mil<h3>e</h3>stone.<br>
+- <h3>A</h3>dded 1 NN upgrade.<br>
+- Added 5 F upgrade<h3>s</h3>.<br>
+- Added 1 N upgra<h3>t</h3>e.<br>
+- <h3>E</h3>ndgame: 9.6e10 Facto<h3>r</h3>.<br>
+- You only find egg, no easter.<br>
 <h3>v0.1.5</h3><br>
 - Early game is easier.<br>
 - Added 2 NN Upgrade.<br>
@@ -234,7 +245,7 @@ function getPointGen() {
 	if (inChallenge('F', 13)) gain = gain.times(0.3)
 	if (inChallenge('F', 23)) gain = gain.times(0.3)
 	if (hasChallenge('F', 11)) gain = gain.times(3)
-	if (hasUpgrade('N', 11)) gain = gain.times(4)
+	if (hasUpgrade('N', 11)&&(!hasUpgrade('UF',11))) gain = gain.times(4)
 	if (hasAchievement("A", 11)) gain = gain.times(1.25)
 	if (hasUpgrade('N', 12)) gain = gain.times(upgradeEffect('N', 12))
 	if (hasUpgrade('NN', 12)) gain = gain.times(upgradeEffect('NN', 12))
@@ -250,7 +261,15 @@ function getPointGen() {
 	if (hasMilestone('UF', 10)) gain = gain.times(10000)
 	if (hasMilestone('I', 1)) gain = gain.times(100)
 	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
+	gain = gain.pow(getPointGenExp())
 	return gain
+}
+function getPointGenExp(){
+	let exp = new Decimal(1)
+
+	if (hasUpgrade("MS", 31)) exp = exp.times(2)
+	if(hasUpgrade('UF',11)) exp = exp.times(4)
+	return exp
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
@@ -263,7 +282,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.IP.points.gte("1e777777")
+	return player.F.points.gte("4e11")&&hasUpgrade('UF',72)
 }
 
 
