@@ -17,7 +17,7 @@ addLayer("N", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        if (inChallenge('I', 11)||inChallenge('I', 12)||inChallenge('I', 31)) mult = mult.times(1e50)
+        if (inChallenge('I', 11)||inChallenge('I', 12)||inChallenge('I', 31)||inChallenge('I', 32)) mult = mult.times(1e50)
         if (hasAchievement("A", 14)) mult = mult.times(2)
         if (inChallenge('F', 33)|inChallenge('F',43)) mult = mult.times(0.000001)
         if (inChallenge('F', 31)) mult = mult.times(0.000001)
@@ -63,12 +63,14 @@ addLayer("N", {
         if (inChallenge('NN',11)) mult = mult.times(0.234)
         if (inChallenge('NN',12)) mult = mult.times(0.123)
         if (inChallenge('NN',21)) mult = mult.times(0.012)
+        if (inChallenge('NN',22)) mult = mult.times(0.023)
         if (inChallenge('IP',31)) mult = mult.times(0.15)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
         if (inChallenge('I',41)) mult = mult.times(0.011)
         if (inChallenge('I',42)) mult = mult.times(0.001)
         if (inChallenge('I',22)) mult = mult.times(0.00003333333333)
+        if (inChallenge('I',32)) mult = mult.times(5.26315789e-7)
         if (inChallenge('I',21)) mult = mult.times(0.166666)
         if (hasChallenge('I',11)) mult = mult.times(1.1)
         if (hasUpgrade('F',45)) mult = mult.times(1.1)
@@ -77,6 +79,7 @@ addLayer("N", {
         if (hasChallenge('I',31)) mult = mult.times(1.4)
         if (hasChallenge('I',41)) mult = mult.times(1.5)
         if (hasChallenge('I',22)) mult = mult.times(1.6)
+        if (hasChallenge('I',32)) mult = mult.times(1.7)
         if (hasChallenge('IP',31)) mult = mult.times(1.3)
         if (hasChallenge('IP',32)) mult = mult.times(1.35)
         if (hasUpgrade('F',31)&&!hasUpgrade('IP',56)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
@@ -86,6 +89,7 @@ addLayer("N", {
         if (hasChallenge('NN',11)) mult = mult.times(2)
         if (hasChallenge('NN',12)) mult = mult.times(2)
         if (hasChallenge('NN',21)) mult = mult.times(8)
+        if (hasChallenge('NN',22)) mult = mult.times(player.FS.points.add(1).pow(0.5))
         
         return mult
 
@@ -350,7 +354,7 @@ addLayer("N", {
                 description: "Factors are cheaper.",
                 cost: new Decimal("3.14e348"),
                 unlocked(){
-                    {return hasMilestone('UF',16)}
+                    {return hasMilestone('UF',16)&&!hasChallenge('NN',22)&&!inChallenge('NN',22)}
                 },
         },
         43: {
@@ -358,7 +362,7 @@ addLayer("N", {
             description: "Upgrade factors are cheaper.",
             cost: new Decimal("3.14e378"),
             unlocked(){
-                {return hasMilestone('UF',16)}
+                {return hasMilestone('UF',16)&&!hasChallenge('NN',22)&&!inChallenge('NN',22)}
             },
     },
         44: {
@@ -366,7 +370,7 @@ addLayer("N", {
         description: " Unlock the first factor buyable",
         cost: new Decimal("1e413"),
         unlocked(){
-            {return hasMilestone('UF',16)}
+            {return hasMilestone('UF',16)&&!hasChallenge('NN',21)&&!inChallenge('NN',21)}
         },
     },
     45: {
@@ -374,7 +378,7 @@ addLayer("N", {
         description: "Unlock another buyable and a new numbers upgrade",
         cost: new Decimal("1e477"),
         unlocked(){
-            {return hasMilestone('UF',16)}
+            {return hasMilestone('UF',16)&&!hasChallenge('NN',21)&&!inChallenge('NN',21)}
         },
     },
     16: {
@@ -423,7 +427,7 @@ addLayer("N", {
         description: "Factor exponent is: 0.314 (Factors are cheaper)",
         cost: new Decimal("1e4720"),
         unlocked(){
-            {return hasUpgrade('F',35)}
+            {return hasUpgrade('F',35)&&!hasChallenge('NN',22)&&!inChallenge('NN',22)}
         },
     },
     62: {
@@ -431,7 +435,7 @@ addLayer("N", {
         description: "Factor exponent is: 0.271(Factors are cheaper)",
         cost: new Decimal("1e17500"),
         unlocked(){
-            {return hasUpgrade('NN',34)}
+            {return hasUpgrade('NN',34)&&!hasChallenge('NN',22)&&!inChallenge('NN',22)}
         },
     },
    
@@ -951,9 +955,9 @@ else return new Decimal("1e450000") },
         12: {
             name: "Negative UFC",
             challengeDescription: "Number gain ^0.123 and FC, UFC effect are disabled ",
-            canComplete(){return player.N.points.gte("1e4415000")},
-            goalDescription: "1e4,415,000 numbers",
-            rewardDescription(){return "Number ^2 but FC, UFC effect are disabled is disabled and nerf factor beta."},
+            canComplete(){return player.N.points.gte("1e4414777")},
+            goalDescription: "1e4,414,777 numbers",
+            rewardDescription(){return "Number ^2 but FC, UFC effect are disabled and nerf factor beta."},
           unlocked(){return hasChallenge('NN',11)},
           onEnter(){
             player.F.challenges=[]
@@ -962,10 +966,21 @@ else return new Decimal("1e450000") },
         21: {
             name: "Negative buyable",
             challengeDescription: "Number gain ^0.012 and Row 1 to Row 2 buyable are disabled ",
-            canComplete(){return player.N.points.gte("1e247540")},
-            goalDescription: "1e247,540 numbers",
+            canComplete(){return player.N.points.gte("1e247444")},
+            goalDescription: "1e247,444 numbers",
             rewardDescription(){return "Number ^8 but Row 1 to Row 2 buyable are disabled and nerf factor beta."},
           unlocked(){return hasChallenge('NN',12)},
+        },
+        22: {
+            name: "Negative cheaper",
+            challengeDescription: "Number gain ^0.023 and Factor, Upgrade factor are more expensive. (You need to reload after enter it or exit it.)",
+            canComplete(){return player.N.points.gte("1e4,148,333")},
+            goalDescription: "1e4,148,333 numbers",
+            rewardDescription(){return "FS boost point gain but Factor, Upgrade factor are more expensive."},
+          unlocked(){return hasChallenge('NN',21)},
+          onEnter(){
+            player.F.points=0
+            player.UF.points=0 }
         },
     },
 
@@ -1052,6 +1067,7 @@ addLayer("UF", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:1e10,
     exponent(){
+      if(inChallenge('NN',22)||hasChallenge('NN',22))return 1
         if(hasUpgrade('F',44))return 0.5
         if(hasUpgrade('F',41))return 0.6
         if(hasUpgrade('N',43))return 0.9
@@ -1209,6 +1225,7 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if(inChallenge('NN',22)||hasChallenge('NN',22))return 1
         if (player.FS.points.gte(4)) return 0.18
         if (player.IP.points.gte(1e26)) return 0.2
         if (player.FS.points.gte(3)) return 0.25
@@ -1371,6 +1388,8 @@ addLayer("F", {
             title: "Factor Beta",
             description: "Number boost themselves.",
             effect() {
+                if (player.N.points.gte("ee9")) return new Decimal("1e50000")
+                if (hasChallenge('I',32))  return player.N.points.pow(0.00005).add(1)
                 if (hasChallenge('NN',21))  return player.N.points.pow(0.0001).add(1)
                 if (hasChallenge('NN',12))  return player.N.points.pow(0.0025).add(1)
                 if (hasChallenge('NN',11))  return player.N.points.pow(0.006).add(1)
@@ -1958,13 +1977,14 @@ addLayer("I", {
           unlocked(){return hasUpgrade("F", 32)},
         },
         22: {
-            name: "IC Ω",
+            name: "IC Ω ",
             challengeDescription: "Number gain ^(1/30000). ",
             canComplete(){return player.N.points.gte("1.8e308")},
             goalDescription: "1.80e308 Numbers",
             rewardDescription(){return "Number ^1.6 but nerf factor beta."},
           unlocked(){return hasMilestone("MS", 40)},
         },
+        
         31: {
             name: "IC5",
             challengeDescription: "Number gain ^0.09. ",
@@ -1972,6 +1992,14 @@ addLayer("I", {
             goalDescription: "1.80e308 Numbers",
             rewardDescription(){return "Number ^1.4."},
           unlocked(){return hasUpgrade("NN", 33)},
+        },
+        32: {
+            name: "IC ω",
+            challengeDescription: "Number gain ^(1/1900000). ",
+            canComplete(){return player.N.points.gte("1.8e308")},
+            goalDescription: "1.80e308 Numbers",
+            rewardDescription(){return "Number ^1.7 but nerf factor beta."},
+          unlocked(){return hasUpgrade("IP", 64)},
         },
         41: {
             name: "IC7",
@@ -2038,7 +2066,7 @@ addLayer("I", {
         ["prestige-button",function(){return ""}],
           "blank",
           "blank",
-          ["row", [ ["challenge", 11], ["challenge", 12]]], ["row", [ ["challenge", 21], ["challenge", 22]]], ["row", [ ["challenge", 31]]], ["row", [ ["challenge", 41],["challenge", 42]]]
+          ["row", [ ["challenge", 11], ["challenge", 12]]], ["row", [ ["challenge", 21], ["challenge", 22]]], ["row", [ ["challenge", 31], ["challenge", 32]]], ["row", [ ["challenge", 41],["challenge", 42]]]
        ],
       },
         
@@ -2475,7 +2503,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
     upgrades:{
         11: {
-            title: "UltraLuigi (Easter Egg 1 and 2)",
+            title: "UltraLuigi (Easter Egg 1, 2 and 3)",
             description: "Unlock 1 Negative numbers buyable.",
             cost: new Decimal(5),
             unlocked(){
@@ -2493,7 +2521,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
         },
 },
 21: {
-    title: "JashinFanatic (Easter Egg 1)",
+    title: "JashinFanatic (Easter Egg 1 and 3)",
     description: "Auto buy Negative numbers buyable and Infinity point boost Negative numbers gain.",
     cost: new Decimal(10),
     unlocked(){
@@ -2517,7 +2545,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 },
 23: {
-    title: "garnet420 (Easter Egg 1)",
+    title: "garnet420 (Easter Egg 1 and 3)",
     description: "Unlock 2 Infinity point challenge.",
     cost: new Decimal(200000),
     unlocked(){
@@ -2549,6 +2577,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 },
 44: {
+    title: "Rabbit (Easter Egg 3)",
     description: "Negative numbers x 1e80000 but '^' and '-+' have no effect",
     cost: new Decimal("1e4100"),
     unlocked(){
@@ -2556,6 +2585,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 },
 45: {
+    title: "Mike95358 (Easter Egg 3)",
     description: "Unlock 2 Infinity challenge  ",
     cost: new Decimal("1e5500"),
     unlocked(){
@@ -2563,6 +2593,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 },
 46: {
+    title: "Elliott (Easter Egg 3)",
     description: "Boost Number gain base on Infinity.",
     cost: new Decimal("1e6400"),
     unlocked(){
@@ -2570,6 +2601,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 },
 54: {
+    title: "Crabble (Easter Egg 3)",
     description: "IP gain ^1.1",
     cost: new Decimal("1e7900"),
     unlocked(){
@@ -2577,6 +2609,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 },
 55: {
+    title: "foxes1338 (Easter Egg 3)",
     description: "IP gain ^1.05",
     cost: new Decimal("1e9300"),
     unlocked(){
@@ -2584,10 +2617,27 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 },
 56: {
+    title: "beatable (Easter Egg 3)",
     description: "'Factor Lambda' has no effect but Number gain ^1.75",
     cost: new Decimal("1e10700"),
     unlocked(){
         return hasUpgrade('IP',55)
+    },
+},
+64: {
+    title: "starkirby (Easter Egg 3)",
+    description: "Unlock 1 Infinity challenge",
+    cost: new Decimal("1e228888"),
+    unlocked(){
+        return hasUpgrade('IP',56)
+    },
+},
+65: {
+    title: "Antimatter Dimensions player777 (Easter Egg 3)",
+    description: "Current endgame",
+    cost: new Decimal("1e777777"),
+    unlocked(){
+        return hasUpgrade('IP',64)
     },
 },
     },
@@ -2925,7 +2975,7 @@ addLayer("MS", {
         },
         "Exponentiation": {
             unlocked(){
-hasMilestone('IP',17000)||hasMilestone('MS',40)
+return hasMilestone('IP',17000)||hasMilestone('MS',40)
             },
             content: [
                 "main-display",
@@ -2950,7 +3000,7 @@ hasMilestone('IP',17000)||hasMilestone('MS',40)
         },
         "Prestige": {
             unlocked(){
-                hasMilestone('IP',20000)||hasMilestone('MS',40)
+                return hasMilestone('IP',20000)||hasMilestone('MS',40)
                             },
             content: [
                 "main-display",

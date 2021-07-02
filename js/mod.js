@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.2",
-	name: "Negative XXX",
+	num: "0.2.2.1",
+	name: "Lucky 777777",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.2.1</h3><br>
+- Added 1 NN challenge.<br>
+- Added 2 IP upgrade.<br>
+- Added 1 I challenge.<br>
+- Endgame: 1e777777 IP.<br>
 <h3>v0.2.2</h3><br>
 - Added 3 NN challenges.<br>
 - Added 1 easter egg. If anyone find easter egg in next 2 days add their name in The tree (Send the easter egg screenshot to me (USE DM)
@@ -258,7 +263,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.IP.points.gte("1e82500")
+	return player.IP.points.gte("1e777777")
 }
 
 
