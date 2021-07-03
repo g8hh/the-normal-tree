@@ -13,11 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.2.2 Bugfix^2",
-	name: "Back to 0.1.6",
+	num: "0.2.3",
+	name: "No idea",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.3</h3><br>
+- Added 7 UF upgrades.<br>
 <h3>v0.2.2.2</h3><br>
 - Added 2 MS milestone.<br>
 - Added 1 IP milestones.<br>
@@ -283,7 +285,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.F.points.gte("4e11")&&hasUpgrade('UF',72)
+	return hasUpgrade('UF',15)
 }
 
 

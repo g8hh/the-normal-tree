@@ -40,7 +40,7 @@ addLayer("N", {
         if (hasChallenge('F', 12)) mult = mult.times(3)
         if (hasAchievement("A", 33)) mult = mult.times(5)
        if (hasUpgrade('N',14)) mult = mult.times(upgradeEffect('N', 14))
-
+       if (hasUpgrade('UF',14)) mult = mult.times(upgradeEffect('UF', 14))
        if (hasUpgrade('F',11)) mult = mult.times(upgradeEffect('F', 11))
         if (hasMilestone('F', 1)) mult = mult.times(player.F.points.add(1))
         if (hasMilestone('MS', 1)) mult = mult.times(1e20)
@@ -90,6 +90,7 @@ addLayer("N", {
         if (hasUpgrade('IP',56)) mult = mult.times(1.75)
         if (hasChallenge('NN',11)) mult = mult.times(2)
         if (hasChallenge('NN',12)) mult = mult.times(2)
+        if (hasUpgrade('UF',75)) mult = mult.times(1.5)
         if (hasChallenge('NN',21)) mult = mult.times(8)
         if (hasChallenge('NN',31)) mult = mult.times(1.5)
         if (hasChallenge('NN',22)) mult = mult.times(player.FS.points.add(1).pow(0.5))
@@ -1209,11 +1210,11 @@ upgrades: {
         12: {
             title: "2",
             description: "Number boost point gain.",
-            cost: new Decimal("e1.227e13"),
+            cost: new Decimal("e6.823e11"),
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            effect(){return player.N.points.pow(0.000001).add(1)},
+            effect(){return player.N.points.pow(0.00001).add(1)},
             unlocked(){
                 return hasUpgrade("UF", 73)
             },
@@ -1222,11 +1223,12 @@ upgrades: {
         13: {
             title: "3",
             description: "Point boost point gain.",
-            cost: new Decimal("e2.7266e13"),
+            cost: new Decimal("e1.018e12"),
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            effect(){return player.points.pow(0.02).add(1)},
+            effect(){if(hasUpgrade('UF',74))  return player.points.pow(0.04).add(1)
+                else  return player.points.pow(0.02).add(1)},
             unlocked(){
                 return hasUpgrade("UF", 73)
             },
@@ -1235,7 +1237,7 @@ upgrades: {
         14: {
             title: "4",
             description: "Point boost number gain.",
-            cost: new Decimal(1.8e400),
+            cost: new Decimal("e1.31951e12"),
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
@@ -1244,6 +1246,18 @@ upgrades: {
                 return hasUpgrade("UF", 73)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+        },
+        15: {
+            title: "5",
+            description: "0.2.3 Endgame .",
+            cost: new Decimal("e3.3e14"),
+            currencyDisplayName: "Numbers",
+            currencyInternalName:"points",
+            currencyLayer:"N",
+          
+            unlocked(){
+                return hasUpgrade("UF", 75)
+            },
         },
         71: {
             title: "Factor alpha",
@@ -1264,10 +1278,32 @@ upgrades: {
         73: {
             title: "Factor Gamma",
             description: "Factor Gamma effect is better",
-            cost: new Decimal("7.2e12"),
+            cost: new Decimal("4e11"),
             currencyDisplayName: "Factors",
             currencyInternalName:"points",
             currencyLayer:"F",
+        },
+        74: {
+            title: "Factor Delta",
+            description: "Boost '3'",
+            cost: new Decimal("1.446e12"),
+            currencyDisplayName: "Factors",
+            currencyInternalName:"points",
+            currencyLayer:"F",
+            unlocked(){
+                return hasUpgrade("UF", 14)
+            },
+        },
+        75: {
+            title: "Factor Epsilon",
+            description: "Factor Epsilon effect is better",
+            cost: new Decimal("2.55e12"),
+            currencyDisplayName: "Factors",
+            currencyInternalName:"points",
+            currencyLayer:"F",
+            unlocked(){
+                return hasUpgrade("UF", 14)
+            },
         },
 },
 
@@ -1319,7 +1355,7 @@ microtabs: {
             },
             "Factor": {
                 content: [
-                    ["row", [ ["upgrade",71], ["upgrade",72], ["upgrade",73]]]
+                    ["row", [ ["upgrade",71], ["upgrade",72], ["upgrade",73], ["upgrade",74], ["upgrade",75]]]
                 ],
                 unlocked(){
                         return true
@@ -1556,7 +1592,8 @@ addLayer("F", {
 },
 15: {
     title: "Factor Epsilon",
-    description: "Unlock a number buyable and Number x2",
+    description(){ if(hasUpgrade('UF',11))  return "Number ^2"
+    else return "Unlock a number buyable and Number x2"},
     cost: new Decimal(60),
     unlocked(){
         return hasChallenge("F", 23)|hasMilestone("I", 1)
