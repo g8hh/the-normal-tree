@@ -40,6 +40,7 @@ addLayer("N", {
         if (hasChallenge('F', 12)) mult = mult.times(3)
         if (hasAchievement("A", 33)) mult = mult.times(5)
        if (hasUpgrade('N',14)) mult = mult.times(upgradeEffect('N', 14))
+
        if (hasUpgrade('F',11)) mult = mult.times(upgradeEffect('F', 11))
         if (hasMilestone('F', 1)) mult = mult.times(player.F.points.add(1))
         if (hasMilestone('MS', 1)) mult = mult.times(1e20)
@@ -958,8 +959,8 @@ else return new Decimal("1e450000") },
         12: {
             name: "Negative UFC",
             challengeDescription: "Number gain ^0.123 and FC, UFC effect are disabled (You need to reload to complete FC after exit it.)",
-            canComplete(){return player.N.points.gte("1e4414777")},
-            goalDescription: "1e4,414,777 numbers",
+            canComplete(){return player.N.points.gte("1e4413600")},
+            goalDescription: "1e4,413,600 numbers",
             rewardDescription(){return "Number ^2 but FC, UFC effect are disabled and nerf factor beta."},
           unlocked(){return hasChallenge('NN',11)},
           onEnter(){
@@ -969,30 +970,30 @@ else return new Decimal("1e450000") },
         21: {
             name: "Negative buyable",
             challengeDescription: "Number gain ^0.012 and Row 1 to Row 2 buyable are disabled ",
-            canComplete(){return player.N.points.gte("1e247444")},
-            goalDescription: "1e247,444 numbers",
+            canComplete(){return player.N.points.gte("1e247222")},
+            goalDescription: "1e247,222 numbers",
             rewardDescription(){return "Number ^8 but Row 1 to Row 2 buyable are disabled and nerf factor beta."},
           unlocked(){return hasChallenge('NN',12)},
         },
         22: {
             name: "Negative cheaper",
-            challengeDescription: "Number gain ^0.023 and Factor, Upgrade factor are more expensive. (You need to reload after enter it or exit it.)",
-            canComplete(){return player.N.points.gte("1e4,148,333")},
-            goalDescription: "1e4,148,333 numbers",
+            challengeDescription: "Number gain ^0.023 and Factor, Upgrade factor are more expensive.",
+            canComplete(){return player.N.points.gte("1e4148000")},
+            goalDescription: "1e4,148,000 numbers",
             rewardDescription(){return "FS boost point gain but Factor, Upgrade factor are more expensive."},
           unlocked(){return hasChallenge('NN',21)},
           onEnter(){
-            player.F.points=0
-            player.UF.points=0 }
+            player.F.points=new Decimal(0)
+            player.UF.points=new Decimal(0) }
         },
         31: {
             name: "Negative upgrade factor",
-            challengeDescription: "Number gain ^0.034 and Remove UF layer. (You need to reload after enter it or exit it.)",
+            challengeDescription: "Number gain ^0.034 and Remove UF layer.",
             canComplete(){return player.N.points.gte("1e130828282")},
             goalDescription: "1e130,828,282 numbers",
             rewardDescription(){return "Number ^1.5 and unlock 1 feature in UF layer."},
           unlocked(){return hasUpgrade('IP',66)},
-         onEnter(){return player.UF.points=0},
+         onEnter(){return player.UF.points=new Decimal(0)},
     },
     },
     doReset(resettingLayer) {
@@ -1207,31 +1208,42 @@ upgrades: {
         },
         12: {
             title: "2",
-            description: "Numbers boost point gain.",
-            cost: new Decimal("e6.823e11"),
+            description: "Number boost point gain.",
+            cost: new Decimal("e1.227e13"),
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            unlocked(){return hasUpgrade('UF',73)},
-            effect(){return player.N.points.pow(0.00001).add(1)
-              
-        },
-        effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
-
+            effect(){return player.N.points.pow(0.000001).add(1)},
+            unlocked(){
+                return hasUpgrade("UF", 73)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         },
         13: {
             title: "3",
-            description: "point boost point gain.",
-            cost: new Decimal("e1.370e12"),
+            description: "Point boost point gain.",
+            cost: new Decimal("e2.7266e13"),
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            unlocked(){return hasUpgrade('UF',73)},
-            effect(){return player.points.add(1).log(2).pow(1000000).add(1)
-              
+            effect(){return player.points.pow(0.02).add(1)},
+            unlocked(){
+                return hasUpgrade("UF", 73)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         },
-        effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
-
+        14: {
+            title: "4",
+            description: "Point boost number gain.",
+            cost: new Decimal(1.8e400),
+            currencyDisplayName: "Numbers",
+            currencyInternalName:"points",
+            currencyLayer:"N",
+            effect(){return player.points.pow(0.2).add(1)},
+            unlocked(){
+                return hasUpgrade("UF", 73)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         },
         71: {
             title: "Factor alpha",
@@ -1248,16 +1260,14 @@ upgrades: {
             currencyDisplayName: "Factors",
             currencyInternalName:"points",
             currencyLayer:"F",
-            unlocked(){return hasUpgrade('UF',71)},
         },
         73: {
-            title: "Factor gamma",
-            description: "Factor gamma effect is better",
-            cost: new Decimal("4e11"),
+            title: "Factor Gamma",
+            description: "Factor Gamma effect is better",
+            cost: new Decimal("7.2e12"),
             currencyDisplayName: "Factors",
             currencyInternalName:"points",
             currencyLayer:"F",
-            unlocked(){return hasUpgrade('UF',72)},
         },
 },
 
@@ -1293,7 +1303,7 @@ tabFormat: {
     ["prestige-button",function(){return ""}],
       "blank",
       "blank",
-      ["microtabs", "A"]
+      ["microtabs", "A"], ["microtabs", "B"]
     ],
   },
 },
@@ -1301,7 +1311,7 @@ microtabs: {
     "A": {
             "Number": {
                     content: [
-                        ["row", [ ["upgrade",11],["upgrade",12], ["upgrade",13],]]
+                           ["row",[ ["upgrade",11],  ["upgrade",12],  ["upgrade",13],  ["upgrade",14],  ["upgrade",15]]],
                     ],
                     unlocked(){
                             return true
@@ -1309,10 +1319,10 @@ microtabs: {
             },
             "Factor": {
                 content: [
-                    ["row", [ ["upgrade",71], ["upgrade",72], ["upgrade",73],]]
+                    ["row", [ ["upgrade",71], ["upgrade",72], ["upgrade",73]]]
                 ],
                 unlocked(){
-                        return  hasUpgrade('UF',11)
+                        return true
                 },
         },
           
@@ -1502,6 +1512,7 @@ addLayer("F", {
             title: "Factor Beta",
             description: "Number boost themselves.",
             effect() {
+                if (player.N.points.gte("ee14")) return new Decimal("ee9")
                 if (hasUpgrade('UF',72))  return player.N.points.pow(0.00001).add(1)
                 if (player.N.points.gte("ee9")) return new Decimal("1e50000")
                 if (hasChallenge('I',32))  return player.N.points.pow(0.00005).add(1)
@@ -1528,9 +1539,8 @@ addLayer("F", {
     },
     13: {
         title: "Factor Gamma",
-        description(){if(hasUpgrade('UF',73)) return "unlock 2 Number upgrades."
-    else return "Unlock 2 Number upgrades and 2 challenges, you can buy max factor."
-    },
+        description(){ if(hasUpgrade('UF',11))  return "Unlock 3 Number upgrades."
+        else return "Unlock 2 Number upgrades and 2 challenges, you can buy max factor."},
         cost: new Decimal(15),
         unlocked(){
             return hasUpgrade("F", 12)|hasMilestone("I", 1)
@@ -2642,7 +2652,13 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
             effectDescription: "IP upgrade 43 has no effect but Number gain ^3.",
             done() { return player.IP.points.gte("1e6000000") }
         },
+        30000000: {
+            requirementDescription: "1e30000000 Infinity points",
+            effectDescription: "gain 100% of Infinity point on reset per second",
+            done() { return player.IP.points.gte("1e30000000") }
+        },
     },
+    passiveGeneration(){return hasMilestone('IP',30000000)? 1 : 0},
     upgrades:{
         11: {
             title: "UltraLuigi (Easter Egg 1, 2 and 3)",

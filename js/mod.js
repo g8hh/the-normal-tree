@@ -232,7 +232,6 @@ function getPointGen() {
 
 
 	let gain = new Decimal(1)
-
 	if (hasChallenge('F',31)&&(!inChallenge("NN", 21)&&!hasChallenge("NN", 21))) gain = gain.times(buyableEffect('N',12))
 	if (hasUpgrade('N',44)&&(!inChallenge("NN", 21)&&!hasChallenge("NN", 21))) gain = gain.times(buyableEffect('F',12))
 	if (inChallenge('F', 33)|inChallenge('F',43)) gain = gain.times(0.000001)
