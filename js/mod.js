@@ -13,11 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.3",
-	name: "No idea",
+	num: "0.2.3.1",
+	name: "Super Infinity",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.3.1</h3><br>
+- Added 5 UF upgrades.<br>
+- Endgame: Complete Boost of nerf 4.<br>
 <h3>v0.2.3</h3><br>
 - Added 7 UF upgrades.<br>
 <h3>v0.2.2.2</h3><br>
@@ -256,7 +259,8 @@ function getPointGen() {
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
 	if (hasMilestone('MS', 3)) gain = gain.times(player.IP.points.add(1))
-	if (hasUpgrade('MS', 25)) gain = gain.times(player.MS.Exponentiation.pow(100).add(1))	
+	if (hasUpgrade('MS', 25)&&(!player.MS.Exponentiation.gte("ee10"))) gain = gain.times(player.MS.Exponentiation.pow(100).add(1))	
+	else if(player.MS.Exponentiation.gte("ee10")) gain = gain.times("ee12")	
 	if (hasMilestone('UF', 52)) gain = gain.times(player.UF.points.pow(3).add(1))
 	if (hasMilestone('UF', 128)) gain = gain.times(player.UF.points.pow(3).add(1))
 	
@@ -272,6 +276,7 @@ function getPointGenExp(){
 
 	if (hasUpgrade("MS", 31)) exp = exp.times(2)
 	if(hasUpgrade('UF',11)) exp = exp.times(4)
+	if(hasUpgrade('UF',25)) exp = exp.times(upgradeEffect('UF',25))
 	return exp
 }
 
@@ -285,7 +290,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasUpgrade('UF',15)
+	return hasChallenge('I',62)
 }
 
 

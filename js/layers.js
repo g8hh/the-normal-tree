@@ -41,6 +41,7 @@ addLayer("N", {
         if (hasAchievement("A", 33)) mult = mult.times(5)
        if (hasUpgrade('N',14)) mult = mult.times(upgradeEffect('N', 14))
        if (hasUpgrade('UF',14)) mult = mult.times(upgradeEffect('UF', 14))
+       if (hasUpgrade('UF',21)) mult = mult.times(upgradeEffect('UF', 21))
        if (hasUpgrade('F',11)) mult = mult.times(upgradeEffect('F', 11))
         if (hasMilestone('F', 1)) mult = mult.times(player.F.points.add(1))
         if (hasMilestone('MS', 1)) mult = mult.times(1e20)
@@ -53,6 +54,7 @@ addLayer("N", {
         let mult=new Decimal(1) 
         if (hasMilestone('UF',11)&&(!inChallenge("NN", 21)&&!hasChallenge("NN", 21))) mult = mult.times(buyableEffect('N',21))
         if (hasUpgrade('NN',32)) mult = mult.times(1.25)
+        if (hasUpgrade('UF',24)) mult = mult.times(upgradeEffect('UF',24))
         if (hasMilestone('I',1)) mult = mult.times(1.05)
         if (hasMilestone('I',2)) mult = mult.times(1.05)
         if (inChallenge('IP',11)) mult = mult.times(0.9)
@@ -80,6 +82,9 @@ addLayer("N", {
         if (hasChallenge('I',21)) mult = mult.times(1.3)
         if (hasChallenge('I',31)) mult = mult.times(1.4)
         if (hasChallenge('I',41)) mult = mult.times(1.5)
+        if (hasChallenge('I',51)) mult = mult.times(1.1)
+        if (hasChallenge('I',52)) mult = mult.times(1.1)
+        if (hasChallenge('I',61)) mult = mult.times(1.1)
         if (hasChallenge('I',22)) mult = mult.times(1.6)
         if (hasChallenge('I',32)) mult = mult.times(1.7)
         if (hasChallenge('IP',31)) mult = mult.times(1.3)
@@ -1214,7 +1219,9 @@ upgrades: {
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            effect(){return player.N.points.pow(0.00001).add(1)},
+            effect(){
+                if(hasUpgrade('UF',15)) return new Decimal("e3.5e9")
+                else return player.N.points.pow(0.00001).add(1)},
             unlocked(){
                 return hasUpgrade("UF", 73)
             },
@@ -1227,7 +1234,9 @@ upgrades: {
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            effect(){if(hasUpgrade('UF',74))  return player.points.pow(0.04).add(1)
+            effect(){  if(hasUpgrade('UF',15)) return new Decimal("e2e9")
+          
+                else if(hasUpgrade('UF',74))  return player.points.pow(0.04).add(1)
                 else  return player.points.pow(0.02).add(1)},
             unlocked(){
                 return hasUpgrade("UF", 73)
@@ -1241,7 +1250,8 @@ upgrades: {
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            effect(){return player.points.pow(0.2).add(1)},
+            effect(){ if(hasUpgrade('UF',15)) return new Decimal("e9e9")
+                else return player.points.pow(0.2).add(1)},
             unlocked(){
                 return hasUpgrade("UF", 73)
             },
@@ -1249,7 +1259,7 @@ upgrades: {
         },
         15: {
             title: "5",
-            description: "0.2.3 Endgame .",
+            description: "Boost '2', '3', '4'.",
             cost: new Decimal("e3.3e14"),
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
@@ -1259,6 +1269,73 @@ upgrades: {
                 return hasUpgrade("UF", 75)
             },
         },
+        21: {
+            title: "6",
+            description: "Negative numbers Boost Number gain.",
+            cost: new Decimal("e3.6386e14"),
+            currencyDisplayName: "Numbers",
+            currencyInternalName:"points",
+            currencyLayer:"N",
+          
+            effect(){return player.NN.points.pow(0.0005).add(1)},
+        unlocked(){
+            return hasUpgrade("UF", 15)
+        },
+        effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+        },
+        22: {
+            title: "7",
+            description: "You can get more then 2 Super prestige point.",
+            cost: new Decimal("e4.1036e14"),
+            currencyDisplayName: "Numbers",
+            currencyInternalName:"points",
+            currencyLayer:"N",
+         
+        unlocked(){
+            return hasUpgrade("UF", 21)
+        },
+    },
+    23: {
+        title: "8",
+        description: "You can finish Boost or nerf after get e9e15 Number.",
+        cost: new Decimal("e5e16"),
+        currencyDisplayName: "Numbers",
+        currencyInternalName:"points",
+        currencyLayer:"N",
+     
+    unlocked(){
+        return hasUpgrade("UF", 22)
+    },
+   
+},
+24: {
+    title: "9",
+    description: "Number boost themselves.",
+    cost: new Decimal("e7.2466e16"),
+    currencyDisplayName: "Numbers",
+    currencyInternalName:"points",
+    currencyLayer:"N",
+    effectDisplay() { return "^ "+format(upgradeEffect(this.layer, this.id)) },
+    effect() { return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1)},
+ 
+unlocked(){
+    return hasUpgrade("UF", 23)
+},
+},
+25: {
+    title: "10",
+    description: "Point boost themselves.",
+    cost: new Decimal("e8.448e16"),
+    currencyDisplayName: "Numbers",
+    currencyInternalName:"points",
+    currencyLayer:"N",
+    effectDisplay() { return "^ "+format(upgradeEffect(this.layer, this.id)) },
+    effect() { return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1)},
+ 
+unlocked(){
+    return hasUpgrade("UF", 23)
+},
+},
         71: {
             title: "Factor alpha",
             description: "Factor alpha effect is better",
@@ -1347,8 +1424,9 @@ microtabs: {
     "A": {
             "Number": {
                     content: [
-                           ["row",[ ["upgrade",11],  ["upgrade",12],  ["upgrade",13],  ["upgrade",14],  ["upgrade",15]]],
-                    ],
+                           ["row",[ ["upgrade",11], ["upgrade",12], ["upgrade",13], ["upgrade",14], ["upgrade",15]]],
+                           ["row",[ ["upgrade",21], ["upgrade",22], ["upgrade",23], ["upgrade",24], ["upgrade",25]]]
+                        ],
                     unlocked(){
                             return true
                     },
@@ -2188,30 +2266,54 @@ addLayer("I", {
             51: {
                 name: "Boost or nerf 1",
                 challengeDescription: "Number ^0.9 but NN ^1.2",
-                canComplete(){return player.N.points.gte(1e1000)},
+                canComplete(){
+                    if(hasUpgrade('UF',23)) return player.N.points.gte(1e1000)
+                    else return player.N.points.gte("ee100")},
                 goalDescription: "Do IP reset in this challenge to get more IP",
+                rewardDescription(){ 
+                    if(hasChallenge('I',51)) return "Number ^1.1"
+                    else return "??????"
+                },
               unlocked(){return hasUpgrade('IP',45)},
             },
             52: {
                 name: "Boost or nerf 2",
                 challengeDescription: "Number ^0.75 but NN ^1.4",
-                canComplete(){return player.N.points.gte(1e1000)},
+                canComplete(){
+                    if(hasUpgrade('UF',23)) return player.N.points.gte(1e1000)
+                    else return player.N.points.gte("ee100")},
                 goalDescription: "Do IP reset in this challenge to get more IP",
+                rewardDescription(){ 
+                    if(hasChallenge('I',52)) return "Number ^1.1"
+                    else return "??????"
+                },
               unlocked(){return hasUpgrade('IP',45)},
             },
     
             61: {
                 name: "Boost or nerf 3",
                 challengeDescription: "Number ^0.6 but NN ^1.8",
-                canComplete(){return player.N.points.gte(1e1000)},
+                canComplete(){
+                    if(hasUpgrade('UF',23)) return player.N.points.gte(1e1000)
+                    else return player.N.points.gte("ee100")},
                 goalDescription: "Do IP reset in this challenge to get more IP",
+                rewardDescription(){ 
+                    if(hasChallenge('I',61)) return "Number ^1.1"
+                    else return "??????"
+                },
               unlocked(){return hasMilestone('I',90000)},
             },
             62: {
                 name: "Boost or nerf 4",
                 challengeDescription: "Number ^0.1 but NN ^3.",
-                canComplete(){return player.N.points.gte(1e1000)},
+                canComplete(){
+                    if(hasUpgrade('UF',23)) return player.N.points.gte(1e1000)
+                    else return player.N.points.gte("ee100")},
                 goalDescription: "Do IP reset in this challenge to get more IP",
+                rewardDescription(){ 
+                    if(hasChallenge('I',62)) return "Unlock 1 layer"
+                    else return "??????"
+                },
               unlocked(){return hasUpgrade('IP',65)},
             },
 
@@ -3042,7 +3144,7 @@ addLayer("MS", {
         },
         41: {
             requirementDescription: "1 Super prestige point.",
-            effectDescription: "Super prestige point boost X and Y gain.",
+            effectDescription: "Super prestige point boost X and Y gain and Y +1.",
             done() { return player.MS.Prestige2.gte(1) }
         },
         42: {
@@ -3050,18 +3152,30 @@ addLayer("MS", {
             effectDescription: "Get 25 prestige point on reset and unlock 1 upgrade.",
             done() { return player.MS.Prestige2.gte(2) }
         },
+        55: {
+            requirementDescription: "5 Super prestige point.",
+            effectDescription: "Get 100 prestige point on reset.",
+            done() { return player.MS.Prestige2.gte(5) }
+        },
+        400: {
+            requirementDescription: "40 Super prestige point.",
+            effectDescription: "You can't get any super prestige point and remove the hardcap of Exponentiation popint gain but you get less Exponentiation point.",
+            done() { return player.MS.Prestige2.gte(40) }
+        },
     },
     update(diff){
         let xgain = new Decimal(0)
 
         let ygain = new Decimal(0)
-        if(player.MS.Exponentiation.gte("1e6000")) return player.MS.Exponentiation=new Decimal("1e6000")
+        if(hasMilestone('MS',400)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y.div(100)))
+        else if(player.MS.Exponentiation.gte("1e6000")) return player.MS.Exponentiation=new Decimal("1e6000")
         else if(hasMilestone('IP',1000000)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         else if(player.MS.Exponentiation.gte("1e2500")&&!hasUpgrade('IP',66)) return player.MS.Exponentiation=new Decimal("1e2500")
         else player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         if(hasUpgrade("MS",11))xgain=new Decimal(1)
         if(hasUpgrade("MS",12))ygain=new Decimal(0.01)
-        if(hasMilestone('MS',41)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).pow(player.MS.Prestige2.add(1).pow(0.5)))
+        if(hasUpgrade('UF',23)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).add(1).pow(player.MS.Prestige2.add(1).pow(0.5).times(1.5)))
+        else if(hasMilestone('MS',41)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).add(1).pow(player.MS.Prestige2.add(1).pow(0.5)))
         else if(hasUpgrade('IP',66)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)))
         else if(hasMilestone('MS',4))  player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(6).times(player.MS.Prestige.add(1)))
         else if (hasUpgrade('MS',25))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(3))
@@ -3069,7 +3183,8 @@ addLayer("MS", {
         else if (hasUpgrade('MS',22))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)))
         else if (hasUpgrade('MS',14))player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)))
         else player.MS.y=player.MS.y.plus(ygain.times(diff))
-        if(hasMilestone('MS',41)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(15).times(player.MS.Prestige.add(1)).pow(player.MS.Prestige2.add(1).pow(0.5)))
+        if(hasUpgrade('UF',23)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(15).times(player.MS.Prestige.add(1)).pow(player.MS.Prestige2.add(1).pow(0.5).times(1.5)))
+        else if(hasMilestone('MS',41)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(15).times(player.MS.Prestige.add(1)).pow(player.MS.Prestige2.add(1).pow(0.5)))
         else if(hasUpgrade('IP',66)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(15).times(player.MS.Prestige.add(1)))
         else if(hasMilestone('MS',4)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(5).times(player.MS.Prestige.add(1)))
         else if (hasUpgrade('MS',25))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)).times(player.MS.Exponentiation.add(1).log(10).pow(0.5)).pow(1.25).times(2.5))
@@ -3180,7 +3295,7 @@ addLayer("MS", {
         
             11:{
                 display() {return "Reset Your x and y for 1 Prestige point (Req: 1e150 Exponentiation points)."},
-                canClick(){return player.MS.Exponentiation.gte("1e150")&&((!hasMilestone('MS',8))||(hasMilestone('IP',1000000)))},
+                canClick(){return player.MS.Exponentiation.gte("1e150")&&!player.MS.Prestige.gte("100")&&((!hasMilestone('MS',8))||(hasMilestone('IP',1000000)))},
                 onClick(){
                     player.MS.Prestige=player.MS.Prestige.plus(1)
                     player.MS.x=new Decimal(1)
@@ -3192,7 +3307,7 @@ addLayer("MS", {
     },
     12:{
         display() {return "Reset Your x, y, prestige point and MS milestone for 1 Super Prestige point (Req: 1e4000 Exponentiation points and 25 prestige point.)."},
-        canClick(){return player.MS.Exponentiation.gte("1e4000")&&player.MS.Prestige.gte("25")&&!player.MS.Prestige2.gte("2")},
+        canClick(){return player.MS.Exponentiation.gte("1e4000")&&player.MS.Prestige.gte("25")&&(!player.MS.Prestige2.gte("2")||(hasUpgrade('UF',22))&&(!player.MS.Prestige2.gte("40")))},
         onClick(){
          
             player.MS.Prestige2=player.MS.Prestige2.plus(1)
@@ -3200,12 +3315,15 @@ addLayer("MS", {
             player.MS.milestones = []
             player.MS.y=new Decimal(1) 
             player.MS.Exponentiation=new Decimal(1) 
-           if(hasMilestone('MS',42)) player.MS.Prestige=new Decimal(25) 
-
+            if(player.MS.Prestige2.gte(5)) {player.MS.Prestige=new Decimal(100)}
+            else if(player.MS.Prestige2.gte(2)) {player.MS.Prestige=new Decimal(25)}
+            else {player.MS.Prestige=new Decimal(0)}
+        
         },
 
 },
 },
+
     layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)},
     tabFormat: {
         "Milestones": {
@@ -3235,7 +3353,7 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
             }],
         "blank",
             ["display-text",function(){
-              let s="You have "+format(Decimal.pow(player.MS.x,player.MS.y))+" Exponentiation points."
+              let s="You have "+format(player.MS.Exponentiation)+" Exponentiation points."
               return s}],
               "blank",
              "upgrades",
@@ -3255,7 +3373,7 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
               s+="Your x is "+format(player.MS.x)+"<br>"
               s+="Your y is "+format(player.MS.y)+"<br>"
            
-              s+="x^y = "+format(Decimal.pow(player.MS.x,player.MS.y))+"<br>"
+              s+="x^y = "+format(player.MS.Exponentiation)+"<br>"
              
               return s
             }],
@@ -3274,4 +3392,53 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
 
 
         
+})
+addLayer("E", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+    canReset(){return inChallenge('I',62)&&player.N.points.gte("eeeeeeeee10")},
+
+    color: "#80ff80",                       // The color for this layer, which affects many elements.
+    resource: "Eternity points",            // The name of this layer's main prestige resource.
+    row: 3,                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "Numbers",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.N.points },  // A function to return the current amount of baseResource.
+
+    requires: new Decimal("eeeeeeeee10"),              // The amount of the base needed to  gain 1 of the prestige currency.
+                                            // Also the amount required to unlock the layer.
+
+    type: "normal",                         // Determines the formula used for calculating prestige currency.
+    exponent: 1e-16,     
+            
+
+    gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
+        return new Decimal(1)               // Factor in any bonuses multiplying gain here.
+    },
+    gainExp() {                             // Returns the exponent to your gain of the prestige resource.
+        return new Decimal(1)
+    },
+
+    layerShown() { return (hasChallenge('I',62)) },          // Returns a bool for if this layer's node should be visible in the tree.
+    branches:["I"],
+    tabFormat: {
+        "Milestones": {
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                ["display-text",function(){
+                    let s=""
+                   
+                 
+                    s+="You can reset while you are in Boost or nerf 4.<br>"
+                    return s
+                  }],
+                "milestones"
+            ]
+        },
+    }
+
 })
