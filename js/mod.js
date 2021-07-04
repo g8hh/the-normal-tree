@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.3.1",
-	name: "Super Infinity",
+	num: "0.2.3.2",
+	name: "unbalance?",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.3.2</h3><br>
+- Added Eternity points.<br>
+- Added 5 EP milestone.<br>
+- Added 1 EP challenge (placeholder).<br>
+- Endgame: 20 EP.<br>
 <h3>v0.2.3.1</h3><br>
 - Added 5 UF upgrades.<br>
 - Endgame: Complete Boost of nerf 4.<br>
@@ -290,7 +295,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasChallenge('I',62)
+	return player.E.points.gte(20)
 }
 
 

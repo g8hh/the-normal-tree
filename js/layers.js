@@ -100,6 +100,8 @@ addLayer("N", {
         if (hasChallenge('NN',31)) mult = mult.times(1.5)
         if (hasChallenge('NN',22)) mult = mult.times(player.FS.points.add(1).pow(0.5))
         if  (hasMilestone('IP',6000000)) mult = mult.times(3)
+        if  (hasMilestone('E',1)) mult = mult.times(1.2)
+        if  (hasMilestone('E',12)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
         return mult
 
     },
@@ -1007,11 +1009,13 @@ else return new Decimal("1e450000") },
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("milestones")
         if (hasMilestone("I", 4) && resettingLayer=="I") keep.push("upgrades")
         if (hasMilestone("IP", 2) && resettingLayer=="IP") keep.push("upgrades")
+        if (hasMilestone("E", 5) && resettingLayer=="E") keep.push("upgrades")
         if (hasMilestone("IP", 2) && resettingLayer=="IP") keep.push("milestones")
         if (resettingLayer=="I") keep.push("challenges")
         if (resettingLayer=="IP") keep.push("challenges")
         if (resettingLayer=="FS") keep.push("challenges")
         if (resettingLayer=="MS") keep.push("challenges")
+        if (resettingLayer=="E") keep.push("challenges")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     tabFormat: {
@@ -1060,7 +1064,7 @@ else return new Decimal("1e450000") },
         ]
       },
       },
-      layerShown(){return player.I.best.gte(3)},
+      layerShown(){return player.I.best.gte(3)||hasMilestone('E',1)},
       passiveGeneration(){return hasMilestone('IP',6)? 1 : 0},
       automateStuff(){
         if(hasUpgrade("IP",21)){
@@ -1117,6 +1121,7 @@ addLayer("UF", {
         if (hasUpgrade("UF", 11) && resettingLayer=="IP") keep.push("upgrades")
         if (hasUpgrade("UF", 11) && resettingLayer=="FS") keep.push("upgrades")
         if (hasUpgrade("UF", 11) && resettingLayer=="MS") keep.push("upgrades")
+        if (hasMilestone("E", 8) && resettingLayer=="E") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     milestones: {
@@ -1221,6 +1226,7 @@ upgrades: {
             currencyLayer:"N",
             effect(){
                 if(hasUpgrade('UF',15)) return new Decimal("e3.5e9")
+                else if(player.N.points.gte("e3.5e14")) return new Decimal("e3.5e9")
                 else return player.N.points.pow(0.00001).add(1)},
             unlocked(){
                 return hasUpgrade("UF", 73)
@@ -1235,7 +1241,7 @@ upgrades: {
             currencyInternalName:"points",
             currencyLayer:"N",
             effect(){  if(hasUpgrade('UF',15)) return new Decimal("e2e9")
-          
+            else if(player.points.gte("e50000000000")) return new Decimal("e2e9")
                 else if(hasUpgrade('UF',74))  return player.points.pow(0.04).add(1)
                 else  return player.points.pow(0.02).add(1)},
             unlocked(){
@@ -1251,6 +1257,7 @@ upgrades: {
             currencyInternalName:"points",
             currencyLayer:"N",
             effect(){ if(hasUpgrade('UF',15)) return new Decimal("e9e9")
+            else if(player.points.gte("e4.5e10")) return new Decimal("e9e9")
                 else return player.points.pow(0.2).add(1)},
             unlocked(){
                 return hasUpgrade("UF", 73)
@@ -1495,7 +1502,7 @@ addLayer("F", {
     hotkeys: [
         {key: "f", description: "F: Reset for Factors", onPress(){if (canReset(this.layer)) doReset(this.layer)},
         onPress() { if (player.F.unlocked) doReset("F") },
-        unlocked() {return hasUpgrade('N', 15)} // Determines if you can use the hotkey, optional
+        unlocked() {return hasMilestone('F', 1)} // Determines if you can use the hotkey, optional
     },
     ],
     canBuyMax(){
@@ -1505,7 +1512,7 @@ addLayer("F", {
     },resetsNothing(){
         return hasMilestone('F',6000);
     },
- 
+   
     milestones: {
         1: {
             requirementDescription: "1 factor",
@@ -2132,9 +2139,9 @@ addLayer("I", {
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "i", description: "I: Reset for Infinity Factor", onPress(){if (canReset(this.layer)) doReset(this.layer)},
-        onPress() { if (player.UF.unlocked) doReset("I") },
-        unlocked() {return hasChallenge('N', 22)} // Determines if you can use the hotkey, optional
+        {key: "i", description: "I: Reset for Infinity", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.I.unlocked) doReset("I") },
+        unlocked() {return hasMilestone('I', 1)} // Determines if you can use the hotkey, optional
     },
     ],
     milestones: {
@@ -2364,6 +2371,8 @@ addLayer("I", {
     doReset(resettingLayer) {
         let keep = [];
         if (hasMilestone("MS", 3) && resettingLayer=="MS") keep.push("milestones")
+        if (resettingLayer=="E") keep.push("challenges")
+        if (resettingLayer=="E") keep.push("milestones")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
 })
@@ -2680,6 +2689,12 @@ addLayer("FS", {
     },autoPrestige(){
         return hasMilestone('MS',40);
     },
+    hotkeys: [
+        {key: "F", description: "Shift + F: Reset for Factor shift", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.FS.unlocked) doReset("FS") },
+        unlocked() {return hasMilestone('I', 1)} // Determines if you can use the hotkey, optional
+    },
+    ],
     row: 2, // Row the layer is in on the tree (0 is the first row)
     milestones: {
         1: {
@@ -2703,13 +2718,25 @@ addLayer("IP", {
     resource: "Infinity point", // Name of prestige currency
     baseResource: "Negative numbers", // Name of resource prestige is based on
     baseAmount() {return player.NN.points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    type(){
+     return  "normal"}, // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent(){
         if(hasUpgrade('IP',13))return 0.005
 else return 0.01
     },
+ 
+    prestigeButtonText() { 
+        return "Reset for <b>" + formatWhole(tmp[this.layer].resetGain) + "</b> Infinity points" +
+         (Decimal.gte(tmp[this.layer].resetGain, 1000) ? "" : "<br/>Next at " + formatWhole(tmp[this.layer].nextAt) + " numbers")
+    },      
     branches:["NN","I"],
      // Prestige currency exponent
+     hotkeys: [
+        {key: "I", description: "Shift + I: Reset for Infinity point", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.IP.unlocked) doReset("IP") },
+        unlocked() {return hasMilestone('IP', 1)} // Determines if you can use the hotkey, optional
+    },
+    ],
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if(hasUpgrade('F',46)) mult = mult.times(1e15)
@@ -2796,6 +2823,14 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
             effectDescription: "gain 100% of Infinity point on reset per second",
             done() { return player.IP.points.gte("1e30000000") }
         },
+    },
+    doReset(resettingLayer) {
+        let keep = [];
+    
+        if (resettingLayer=="E") keep.push("milestones")
+        if (resettingLayer=="E"&&hasMilestone('E',3)) keep.push("upgrades")
+        if (resettingLayer=="E"&&hasMilestone('E',5)) keep.push("challenges")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     passiveGeneration(){return hasMilestone('IP',30000000)? 1 : 0},
     upgrades:{
@@ -3100,6 +3135,12 @@ addLayer("MS", {
         
     },
     branches:["IP","I","FS"],
+    hotkeys: [
+        {key: "m", description: "M: Reset for Mathematics Symbol", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.MS.unlocked) doReset("MS") },
+        unlocked() {return hasMilestone('MS', 1)} // Determines if you can use the hotkey, optional
+    },
+    ],
      // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
@@ -3398,7 +3439,7 @@ addLayer("E", {
         unlocked: true,                     // You can add more variables here to add them to your layer.
         points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
     }},
-    canReset(){return inChallenge('I',62)&&player.N.points.gte("eeeeeeeee10")},
+    canReset(){return inChallenge('I',62)&&player.N.points.gte("e9e15")},
 
     color: "#80ff80",                       // The color for this layer, which affects many elements.
     resource: "Eternity points",            // The name of this layer's main prestige resource.
@@ -3407,18 +3448,79 @@ addLayer("E", {
     baseResource: "Numbers",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.N.points },  // A function to return the current amount of baseResource.
 
-    requires: new Decimal("eeeeeeeee10"),              // The amount of the base needed to  gain 1 of the prestige currency.
-                                            // Also the amount required to unlock the layer.
+    requires: function(){
 
-    type: "normal",                         // Determines the formula used for calculating prestige currency.
-    exponent: 1e-16,     
-            
+		return new Decimal("e9e15");
+	},            
+    prestigeButtonText() { 
+        return "Reset for <b>" + formatWhole(tmp[this.layer].resetGain) + "</b> Eternity points" +
+         (Decimal.gte(tmp[this.layer].resetGain, 1000) ? "" : "<br/>Next at " + formatWhole(tmp[this.layer].nextAt) + " numbers")
+    },                                    
+    type: "custom",                         
+    exponent: 1,     
+    hotkeys: [
+        {key: "e", description: "E: Reset for Eternity points", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.E.unlocked) doReset("E") },
+        unlocked() {return hasMilestone('E', 1)} // Determines if you can use the hotkey, optional
+    },
+    ],
+    getResetGain() {
+        if(!player.N.points.gte("e9e15")) return 0
+        else if(!player.N.points.gte("ee16")&&player.N.points.gte("e9e15")) return 1
+        else return formatWhole(player.N.points.log(10).log(10).minus(15))
+    },
+    getNextAt: function(){
+        if(!player.N.points.gte("e9e15")) return "e9.000e15"
+        return "e" + Decimal.pow(10, new Decimal(tmp[this.layer].resetGain).add(16))
+	},
 
     gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
-        return new Decimal(1)               // Factor in any bonuses multiplying gain here.
+        return new Decimal(1)          // Factor in any bonuses multiplying gain here.
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
         return new Decimal(1)
+    },
+    milestones:{
+        1: {
+            requirementDescription: "1 Eternity points",
+            effectDescription: "Keep IP and I milestone, Infinity challenge and Negative numbers challenge on reset. Number ^1.2.",
+            done() { return player.E.points.gte(1) }
+        },
+        3: {
+            requirementDescription: "3 Eternity points",
+            effectDescription: "Keep IP upgrade on reset.",
+            done() { return player.E.points.gte(3) }
+        },
+        5: {
+            requirementDescription: "5 Eternity points",
+            effectDescription: "Keep NN upgrade and IP challenge on reset.",
+            done() { return player.E.points.gte(5) }
+        },
+        8: {
+            requirementDescription: "8 Eternity points",
+            effectDescription: "Keep UF upgrade on reset.",
+            done() { return player.E.points.gte(8) }
+        },
+        12: {
+            requirementDescription: "12 Eternity points",
+            effectDescription: "Unlock 1 challenge and EP boost Number gain.",
+            done() { return player.E.points.gte(12) }
+        },
+    },
+    challenges:{
+        11:{
+            name: "Choose",
+        challengeDescription: "You can choose your nerf",
+        canComplete(){
+        return player.N.points.gte(1e1000)&&inChallenge('I',62)
+           },
+        goalDescription: "e9e15 Number while you are in Boost or nerf 4.",
+        rewardDescription(){ 
+    return "You can gain challenge point."
+
+        },
+      unlocked(){return hasMilestone('E',12)},
+    }
     },
 
     layerShown() { return (hasChallenge('I',62)) },          // Returns a bool for if this layer's node should be visible in the tree.
@@ -3439,6 +3541,15 @@ addLayer("E", {
                 "milestones"
             ]
         },
-    }
+        "Challenges": {
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                "challenges"
+            ]
+        },
+    },
+
 
 })
