@@ -102,6 +102,8 @@ addLayer("N", {
         if  (hasMilestone('IP',6000000)) mult = mult.times(3)
         if  (hasMilestone('E',1)) mult = mult.times(1.2)
         if  (hasMilestone('E',12)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
+        if  (hasMilestone('E',300)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
+        if(inChallenge('E',11)) mult = mult.times(player.E.Npower)
         return mult
 
     },
@@ -2727,7 +2729,7 @@ else return 0.01
  
     prestigeButtonText() { 
         return "Reset for <b>" + formatWhole(tmp[this.layer].resetGain) + "</b> Infinity points" +
-         (Decimal.gte(tmp[this.layer].resetGain, 1000) ? "" : "<br/>Next at " + formatWhole(tmp[this.layer].nextAt) + " numbers")
+         (Decimal.gte(tmp[this.layer].resetGain, 1000) ? "" : "<br/>Next at " + formatWhole(tmp[this.layer].nextAt) + " Negative numbers")
     },      
     branches:["NN","I"],
      // Prestige currency exponent
@@ -3200,7 +3202,7 @@ addLayer("MS", {
         },
         400: {
             requirementDescription: "40 Super prestige point.",
-            effectDescription: "You can't get any super prestige point and remove the hardcap of Exponentiation popint gain but you get less Exponentiation point.",
+            effectDescription: "You can't get any super prestige point and remove the hardcap of Exponentiation point gain but you get less Exponentiation point.",
             done() { return player.MS.Prestige2.gte(40) }
         },
     },
@@ -3437,9 +3439,14 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
 addLayer("E", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
-        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+        points: new Decimal(0), 
+        Npower: new Decimal(1),     
+        Ppower: new Decimal(1),    
+        CP: new Decimal(0),  
+        CPget: new Decimal(0),      // "points" is the internal name for the main resource of the layer.
     }},
-    canReset(){return inChallenge('I',62)&&player.N.points.gte("e9e15")},
+    canReset(){if(hasMilestone('E',22))  return player.N.points.gte("e9e15")
+        else return inChallenge('I',62)&&player.N.points.gte("e9e15")},
 
     color: "#80ff80",                       // The color for this layer, which affects many elements.
     resource: "Eternity points",            // The name of this layer's main prestige resource.
@@ -3453,8 +3460,9 @@ addLayer("E", {
 		return new Decimal("e9e15");
 	},            
     prestigeButtonText() { 
-        return "Reset for <b>" + formatWhole(tmp[this.layer].resetGain) + "</b> Eternity points" +
-         (Decimal.gte(tmp[this.layer].resetGain, 1000) ? "" : "<br/>Next at " + formatWhole(tmp[this.layer].nextAt) + " numbers")
+        return "Reset for <b>" + formatWhole(tmp[this.layer].resetGain) + "</b> Eternity points" 
+    
+
     },                                    
     type: "custom",                         
     exponent: 1,     
@@ -3467,15 +3475,18 @@ addLayer("E", {
     getResetGain() {
         if(!player.N.points.gte("e9e15")) return 0
         else if(!player.N.points.gte("ee16")&&player.N.points.gte("e9e15")) return 1
-        else return formatWhole(player.N.points.log(10).log(10).minus(15))
+        else return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(2)))
     },
     getNextAt: function(){
         if(!player.N.points.gte("e9e15")) return "e9.000e15"
         return "e" + Decimal.pow(10, new Decimal(tmp[this.layer].resetGain).add(16))
 	},
 
-    gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
-        return new Decimal(1)          // Factor in any bonuses multiplying gain here.
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+
+
+        return mult
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
         return new Decimal(1)
@@ -3506,6 +3517,21 @@ addLayer("E", {
             effectDescription: "Unlock 1 challenge and EP boost Number gain.",
             done() { return player.E.points.gte(12) }
         },
+        21: {
+            requirementDescription: "1 Challenge points",
+            effectDescription: "Challenge points boost EP gain.",
+            done() { return player.E.CP.gte(1) }
+        },
+        22: {
+            requirementDescription: "100 Eternity points",
+            effectDescription: "You can do reset without in Boost or Nerf 4 (Exclude challenge).",
+            done() { return player.E.points.gte(100) }
+        },
+ 300: {
+            requirementDescription: "300 Eternity points",
+            effectDescription: "EP boost Number gain.",
+            done() { return player.E.points.gte(300) }
+        },
     },
     challenges:{
         11:{
@@ -3519,8 +3545,48 @@ addLayer("E", {
     return "You can gain challenge point."
 
         },
+        onExit(){
+            if(player.N.points.gte("e9e15")&&player.E.CPget.gte(player.E.CP)&&inChallenge('I',62)) player.E.CP=player.E.CPget
+        },
       unlocked(){return hasMilestone('E',12)},
     }
+    },
+    clickables:{
+
+            11:{
+                display() {return "Number ^0.5 per click. Currently: ^" +  format(player.E.Npower)},
+
+                canClick(){return true},
+                onClick(){player.E.Npower = player.E.Npower.times(0.5)
+                player.E.CPget = player.E.CPget.add(1)}
+                },
+                12:{
+                    display() {return "Point ^0.3 per click. Currently: ^" +  format(player.E.Ppower)},
+    
+                    canClick(){return true},
+                    onClick(){player.E.Ppower = player.E.Ppower.times(0.3)
+                        player.E.CPget = player.E.CPget.add(1)}
+                    },
+                41:{
+                    display() {return "Clear selector data"},
+    
+                    canClick(){return true},
+                    onClick(){
+                        player.E.Npower = new Decimal(1)
+                        player.E.Ppower = new Decimal(1)
+                        player.E.CPget = new Decimal(0)
+                    }
+                    },
+                    42:{
+                        display() {return "Reset challenge points."},
+        
+                        canClick(){return true},
+                        onClick(){
+                            player.E.CP = new Decimal(0)
+                        }
+                        },
+         
+
     },
 
     layerShown() { return (hasChallenge('I',62)) },          // Returns a bool for if this layer's node should be visible in the tree.
@@ -3535,7 +3601,7 @@ addLayer("E", {
                     let s=""
                    
                  
-                    s+="You can reset while you are in Boost or nerf 4.<br>"
+                    if(!hasMilestone('E',22)) s+="You can reset while you are in Boost or nerf 4.<br>"
                     return s
                   }],
                 "milestones"
@@ -3546,7 +3612,18 @@ addLayer("E", {
                 "main-display",
                 "prestige-button",
                 "blank",
-                "challenges"
+                "challenges",
+                "clickables",
+                
+            ["display-text",function(){
+                let s=""
+             
+                s+="You Will get "+format(player.E.CPget)+" Challenge points.<br>"
+                s+="You have "+format(player.E.CP)+" Challenge points. (Based on best)<br>"
+
+                return s
+              }],
+
             ]
         },
     },

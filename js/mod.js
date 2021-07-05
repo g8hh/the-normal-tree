@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.3.2",
-	name: "unbalance?",
+	num: "0.2.3.3",
+	name: "Choose",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.3.3</h3><br>
+- Added 1 EP challenge.<br>
+- Added 2 EP milestone.<br>
+- Added 4 EP clickables.<br>
+- Endgame: 600 EP and 2 Challenge points.<br>
 <h3>v0.2.3.2</h3><br>
 - Added Eternity points.<br>
 - Added 5 EP milestone.<br>
@@ -282,6 +287,7 @@ function getPointGenExp(){
 	if (hasUpgrade("MS", 31)) exp = exp.times(2)
 	if(hasUpgrade('UF',11)) exp = exp.times(4)
 	if(hasUpgrade('UF',25)) exp = exp.times(upgradeEffect('UF',25))
+	if(inChallenge('E',11)) exp = exp.times(player.E.Ppower)
 	return exp
 }
 
@@ -295,7 +301,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.E.points.gte(20)
+	return player.E.points.gte(600)&&player.E.CP.gte(2)
 }
 
 
