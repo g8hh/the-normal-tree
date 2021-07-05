@@ -3556,14 +3556,14 @@ addLayer("E", {
             11:{
                 display() {return "Number ^0.5 per click. Currently: ^" +  format(player.E.Npower)},
 
-                canClick(){return true},
+                canClick(){return (!inChallenge('E',11))},
                 onClick(){player.E.Npower = player.E.Npower.times(0.5)
                 player.E.CPget = player.E.CPget.add(1)}
                 },
                 12:{
                     display() {return "Point ^0.3 per click. Currently: ^" +  format(player.E.Ppower)},
     
-                    canClick(){return true},
+                    canClick(){return (!inChallenge('E',11))},
                     onClick(){player.E.Ppower = player.E.Ppower.times(0.3)
                         player.E.CPget = player.E.CPget.add(1)}
                     },
