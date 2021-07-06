@@ -1,5 +1,6 @@
 addLayer("N", {
-    name: "Numbers", // This is optional, only used in a few places, If absent it just uses the layer id.
+    name(){return "Numbers"
+}, // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "N", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
@@ -10,7 +11,7 @@ addLayer("N", {
     requires(){
         return new Decimal(5)
     }, 
-    resource: "Numbers", // Name of prestige currency
+    resource(){return "Numbers"}, // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -30,7 +31,7 @@ addLayer("N", {
         if (inChallenge('F', 23)) mult = mult.times(0.3)
         if (hasChallenge('F', 21)) mult = mult.times(1.5)
         if (hasChallenge('F', 11)) mult = mult.times(3)
-        if (hasUpgrade('NN', 11)) mult = mult.times(1e4)
+        if (hasUpgrade('NN', 11)&&(!inChallenge('NN',32)&&!hasChallenge('NN',32))) mult = mult.times(1e4)
         if (hasChallenge('F', 22)) mult = mult.times(2)
         if (hasAchievement("A", 12)) mult = mult.times(3)
         if (hasAchievement("A", 45)) mult = mult.times(1e5)
@@ -53,7 +54,7 @@ addLayer("N", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         let mult=new Decimal(1) 
         if (hasMilestone('UF',11)&&(!inChallenge("NN", 21)&&!hasChallenge("NN", 21))) mult = mult.times(buyableEffect('N',21))
-        if (hasUpgrade('NN',32)) mult = mult.times(1.25)
+        if (hasUpgrade('NN',32)&&(!inChallenge('NN',32)&&!hasChallenge('NN',32))) mult = mult.times(1.25)
         if (hasUpgrade('UF',24)) mult = mult.times(upgradeEffect('UF',24))
         if (hasMilestone('I',1)) mult = mult.times(1.05)
         if (hasMilestone('I',2)) mult = mult.times(1.05)
@@ -68,6 +69,7 @@ addLayer("N", {
         if (inChallenge('NN',21)) mult = mult.times(0.012)
         if (inChallenge('NN',22)) mult = mult.times(0.023)
         if (inChallenge('NN',31)) mult = mult.times(0.034)
+        if (inChallenge('NN',32)) mult = mult.times(0.0011)
         if (inChallenge('IP',31)) mult = mult.times(0.15)
         if (inChallenge('I',11)) mult = mult.times(0.3)
         if (inChallenge('I',31)) mult = mult.times(0.09)
@@ -98,6 +100,7 @@ addLayer("N", {
         if (hasUpgrade('UF',75)) mult = mult.times(1.5)
         if (hasChallenge('NN',21)) mult = mult.times(8)
         if (hasChallenge('NN',31)) mult = mult.times(1.5)
+        if (hasChallenge('NN',32)) mult = mult.times(3)
         if (hasChallenge('NN',22)) mult = mult.times(player.FS.points.add(1).pow(0.5))
         if  (hasMilestone('IP',6000000)) mult = mult.times(3)
         if  (hasMilestone('E',1)) mult = mult.times(1.2)
@@ -680,7 +683,8 @@ addLayer("NN", {
         if(hasMilestone('I',6)&&((inChallenge('I',11))||(inChallenge('I',12))||(inChallenge('I',21)))) return new Decimal("1e470")
         else return new Decimal("1e940")
     }, // Can be a function that takes requirement increases into account
-    resource: "Negative numbers", // Name of prestige currency
+    resource(){return "Negative numbers"
+    }, // Name of prestige currency
     baseResource: "Numbers", // Name of resource prestige is based on
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -712,6 +716,8 @@ addLayer("NN", {
         if (inChallenge('I',61)) mult = mult.times(1.8)
         if (inChallenge('I',62)) mult = mult.times(3)
         if (hasMilestone('IP',10000)) mult = mult.times(1.05)
+        if(inChallenge('E',11)&&(!player.E.NNpower.gte(1))) mult = mult.times(0)
+        if(inChallenge('NN',32)||hasChallenge('NN',32)) mult = mult.times(0)
         
         return mult
     },
@@ -1005,6 +1011,17 @@ else return new Decimal("1e450000") },
           unlocked(){return hasUpgrade('IP',66)},
          onEnter(){return player.UF.points=new Decimal(0)},
     },
+    32: {
+        name: "Negative Negative numbers",
+        challengeDescription: "Number gain ^0.0011 and Remove All feature in NN layer (exclude NN challenge) and you can't get NN, IP is base on Number.",
+        canComplete(){return player.N.points.gte("e3.333e14")},
+        goalDescription: "e3.333e14 numbers",
+        rewardDescription(){return "Number ^3 but remove NN layer (You still have Challenge reward). Unlock 1 UF upgrade."},
+      unlocked(){return hasMilestone('E',5000)},
+     onEnter(){player.NN.points=new Decimal(0)
+        player.IP.points=new Decimal(0)
+        player.I.points=new Decimal(0)},
+},
     },
     doReset(resettingLayer) {
         let keep = [];
@@ -1066,7 +1083,7 @@ else return new Decimal("1e450000") },
         ]
       },
       },
-      layerShown(){return player.I.best.gte(3)||hasMilestone('E',1)},
+      layerShown(){return (player.I.best.gte(3)||hasMilestone('E',1))&&!hasChallenge('NN',32)},
       passiveGeneration(){return hasMilestone('IP',6)? 1 : 0},
       automateStuff(){
         if(hasUpgrade("IP",21)){
@@ -1084,8 +1101,9 @@ addLayer("UF", {
 		points: new Decimal(0),
     }},
     color: "#FF0000",
-    requires: new Decimal(1e30), // Can be a function that takes requirement increases into account
-    resource: "Upgrade Factor", // Name of prestige currency
+    requires: new Decimal(1e30),
+    resource(){return "Upgrade Factor"
+}, // Can be a function that takes requirement increases into account
     baseResource: "Numbers", // Name of resource prestige is based on
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -1325,14 +1343,16 @@ upgrades: {
     currencyInternalName:"points",
     currencyLayer:"N",
     effectDisplay() { return "^ "+format(upgradeEffect(this.layer, this.id)) },
-    effect() { return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1)},
+    effect() { 
+        if(hasMilestone('IP',4.4e12)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15)
+        else return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1)},
  
 unlocked(){
     return hasUpgrade("UF", 23)
 },
 },
 25: {
-    title: "10",
+    title: "0",
     description: "Point boost themselves.",
     cost: new Decimal("e8.448e16"),
     currencyDisplayName: "Numbers",
@@ -1343,6 +1363,19 @@ unlocked(){
  
 unlocked(){
     return hasUpgrade("UF", 23)
+},
+},
+31: {
+    title: "+",
+    description: "Unlock more challenge selector. (not yet)",
+    cost: new Decimal("e1.35e19"),
+    currencyDisplayName: "Numbers",
+    currencyInternalName:"points",
+    currencyLayer:"N",
+    
+ 
+unlocked(){
+    return hasChallenge("NN", 32)
 },
 },
         71: {
@@ -1434,7 +1467,8 @@ microtabs: {
             "Number": {
                     content: [
                            ["row",[ ["upgrade",11], ["upgrade",12], ["upgrade",13], ["upgrade",14], ["upgrade",15]]],
-                           ["row",[ ["upgrade",21], ["upgrade",22], ["upgrade",23], ["upgrade",24], ["upgrade",25]]]
+                           ["row",[ ["upgrade",21], ["upgrade",22], ["upgrade",23], ["upgrade",24], ["upgrade",25]]],
+                           ["row",[ ["upgrade",31], ["upgrade",32], ["upgrade",33], ["upgrade",34], ["upgrade",35]]]
                         ],
                     unlocked(){
                             return true
@@ -1466,7 +1500,8 @@ addLayer("F", {
     }},
     color: "#FFCD00",
     requires: new Decimal(1e5), // Can be a function that takes requirement increases into account
-    resource: "Factors", // Name of prestige currency
+    resource(){ return "Factors"
+}, 
     baseResource: "Numbers", // Name of resource prestige is based on
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -1508,7 +1543,7 @@ addLayer("F", {
     },
     ],
     canBuyMax(){
-        return hasUpgrade('F',13) 
+        return hasUpgrade('F',13) ||hasMilestone('E',603)
     },autoPrestige(){
         return hasMilestone('F',6000);
     },resetsNothing(){
@@ -2122,7 +2157,8 @@ addLayer("I", {
     }},
     color: "#606060",
     requires: new Decimal("1.8e308"), // Can be a function that takes requirement increases into account
-    resource: "Infinity", // Name of prestige currency
+    resource(){return "Infinity"
+    }, 
     baseResource: "Numbers", // Name of resource prestige is based on
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -2663,7 +2699,7 @@ addLayer("FS", {
     }},
     color: "#966400",
     requires: new Decimal(100000000), // Can be a function that takes requirement increases into account
-    resource: "Factor shift", // Name of prestige currency
+    resource(){return "Factor shift"}, 
     baseResource: "Factors", // Name of resource prestige is based on
     baseAmount() {return player.F.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -2716,13 +2752,19 @@ addLayer("IP", {
 		points: new Decimal(0),
     }},
     color: "#80ffff",
-    requires: new Decimal("1.8e308"), // Can be a function that takes requirement increases into account
-    resource: "Infinity point", // Name of prestige currency
+    requires(){ 
+        if(inChallenge('E',11)&&(!player.E.IPpower.gte(1))) return new Decimal(1e400)
+        else return  new Decimal("1.8e308")
+}, // Can be a function that takes requirement increases into account
+    resource(){return "Infinity point"
+    }, 
     baseResource: "Negative numbers", // Name of resource prestige is based on
-    baseAmount() {return player.NN.points}, // Get the current amount of baseResource
+    baseAmount() {if(hasChallenge('NN',32)||inChallenge('NN',32))return player.N.points
+else return player.NN.points}, // Get the current amount of baseResource
     type(){
      return  "normal"}, // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent(){
+        if(inChallenge('NN',32)||hasChallenge('NN',32)) return 0.0001
         if(hasUpgrade('IP',13))return 0.005
 else return 0.01
     },
@@ -2824,6 +2866,11 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
             requirementDescription: "1e30000000 Infinity points",
             effectDescription: "gain 100% of Infinity point on reset per second",
             done() { return player.IP.points.gte("1e30000000") }
+        },
+        4.4e12: {
+            requirementDescription: "e4.444e12 Infinity points",
+            effectDescription: "Boost '9'",
+            done() { return player.IP.points.gte("e4.444e12") }
         },
     },
     doReset(resettingLayer) {
@@ -3061,7 +3108,8 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
             display() {return "Reset Reality challenge"},
             canClick(){return true},
             onClick(){player.IP.challenges[31] = 0
-                player.IP.challenges[32] = 0 }
+                player.IP.challenges[32] = 0 
+               }
             },
      
     },
@@ -3126,7 +3174,7 @@ addLayer("MS", {
     }},
     color: "#8000ff",
     requires: new Decimal("1e1800"), // Can be a function that takes requirement increases into account
-    resource: "Mathematics Symbol", // Name of prestige currency
+    resource(){return "Mathematics Symbol"}, 
     baseResource: "Infinity point", // Name of resource prestige is based on
     baseAmount() {return player.IP.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -3202,7 +3250,7 @@ addLayer("MS", {
         },
         400: {
             requirementDescription: "40 Super prestige point.",
-            effectDescription: "You can't get any super prestige point and remove the hardcap of Exponentiation point gain but you get less Exponentiation point.",
+            effectDescription: "You can't get any super prestige point and remove the hardcap of Exponentiation point gain.",
             done() { return player.MS.Prestige2.gte(40) }
         },
     },
@@ -3210,7 +3258,7 @@ addLayer("MS", {
         let xgain = new Decimal(0)
 
         let ygain = new Decimal(0)
-        if(hasMilestone('MS',400)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y.div(100)))
+        if(hasMilestone('MS',400)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         else if(player.MS.Exponentiation.gte("1e6000")) return player.MS.Exponentiation=new Decimal("1e6000")
         else if(hasMilestone('IP',1000000)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         else if(player.MS.Exponentiation.gte("1e2500")&&!hasUpgrade('IP',66)) return player.MS.Exponentiation=new Decimal("1e2500")
@@ -3416,13 +3464,13 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
               s+="Your x is "+format(player.MS.x)+"<br>"
               s+="Your y is "+format(player.MS.y)+"<br>"
            
-              s+="x^y = "+format(player.MS.Exponentiation)+"<br>"
+              s+="x^y = "+format(Decimal.pow(player.MS.x,player.MS.y))+"<br>"
              
               return s
             }],
         "blank",
             ["display-text",function(){
-              let s="You have "+format(Decimal.pow(player.MS.x,player.MS.y))+" Exponentiation points.<br>"
+              let s="You have "+format(player.MS.Exponentiation)+" Exponentiation points.<br>"
               s+="Your have  "+format(player.MS.Prestige)+" prestige point<br>"
               s+="Your have  "+format(player.MS.Prestige2)+" super prestige point<br>"
               return s}],
@@ -3442,6 +3490,8 @@ addLayer("E", {
         points: new Decimal(0), 
         Npower: new Decimal(1),     
         Ppower: new Decimal(1),    
+        NNpower: new Decimal(1),   
+        IPpower: new Decimal(1),  
         CP: new Decimal(0),  
         CPget: new Decimal(0),      // "points" is the internal name for the main resource of the layer.
     }},
@@ -3450,6 +3500,7 @@ addLayer("E", {
 
     color: "#80ff80",                       // The color for this layer, which affects many elements.
     resource: "Eternity points",            // The name of this layer's main prestige resource.
+    resource(){return "Eternity points"}, 
     row: 3,                                 // The row this layer is on (0 is the first row).
 
     baseResource: "Numbers",                 // The name of the resource your prestige gain is based on.
@@ -3532,6 +3583,21 @@ addLayer("E", {
             effectDescription: "EP boost Number gain.",
             done() { return player.E.points.gte(300) }
         },
+        600: {
+            requirementDescription: "600 Eternity points",
+            effectDescription: "Unlock more challenge selector.",
+            done() { return player.E.points.gte(600) }
+        },
+        603: {
+            requirementDescription: "3 Challenge points",
+            effectDescription: "You can buy max factor.",
+            done() { return player.E.CP.gte(3) },
+        },
+        5000: {
+            requirementDescription: "5000 Eternity points",
+            effectDescription: "Unlock 1 NN chalenge.",
+            done() { return player.E.points.gte(5000) },
+        },
     },
     challenges:{
         11:{
@@ -3567,6 +3633,14 @@ addLayer("E", {
                     onClick(){player.E.Ppower = player.E.Ppower.times(0.3)
                         player.E.CPget = player.E.CPget.add(1)}
                     },
+                    13:{
+                        display() {if(player.E.NNpower.gte(1)) return "You can't get NN. Currently: false"
+                    else return "You can't get NN. Currently: true"},
+        unlocked(){return hasMilestone('E',600)},
+                        canClick(){return (!inChallenge('E',11)&&(player.E.NNpower.gte(1)))},
+                        onClick(){player.E.NNpower = player.E.NNpower.times(0)
+                            player.E.CPget = player.E.CPget.add(2)}
+                        },
                 41:{
                     display() {return "Clear selector data"},
     
@@ -3574,6 +3648,8 @@ addLayer("E", {
                     onClick(){
                         player.E.Npower = new Decimal(1)
                         player.E.Ppower = new Decimal(1)
+                        player.E.NNpower = new Decimal(1)
+                        player.E.IPpower = new Decimal(1)
                         player.E.CPget = new Decimal(0)
                     }
                     },
@@ -3588,7 +3664,6 @@ addLayer("E", {
          
 
     },
-
     layerShown() { return (hasChallenge('I',62)) },          // Returns a bool for if this layer's node should be visible in the tree.
     branches:["I"],
     tabFormat: {

@@ -2,7 +2,7 @@ let modInfo = {
 	name: "The Number Tree",
 	id: "factor",
 	author: "3^3=7",
-	pointsName: "points",
+	pointsName:"points",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.3.3 Bugfix",
-	name: "Choose",
+	num: "0.2.3.4",
+	name: "No NN",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.3.4</h3><br>
+- Added 3 EP milestone.<br>
+- Added 1 EP clickables.<br>
+- Added 1 NN challenge.<br>
+- Added 1 UF upgrade.<br>
+- Endgame: Get '+' upgrade in UF layer.<br>
 <h3>v0.2.3.3</h3><br>
 - Added 1 EP challenge.<br>
 - Added 2 EP milestone.<br>
@@ -301,7 +307,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.E.points.gte(600)&&player.E.CP.gte(2)
+	return hasUpgrade('UF',31)
 }
 
 
