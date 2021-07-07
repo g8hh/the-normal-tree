@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.3.4",
-	name: "No NN",
+	num: "0.2.4",
+	name: "Only have CP^0.5 upgrade.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.4</h3><br>
+- Added 3 EP milestone.<br>
+- Added 1 EP clickables.<br>
+- Added 5 EP upgrades.<br>
+- Endgame: 1e6 EP and 14 Challenge points.<br>
 <h3>v0.2.3.4</h3><br>
 - Added 3 EP milestone.<br>
 - Added 1 EP clickables.<br>
@@ -162,73 +167,16 @@ If you complete the game. I will give a big hint
 - Added 2 Factor Buyable.<br>
 - Added 1 Upgrade factor Challenge.<br>
 - Endgame: 2 Infinity<br>
-<h3>v0.1.b</h3><br>
-- The game is easier.<br>
-<h3>v0.1.a</h3><br>
-- Fixed a lot of bug.<br>
-- Fixed little grammar errors.<br>
-- added achievements.<br>
-<h3>v0.1</h3><br>
-- Added Infinity.<br>
-- Added 1 Upgrade factor Milestone.<br>
-- Added 1 Factors Milestone.<br>
-- Added 1 Number Buyable.<br>
-- Endgame: 1 Infinity<br>
-<h3>v0.0.9</h3><br>
-- Added 2 Upgrade factor Milestone.<br>
-- Added 3 Factors Milestone.<br>
-- Added 1 Factors Challenge.<br>
-- Added 2 Number Upgrade.<br>
-- Added 1 Number Buyable.<br>
-- Endgame: 11 Upgrade factor<br>	
-<h3>v0.0.8</h3><br>
-- Added 1 Upgrade factor Milestone.<br>
-- Added 2 Factor Upgrade.<br>
-- Added 2 Factors Milestone.<br>
-- Added 2 Factors Challenge.<br>
-- Endgame: 8 Upgrade factor<br>	
-<h3>v0.0.7</h3><br>
-- Added 1 Number Upgrade.<br>
-- Added 3 Factors Upgrade.<br>
+<h3>v0.0.1 - 0.1.b</h3><br>
+- Added 4 layer and achievements..<br>
 - Added 1 upgrade Factors Challenge.<br>
-- Added 2 Factors Challenge.<br>
-- Endgame: 6 Upgrade factor<br>	
-<h3>v0.0.6</h3><br>
-- Added 3 factor Milestone.<br>
-- Added 1 Numbers Buyable.<br>
-- Added 2 Number Upgrade.<br>
-- Added 2 Factors Challenge.<br>
-- Endgame: 3 Upgrade factor<br>	
-<h3>v0.0.5</h3><br>
-- Added 1 Upgrade factor Milestone.<br>
-- Added 1 factor Milestone.<br>
-- Added 1 Numbers Buyable.<br>
-- Added 1 Factors Challenge.<br>
-- Added 2 Factors Upgrade.<br>
-- Endgame: 2 Upgrade factor<br>
-<h3>v0.0.4</h3><br>
-- Added Upgrade factor.<br>
-- Added 2 Numbers Upgrade.<br>
-- Added 2 Factors Challenge.<br>
-- Added 1 Factors Upgrade.<br>
-- Endgame: 1 Upgrade factor<br>	
-<h3>v0.0.3</h3><br>
-- Added 1 Numbers Upgrade.<br>
-- Added 2 Factors Milestone.<br>
-- Added 1 Factors Challenge.<br>
-- Added 1 Factors Upgrade.<br>
-- Endgame: 15 factors.<br>		
-<h3>v0.0.2</h3><br>
-- Added 1 Numbers Upgrade.<br>
-- Added 3 Factors Milestone.<br>
-- Added 1 Factors Challenge.<br>
-- Added 1 Factors Upgrade.<br>
-- Endgame: 8 factors.<br>
-<h3>v0.0.1</h3><br>
-- Added 6 Numbers Upgrade.<br>
-- Added 2 Factors Milestone.<br>
-- Added 1 Factors Challenge.<br>
-- Endgame: 4 factors.`
+- Added 5 Upgrade factor Milestone.<br>
+- Added 10 Factors Upgrade.<br>
+- Added 12 Factors Challenge.<br>
+- Added 17 Factors Milestone.<br>
+- Added 4 Numbers Buyable.<br>
+- Added 15 Numbers Upgrade.`
+
 
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
@@ -274,7 +222,8 @@ function getPointGen() {
 	if (hasUpgrade('NN', 13)) gain = gain.times(upgradeEffect('NN', 13))
 	if (hasUpgrade('N', 13)) gain = gain.times(upgradeEffect('N', 13))
 	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
-	if (hasMilestone('MS', 3)) gain = gain.times(player.IP.points.add(1))
+	if (hasMilestone('MS', 3)&&(!player.IP.points.gte("e1.5e13"))) gain = gain.times(player.IP.points.add(1))
+	else if (hasMilestone('MS', 3)&&(player.IP.points.gte("e1.5e13"))) gain = gain.times("e1.5e13")
 	if (hasUpgrade('MS', 25)&&(!player.MS.Exponentiation.gte("ee10"))) gain = gain.times(player.MS.Exponentiation.pow(100).add(1))	
 	else if(player.MS.Exponentiation.gte("ee10")) gain = gain.times("ee12")	
 	if (hasMilestone('UF', 52)) gain = gain.times(player.UF.points.pow(3).add(1))
@@ -294,6 +243,7 @@ function getPointGenExp(){
 	if(hasUpgrade('UF',11)) exp = exp.times(4)
 	if(hasUpgrade('UF',25)) exp = exp.times(upgradeEffect('UF',25))
 	if(inChallenge('E',11)) exp = exp.times(player.E.Ppower)
+	if(hasUpgrade('E',15 )) exp = exp.times(2)
 	return exp
 }
 
@@ -307,7 +257,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasUpgrade('UF',31)
+	return player.E.CP.gte(14)&&player.E.points.gte(1000000)
 }
 
 
