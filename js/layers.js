@@ -109,6 +109,7 @@ addLayer("N", {
         if  (hasMilestone('E',300)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
         if(inChallenge('E',11)) mult = mult.times(player.E.Npower)
         if  (hasMilestone('E',500000)&&(inChallenge('E',11))) mult = mult.times(1.2)
+        if  (hasMilestone('E',1000000)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         return mult
 
     },
@@ -1095,7 +1096,8 @@ else return new Decimal("1e450000") },
     },
 })
 addLayer("UF", {
-    name: "Upgrade Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
+    name(){if(hasUpgrade('UF',32))return  "Feature Factor"
+else return  "Upgrade Factor"}, // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "UF", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
@@ -1104,7 +1106,9 @@ addLayer("UF", {
     }},
     color: "#FF0000",
     requires: new Decimal(1e30),
-    resource(){return "Upgrade Factor"
+    resource(){
+        if(hasUpgrade('UF',32))return  "Feature Factor"
+        else return  "Upgrade Factor"
 }, // Can be a function that takes requirement increases into account
     baseResource: "Numbers", // Name of resource prestige is based on
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
@@ -1229,6 +1233,35 @@ addLayer("UF", {
 
 },
 },
+buyables: {
+    rows: 2,
+    cols: 3,
+    11: {
+        title: "generators",
+        display() {
+           return "generate " + format(tmp.UF.buyables[11].effect) + " milestone point per second.<br>Cost : " + format(new Decimal("ee20").pow(getBuyableAmount("UF", 11).add(1))) + " Numbers"
+        },
+        unlocked() { return hasUpgrade("UF", 32) },
+        canAfford() { 
+            return player.N.points.gte(new Decimal("ee20").pow(getBuyableAmount("UF", 11).add(1))) 
+        },
+        buy() { 
+            {
+               player.N.points = player.N.points.minus(new Decimal("ee20").pow(getBuyableAmount("UF", 11).add(1)))
+            }
+            setBuyableAmount("UF", 11, getBuyableAmount("UF", 11).add(1))
+        },
+        effect() { 
+  eff = new Decimal("1").times(getBuyableAmount("UF", 11))
+          
+            
+       
+            
+           
+            
+        }
+    },
+},
 upgrades: {
   
         11: {
@@ -1247,7 +1280,8 @@ upgrades: {
             currencyInternalName:"points",
             currencyLayer:"N",
             effect(){
-                if(hasUpgrade('UF',15)) return new Decimal("e3.5e9")
+                if(inChallenge('E',11)&&(!player.E.no234.gte(1)))return new Decimal("1")
+                else if(hasUpgrade('UF',15)) return new Decimal("e3.5e9")
                 else if(player.N.points.gte("e3.5e14")) return new Decimal("e3.5e9")
                 else return player.N.points.pow(0.00001).add(1)},
             unlocked(){
@@ -1262,7 +1296,9 @@ upgrades: {
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            effect(){  if(hasUpgrade('UF',15)) return new Decimal("e2e9")
+            effect(){ 
+                if(inChallenge('E',11)&&(!player.E.no234.gte(1)))return new Decimal("1")
+                 else if(hasUpgrade('UF',15)) return new Decimal("e2e9")
             else if(player.points.gte("e50000000000")) return new Decimal("e2e9")
                 else if(hasUpgrade('UF',74))  return player.points.pow(0.04).add(1)
                 else  return player.points.pow(0.02).add(1)},
@@ -1278,7 +1314,9 @@ upgrades: {
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
-            effect(){ if(hasUpgrade('UF',15)) return new Decimal("e9e9")
+            effect(){
+                if(inChallenge('E',11)&&(!player.E.no234.gte(1)))return new Decimal("1")
+                else if(hasUpgrade('UF',15)) return new Decimal("e9e9")
             else if(player.points.gte("e4.5e10")) return new Decimal("e9e9")
                 else return player.points.pow(0.2).add(1)},
             unlocked(){
@@ -1372,7 +1410,7 @@ unlocked(){
 },
 31: {
     title: "+",
-    description: "Unlock more challenge selector. (not yet)",
+    description: "Unlock more challenge selector.",
     cost: new Decimal("e1.35e19"),
     currencyDisplayName: "Numbers",
     currencyInternalName:"points",
@@ -1382,6 +1420,19 @@ unlocked(){
 unlocked(){
     return hasChallenge("NN", 32)
 },
+},
+32: {
+    title: "-",
+    description: "Unlock milestone and buyable, rename this layer to Feature factor.",
+    cost: new Decimal("e3.36e20"),
+    currencyDisplayName: "Numbers",
+    currencyInternalName:"points",
+    currencyLayer:"N",
+    
+ 
+    unlocked(){
+        return hasMilestone("E",1000000 )
+    },
 },
         71: {
             title: "Factor alpha",
@@ -1429,6 +1480,18 @@ unlocked(){
                 return hasUpgrade("UF", 14)
             },
         },
+        81: {
+            title: "Factor Omega",
+            description: "Factor are cheaper.",
+            cost: new Decimal("1e20"),
+            currencyDisplayName: "Factors",
+            currencyInternalName:"points",
+            currencyLayer:"F",
+            unlocked(){
+                return hasMilestone("E",1000000 )
+            },
+        },
+
 },
 
 tabFormat: {
@@ -1465,7 +1528,19 @@ tabFormat: {
       "blank",
       ["microtabs", "A"], ["microtabs", "B"]
     ],
+},
+    "Buyables":{
+        unlocked(){return hasUpgrade("UF",32)},
+        content:[
+          "main-display",
+          "blank",
+        ["prestige-button",function(){return ""}],
+          "blank",
+          "blank",
+          "buyables",
+        ]
   },
+
 },
 microtabs: {
     "A": {
@@ -1481,7 +1556,8 @@ microtabs: {
             },
             "Factor": {
                 content: [
-                    ["row", [ ["upgrade",71], ["upgrade",72], ["upgrade",73], ["upgrade",74], ["upgrade",75]]]
+                    ["row", [ ["upgrade",71], ["upgrade",72], ["upgrade",73], ["upgrade",74], ["upgrade",75]]],
+                    ["row", [ ["upgrade",81]]]
                 ],
                 unlocked(){
                         return true
@@ -1512,6 +1588,7 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if(hasUpgrade('UF',81))return 0.07
         if(inChallenge('NN',22)||hasChallenge('NN',22))return 1
         if (player.FS.points.gte(4)) return 0.18
         if (player.IP.points.gte(1e26)) return 0.2
@@ -1540,6 +1617,7 @@ addLayer("F", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
+ 
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "f", description: "F: Reset for Factors", onPress(){if (canReset(this.layer)) doReset(this.layer)},
@@ -1675,6 +1753,7 @@ addLayer("F", {
             title: "Factor Beta",
             description: "Number boost themselves.",
             effect() {
+                if(inChallenge('E',11)&&(!player.E.no234.gte(1)))return new Decimal("1")
                 if (player.N.points.gte("ee14")) return new Decimal("ee9")
                 if (hasUpgrade('UF',72))  return player.N.points.pow(0.00001).add(1)
                 if (player.N.points.gte("ee9")) return new Decimal("1e50000")
@@ -2691,6 +2770,56 @@ addLayer("A", {
                 return hasMilestone('MS',1)
             }
         }, 
+        52:{
+            name: "The first layer",
+            tooltip:"Get 1 prestige point.",
+            done()  {
+                if (player.MS.Prestige.gte("1"))  return true
+            },
+            unlocked(){
+                return hasMilestone('MS',1)
+            }
+        }, 
+        53:{
+            name: "Over power",
+            tooltip:"Unlock Upgrade power.",
+            done()  {
+                if (hasChallenge('NN',22))  return true
+            },
+            unlocked(){
+                return hasMilestone('MS',1)
+            }
+        }, 
+        54:{
+            name: "The sixth row layer",
+            tooltip:"Get 1 super prestige point.",
+            done()  {
+                if (player.MS.Prestige2.gte("1"))  return true
+            },
+            unlocked(){
+                return hasMilestone('MS',1)
+            }
+        },
+            55:{
+                name: "Infinity time",
+                tooltip:"Get 1 Eternity point.",
+                done()  {
+                    if (player.E.points.gte("1"))  return true
+                },
+                unlocked(){
+                    return hasMilestone('MS',1)
+                }
+        }, 
+        56:{
+            name: "- NN",
+            tooltip:"Complete NNC6.",
+            done()  {
+                if (hasChallenge('NN',32))  return true
+            },
+            unlocked(){
+                return hasMilestone('MS',1)
+            }
+    }, 
     }
     
 })
@@ -3499,6 +3628,7 @@ addLayer("E", {
         Ppower: new Decimal(1),    
         NNpower: new Decimal(1),   
         IPpower: new Decimal(1),  
+        no234: new Decimal(1),    
         CP: new Decimal(0),  
         CPget: new Decimal(0),      // "points" is the internal name for the main resource of the layer.
     }},
@@ -3624,6 +3754,16 @@ addLayer("E", {
             effectDescription: "Number ^1.2 if you are in E challenges.",
             done() { return player.E.points.gte(500000) },
         },
+        500014: {
+            requirementDescription: "14 Challenge points",
+            effectDescription: "Infinity and upgrade factor boost factor gain.",
+            done() { return player.E.CP.gte(14) },
+        },
+        1000000: {
+            requirementDescription: "1e6 Eternity points",
+            effectDescription: "Factor boost Number gain and unlock 2 upgrade.",
+            done() { return player.E.points.gte(1e6) },
+        },
     },
     challenges:{
         11:{
@@ -3679,6 +3819,8 @@ addLayer("E", {
                             onClick(){player.E.IPpower = player.E.IPpower.times(0)
                                 player.E.CPget = player.E.CPget.add(2)}
                             },
+                     
+                        
                 41:{
                     display() {return "Clear selector data"},
     
@@ -3688,6 +3830,7 @@ addLayer("E", {
                         player.E.Ppower = new Decimal(1)
                         player.E.NNpower = new Decimal(1)
                         player.E.IPpower = new Decimal(1)
+                 
                         player.E.CPget = new Decimal(0)
                     }
                     },
@@ -3769,7 +3912,7 @@ addLayer("E", {
    
         },
     },
-
+ 
     layerShown() { return (hasChallenge('I',62)) },          // Returns a bool for if this layer's node should be visible in the tree.
     branches:["I"],
     tabFormat: {
@@ -3794,7 +3937,7 @@ addLayer("E", {
                 "prestige-button",
                 "blank",
                 "challenges",
-                ["row",[ ["clickable",11], ["clickable",12], ["clickable",13], ["clickable",14]]],
+                ["row",[ ["clickable",11], ["clickable",12], ["clickable",13], ["clickable",14],["clickable",15],["clickable",16],["clickable",17],]],
                 ["row",[ ["clickable",41], ["clickable",42]]],
             ["display-text",function(){
                 let s=""
