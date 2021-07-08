@@ -3,7 +3,7 @@ var needCanvasUpdate = true;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.6.4.3",
+	tmtNum: "2.6.5",
 	tmtName: "Fixed Reality"
 }
 
@@ -94,7 +94,8 @@ function shouldNotify(layer){
 	if (isPlainObject(tmp[layer].tabFormat)) {
 		for (subtab in tmp[layer].tabFormat){
 			if (subtabShouldNotify(layer, 'mainTabs', subtab)) {
-				tmp[layer].trueGlowColor = tmp[layer].tabFormat[subtab].glowColor
+				tmp[layer].trueGlowColor = tmp[layer].tabFormat[subtab].glowColor || defaultGlow
+
 				return true
 			}
 		}
@@ -245,7 +246,7 @@ function resetRow(row) {
 
 function startChallenge(layer, x) {
 	let enter = false
-	if (!player[layer].unlocked) return
+	if (!player[layer].unlocked || !tmp[layer].challenges[x].unlocked) return
 	if (player[layer].activeChallenge == x) {
 		completeChallenge(layer, x)
 		Vue.set(player[layer], "activeChallenge", null)
