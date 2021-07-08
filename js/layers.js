@@ -1103,6 +1103,8 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
+        mp: new Decimal(0),
+       mpgain: new Decimal(0),
     }},
     color: "#FF0000",
     requires: new Decimal(1e30),
@@ -1143,6 +1145,11 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
         let keep = [];
         if (hasMilestone("I", 2) && resettingLayer=="I") keep.push("milestones")
         if (hasMilestone("IP", 6) && resettingLayer=="IP") keep.push("milestones")
+        if (hasMilestone("UF", 5100) && resettingLayer=="IP") keep.push("milestones")
+        if (hasMilestone("UF", 5100) && resettingLayer=="I") keep.push("milestones")
+        if (hasMilestone("UF", 5100) && resettingLayer=="FS") keep.push("milestones")
+        if (hasMilestone("UF", 5100) && resettingLayer=="MS") keep.push("milestones")
+        if (hasMilestone("UF", 5100) && resettingLayer=="E") keep.push("milestones")
         if (hasUpgrade("UF", 11) && resettingLayer=="I") keep.push("upgrades")
         if (hasUpgrade("UF", 11) && resettingLayer=="IP") keep.push("upgrades")
         if (hasUpgrade("UF", 11) && resettingLayer=="FS") keep.push("upgrades")
@@ -1155,46 +1162,61 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
             requirementDescription: "1 Upgrade Factor",
             effectDescription: "First four Upgrade Factor Unlock 1 upgrade and point x2, keep upgrade on reset",
             done() { return player.UF.points.gte(1) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
         },
         6: {
             requirementDescription: "6 Upgrade Factor",
             effectDescription: "Unlock 1 upgrade.",
             done() { return player.UF.points.gte(6) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
         },
         8: {
             requirementDescription: "8 Upgrade Factor",
             effectDescription: "Unlock 1 upgrade.",
             done() { return player.UF.points.gte(8) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
         },
         10: {
             requirementDescription: "10 Upgrade Factor",
             effectDescription: "Unlock 1 challenge (not upgrade) and point x10000.",
             done() { return player.UF.points.gte(10) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
         },
         11: {
             requirementDescription: "11 Upgrade Factor",
             effectDescription: "Unlock 1 buyable (not upgrade).",
             done() { return player.UF.points.gte(11) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
         },
         16: {
             requirementDescription: "16 Upgrade Factor",
             effectDescription: "Auto buy Upgrade Factor, unlock 1 challenge and 5 upgrade.",
             done() { return player.UF.points.gte(16)||hasMilestone("MS", 2) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
         },
         18: {
             requirementDescription: "18 Upgrade Factor",
             effectDescription: "Upgrade factor reset nothing.",
             done() { return player.UF.points.gte(18)||hasMilestone("MS", 2) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
         },
         52: {
             requirementDescription: "52 Upgrade Factor",
             effectDescription: "Upgrade Factor boost point and Numbers gain.",
             done() { return player.UF.points.gte(52) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
         },
         128: {
             requirementDescription: "128 Upgrade Factor",
             effectDescription: "Unlock 2 Number upgrades and boost the eighth milestone.",
             done() { return player.UF.points.gte(128) }
+            ,unlocked(){ return (!hasUpgrade('UF',32))}
+        },
+        5100: {
+            requirementDescription: "100 Milestone point",
+            effectDescription: "Boost The sixth milestone in E layer but '2' and '4' in E layer have no effect.",
+            done() { return player.UF.mp.gte(100) }
+            ,unlocked(){ return (hasUpgrade('UF',32))}
         },
         
 
@@ -1254,7 +1276,7 @@ buyables: {
         effect() { 
   eff = new Decimal("1").times(getBuyableAmount("UF", 11))
           
-            
+            return  eff
        
             
            
@@ -1493,7 +1515,11 @@ unlocked(){
         },
 
 },
-
+update(diff){
+    let mp = new Decimal(0)
+    let mpgain = new Decimal(buyableEffect('UF',11))
+   player.UF.mp=player.UF.mp.plus(mpgain.times(diff))
+},
 tabFormat: {
     "Milestones":{
         unlocked(){return !hasChallenge('NN',31)},
@@ -1540,6 +1566,26 @@ tabFormat: {
           "buyables",
         ]
   },
+  "Milestones":{
+    unlocked(){return hasUpgrade("UF",32)},
+  content:[
+"main-display",
+  "blank",
+["prestige-button",function(){return ""}],
+"blank",
+"resource-display",
+"blank",
+"blank",
+["display-text",function(){
+    let s=""
+ 
+   if(hasUpgrade('UF',32)) return  s+="You have "+format(player.UF.mp)+" Milestone point.<br>You are gaining "+format(buyableEffect('UF',11))+" Milestone point per second.<br>"
+
+
+    return s
+  }],
+"milestones",
+  ]},
 
 },
 microtabs: {
@@ -3663,10 +3709,10 @@ addLayer("E", {
     getResetGain() {
         if(!player.N.points.gte("e9e15")) return 0
         else if(!player.N.points.gte("ee16")&&player.N.points.gte("e9e15")) return 1
-        else if(hasUpgrade('E',12)&&hasUpgrade('E',14)) return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(2)).times(5).times(upgradeEffect('E',14)))
-        else if(hasUpgrade('E',14))  return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(2)).times(upgradeEffect('E',14)))
-        else if(hasUpgrade('E',12))  return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(2)).times(5))
-        else return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(2)))
+        else if(hasUpgrade('E',12)&&hasUpgrade('E',14)) return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)))
+        else if(hasUpgrade('E',14))  return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(player.E.boost)).times(upgradeEffect('E',14)))
+        else if(hasUpgrade('E',12))  return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(player.E.boost)).times(5))
+        else return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(player.E.boost)))
     },
     getNextAt: function(){
         if(!player.N.points.gte("e9e15")) return "e9.000e15"
@@ -3855,6 +3901,8 @@ addLayer("E", {
     },
     update(diff){
         player.E.upgrades=player.E.upgrades.slice(0,player.E.CP.pow(0.5))
+        if(hasMilestone('UF',5100)) player.E.boost = 4
+          else player.E.boost = 2
       
       },
     upgrades: {

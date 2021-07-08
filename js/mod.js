@@ -13,11 +13,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.4",
-	name: "Only have CP^0.5 upgrade.",
+	num: "0.2.4.1",
+	name: "Milestone point and Challenge point.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.4.1</h3><br>
+- Added 2 UF upgrade.<br>
+- Added 2 EP milestone.<br>
+- Added 1 UF buyable.<br>
+- Added 1 UF milestone.<br>
+- Marged v2.6.5 of TMT.<br>
+- Endgame: 2e7 EP and get the last Milestone in UF layer.<br>
 <h3>v0.2.4</h3><br>
 - Added 3 EP milestone.<br>
 - Added 1 EP clickables.<br>
@@ -257,7 +264,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.E.CP.gte(14)&&player.E.points.gte(1000000)
+	return player.E.points.gte(2e7)&&hasMilestone('UF',5100)
 }
 
 
