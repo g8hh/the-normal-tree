@@ -1566,7 +1566,7 @@ tabFormat: {
           "buyables",
         ]
   },
-  "Milestones":{
+  "milestones":{
     unlocked(){return hasUpgrade("UF",32)},
   content:[
 "main-display",
