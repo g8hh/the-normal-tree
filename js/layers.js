@@ -109,7 +109,10 @@ addLayer("N", {
         if  (hasMilestone('E',300)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
         if(inChallenge('E',11)) mult = mult.times(player.E.Npower)
         if  (hasMilestone('E',500000)&&(inChallenge('E',11))) mult = mult.times(1.2)
+        if  (hasMilestone('MS',500)) mult = mult.times(25)
         if  (hasMilestone('E',1000000)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
+       if(hasMilestone('UF',585555)) mult = mult.times(player.UF.mp.add(1).log(10).add(1).log(10).add(1.1))
+        if(hasMilestone('UF',522000)) mult = mult.times(player.UF.mp.add(1).log(10).add(1).log(10).add(1).log(10).add(1.1))
         return mult
 
     },
@@ -1105,6 +1108,8 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
 		points: new Decimal(0),
         mp: new Decimal(0),
        mpgain: new Decimal(0),
+       cost1:new Decimal("ee20"),
+       base1:new Decimal(2),
     }},
     color: "#FF0000",
     requires: new Decimal(1e30),
@@ -1155,6 +1160,11 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
         if (hasUpgrade("UF", 11) && resettingLayer=="FS") keep.push("upgrades")
         if (hasUpgrade("UF", 11) && resettingLayer=="MS") keep.push("upgrades")
         if (hasMilestone("E", 8) && resettingLayer=="E") keep.push("upgrades")
+        if (hasMilestone("E", 8) && resettingLayer=="I") keep.push("buyables")
+        if (hasMilestone("E", 8) && resettingLayer=="FS") keep.push("buyables")
+        if (hasMilestone("E", 8) && resettingLayer=="IP") keep.push("buyables")
+        if (hasMilestone("E", 8) && resettingLayer=="MS") keep.push("buyables")
+        if (hasMilestone("E", 8) && resettingLayer=="E") keep.push("buyables")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     milestones: {
@@ -1214,8 +1224,32 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
         },
         5100: {
             requirementDescription: "100 Milestone point",
-            effectDescription: "Boost The sixth milestone in E layer but '2' and '4' in E layer have no effect.",
+            effectDescription: "Boost The sixth milestone in E layer but '2' and '4' in E layer will nerf your EP gain.",
             done() { return player.UF.mp.gte(100) }
+            ,unlocked(){ return (hasUpgrade('UF',32))}
+        },
+        5500: {
+            requirementDescription: "500 Milestone point",
+            effectDescription: "Boost the UF buyable.",
+            done() { return player.UF.mp.gte(500) }
+            ,unlocked(){ return (hasUpgrade('UF',32))}
+        },
+        56000: {
+            requirementDescription: "6000 Milestone point",
+            effectDescription: "Get 5x milestone point but the milestone point cap /5.",
+            done() { return player.UF.mp.gte(6000) }
+            ,unlocked(){ return (hasUpgrade('UF',32))}
+        },
+        522000: {
+            requirementDescription: "22000 Milestone point",
+            effectDescription: "milestone point boost Number gain.",
+            done() { return player.UF.mp.gte(22000) }
+            ,unlocked(){ return (hasUpgrade('UF',32))}
+        },
+        585555: {
+            requirementDescription: "85555 Milestone point",
+            effectDescription: "EP boost milestone point gain and make buyable cheaper. Boost the fourth milestone.",
+            done() { return player.UF.mp.gte(85555) }
             ,unlocked(){ return (hasUpgrade('UF',32))}
         },
         
@@ -1261,20 +1295,23 @@ buyables: {
     11: {
         title: "generators",
         display() {
-           return "generate " + format(tmp.UF.buyables[11].effect) + " milestone point per second.<br>Cost : " + format(new Decimal("ee20").pow(getBuyableAmount("UF", 11).add(1))) + " Numbers"
+           return "generate " + format(tmp.UF.buyables[11].effect) + " milestone point per second.<br>Cost : " + format(new Decimal(player.UF.cost1).pow(getBuyableAmount("UF", 11).add(1))) + " Numbers"
         },
         unlocked() { return hasUpgrade("UF", 32) },
         canAfford() { 
-            return player.N.points.gte(new Decimal("ee20").pow(getBuyableAmount("UF", 11).add(1))) 
+            return player.N.points.gte(new Decimal(player.UF.cost1).pow(getBuyableAmount("UF", 11).add(1))) 
         },
         buy() { 
             {
-               player.N.points = player.N.points.minus(new Decimal("ee20").pow(getBuyableAmount("UF", 11).add(1)))
+               player.N.points = player.N.points.minus(new Decimal(player.UF.cost1).pow(getBuyableAmount("UF", 11).add(1)))
             }
             setBuyableAmount("UF", 11, getBuyableAmount("UF", 11).add(1))
         },
         effect() { 
-  eff = new Decimal("1").times(getBuyableAmount("UF", 11))
+
+            if(hasMilestone('UF',56000))  eff = new Decimal(player.UF.base1).pow(getBuyableAmount("UF", 11)).times(10)
+            else if(hasMilestone('E',2e7)) eff = new Decimal(player.UF.base1).pow(getBuyableAmount("UF", 11))
+  else eff = new Decimal("1").times(getBuyableAmount("UF", 11))
           
             return  eff
        
@@ -1518,7 +1555,15 @@ unlocked(){
 update(diff){
     let mp = new Decimal(0)
     let mpgain = new Decimal(buyableEffect('UF',11))
+    let cost1  = new Decimal("ee20")
+    let base1  = new Decimal("2")
    player.UF.mp=player.UF.mp.plus(mpgain.times(diff))
+   if(hasMilestone('UF',585555)) player.UF.cost1 = new Decimal("ee20").pow(new Decimal(1).div(player.E.points.add(1).log(10).add(1).log(10).add(1)))
+   else if( hasMilestone('E',2e7)) player.UF.cost1 = new Decimal("ee20").pow(new Decimal(1).div(player.E.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1)))
+   if(hasMilestone('UF',585555)) player.UF.base1= new Decimal("2").times((player.E.points.add(1).log(5).add(1).log(5).add(1)))
+   else if(hasMilestone('UF',5500)) player.UF.base1= new Decimal("2").times((player.E.points.add(1).log(10).add(1).log(10).add(1)))
+   if ((hasMilestone('UF',56000))&&player.UF.mp.gte((buyableEffect('UF',11).times(10)))) player.UF.mp =(buyableEffect('UF',11)).times(10)
+   if(player.UF.mp.gte((buyableEffect('UF',11).times(50)))) player.UF.mp =(buyableEffect('UF',11)).times(50)
 },
 tabFormat: {
     "Milestones":{
@@ -3297,7 +3342,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     },
 
     row: 2, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('NN',1.79e308)||hasMilestone('IP',1)},
+    layerShown(){return hasMilestone('NN',1.79e308)||hasMilestone('IP',1)||hasMilestone('MS',400)},
     tabFormat: {
         "Milestones":{
           content:[
@@ -3322,7 +3367,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
         },
       
       "Challenges":{
-        unlocked(){return hasUpgrade('IP',21)},
+        unlocked(){return hasUpgrade('IP',21)&&!hasMilestone('MS',500)},
         content:[
           "main-display",
           "blank",
@@ -3362,7 +3407,7 @@ addLayer("MS", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:new Decimal("1e2700"),
     exponent(){
-        if(player.MS.points>=4)  return 20
+        if(player.MS.points>=4)  return 20.16
         return 2
         
     },
@@ -3434,6 +3479,11 @@ addLayer("MS", {
             requirementDescription: "40 Super prestige point.",
             effectDescription: "You can't get any super prestige point and remove the hardcap of Exponentiation point gain.",
             done() { return player.MS.Prestige2.gte(40) }
+        },
+        500: {
+            requirementDescription: "5 Mathematics Symbol",
+            effectDescription: "Remove IP challenge but Number ^25.",
+            done() { return player.MS.points.gte(5) }
         },
     },
     update(diff){
@@ -3810,6 +3860,11 @@ addLayer("E", {
             effectDescription: "Factor boost Number gain and unlock 2 upgrade.",
             done() { return player.E.points.gte(1e6) },
         },
+        2e7: {
+            requirementDescription: "2e7 Eternity points",
+            effectDescription: "Boost the UF buyable and UF buyable is cheaper based on your EP.",
+            done() { return player.E.points.gte(2e7) },
+        },
     },
     challenges:{
         11:{
@@ -3842,13 +3897,7 @@ addLayer("E", {
                 onClick(){player.E.Npower = player.E.Npower.times(0.5)
                 player.E.CPget = player.E.CPget.add(1)}
                 },
-                12:{
-                    display() {return "Point ^0.3 per click. Currently: ^" +  format(player.E.Ppower)},
-    
-                    canClick(){return (!inChallenge('E',11))},
-                    onClick(){player.E.Ppower = player.E.Ppower.times(0.3)
-                        player.E.CPget = player.E.CPget.add(1)}
-                    },
+              
                     13:{
                         display() {if(player.E.NNpower.gte(1)) return "You can't get NN. Currently: false"
                     else return "You can't get NN. Currently: true"},

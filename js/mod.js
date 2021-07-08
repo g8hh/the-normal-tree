@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.4.1 Bugfix",
+	num: "0.2.4.2",
 	name: "Milestone point and Challenge point.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.4.2</h3><br>
+- Added 4 UF milestone.<br>
+- Added 1 EP milestone.<br>
+- Added 1 MS milestone.<br>
+- Endgame: 5 MS.<br>
 <h3>v0.2.4.1</h3><br>
 - Added 2 UF upgrade.<br>
 - Added 2 EP milestone.<br>
@@ -264,7 +269,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.E.points.gte(2e7)&&hasMilestone('UF',5100)
+	return player.MS.points.gte(5)
 }
 
 
