@@ -2883,8 +2883,8 @@ addLayer("A", {
             }
         }, 
         53:{
-            name: "Over power",
-            tooltip:"Unlock Upgrade power.",
+            name: "Over Cheaper",
+            tooltip:"Complete NNC4.",
             done()  {
                 if (hasChallenge('NN',22))  return true
             },
@@ -2922,6 +2922,16 @@ addLayer("A", {
                 return hasMilestone('MS',1)
             }
     }, 
+    57:{
+        name: "Feature Factor",
+        tooltip:"Get the '-' upgrade in UF layer.",
+        done()  {
+            if (hasUpgrade('UF',32))  return true
+        },
+        unlocked(){
+            return hasMilestone('MS',1)
+        }
+},
     }
     
 })
