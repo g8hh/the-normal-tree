@@ -1252,6 +1252,16 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
             done() { return player.UF.mp.gte(85555) }
             ,unlocked(){ return (hasUpgrade('UF',32))}
         },
+
+       1e25 : {
+            requirementDescription: "1e25 Milestone point",
+            effectDescription: "Boost The sixth milestone in E layer .",
+            done() { return player.UF.mp.gte(1e25) }
+            ,unlocked(){ return (hasUpgrade('UF',32))}
+        },
+
+
+        
         
 
     },
@@ -1679,6 +1689,7 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if(hasMilestone('E',1e11)) return 0.06865
         if(hasUpgrade('UF',81))return 0.07
         if(inChallenge('NN',22)||hasChallenge('NN',22))return 1
         if (player.FS.points.gte(4)) return 0.18
@@ -3759,6 +3770,7 @@ addLayer("E", {
     getResetGain() {
         if(!player.N.points.gte("e9e15")) return 0
         else if(!player.N.points.gte("ee16")&&player.N.points.gte("e9e15")) return 1
+        else if(hasMilestone('E',1e11)) return formatWhole((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)))
         else if(hasUpgrade('E',12)&&hasUpgrade('E',14)) return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)))
         else if(hasUpgrade('E',14))  return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(player.E.boost)).times(upgradeEffect('E',14)))
         else if(hasUpgrade('E',12))  return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(player.E.boost)).times(5))
@@ -3865,6 +3877,16 @@ addLayer("E", {
             effectDescription: "Boost the UF buyable and UF buyable is cheaper based on your EP.",
             done() { return player.E.points.gte(2e7) },
         },
+        1e11: {
+            requirementDescription: "1e11 Eternity points",
+            effectDescription: "You can get more EP, factor are cheaper.",
+            done() { return player.E.points.gte(1e11) },
+        },
+        1e15: {
+            requirementDescription: "1e15 Eternity points",
+            effectDescription: "Unlock 2 layer (not yet).",
+            done() { return player.E.points.gte(1e15) },
+        },
     },
     challenges:{
         11:{
@@ -3949,8 +3971,9 @@ addLayer("E", {
 
     },
     update(diff){
-        player.E.upgrades=player.E.upgrades.slice(0,player.E.CP.pow(0.5))
-        if(hasMilestone('UF',5100)) player.E.boost = 4
+
+        if(hasMilestone('UF',1e25)) player.E.boost = 6
+        else if(hasMilestone('UF',5100)) player.E.boost = 4
           else player.E.boost = 2
       
       },
@@ -3963,7 +3986,7 @@ addLayer("E", {
             description: "Number ^2",
             cost: new Decimal("0"),
             canAfford(){
-                return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
+               if(!hasMilestone('UF',1e25)) return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
                 },
 
         
@@ -3974,7 +3997,7 @@ addLayer("E", {
             cost: new Decimal("0"),
       
             canAfford(){
-                return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
+                if(!hasMilestone('UF',1e25)) return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
                 },
 
         },
@@ -3983,7 +4006,7 @@ addLayer("E", {
             description: "Boost '9' and '0'.",
             cost: new Decimal("0"),
             canAfford(){
-                return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
+                if(!hasMilestone('UF',1e25)) return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
                 },
 },
 
@@ -3994,7 +4017,7 @@ addLayer("E", {
             effect(){return player.E.points.add(1).log(10).add(1).log(10).add(1).pow(2)},
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
             canAfford(){
-                return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
+                if(!hasMilestone('UF',1e25))  return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
                 },
         },
       
@@ -4003,13 +4026,13 @@ addLayer("E", {
             description: "Point ^2",
             cost: new Decimal("0"),
             canAfford(){
-                return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
+                if(!hasMilestone('UF',1e25))  return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
                 },
           
    
         },
     },
- 
+
     layerShown() { return (hasChallenge('I',62)) },          // Returns a bool for if this layer's node should be visible in the tree.
     branches:["I"],
     tabFormat: {
