@@ -1166,6 +1166,7 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
         if (hasMilestone("E", 8) && resettingLayer=="E") keep.push("upgrades")
         if (hasMilestone("O", 6) && resettingLayer=="O") keep.push("upgrades")
         if (resettingLayer=="M") keep.push("upgrades")
+        if (resettingLayer=="E") keep.push("milestones")
         if (hasMilestone("E", 8) && resettingLayer=="I") keep.push("buyables")
         if (hasMilestone("E", 8) && resettingLayer=="FS") keep.push("buyables")
         if (hasMilestone("E", 8) && resettingLayer=="IP") keep.push("buyables")
@@ -1360,6 +1361,9 @@ upgrades: {
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
+            unlocked(){
+                return hasChallenge("NN", 31)
+            },
             effect(){
                 if(inChallenge('E',11)&&(!player.E.no234.gte(1)))return new Decimal("1")
                 else if(hasUpgrade('UF',15)) return new Decimal("e3.5e9")
@@ -1530,6 +1534,9 @@ unlocked(){
             currencyDisplayName: "Factors",
             currencyInternalName:"points",
             currencyLayer:"F",
+            unlocked(){
+                return hasChallenge("NN", 31)
+            },
         },
         73: {
             title: "Factor Gamma",
@@ -1538,6 +1545,10 @@ unlocked(){
             currencyDisplayName: "Factors",
             currencyInternalName:"points",
             currencyLayer:"F",
+            unlocked(){
+                return hasChallenge("NN", 31)
+            },
+
         },
         74: {
             title: "Factor Delta",
@@ -2358,6 +2369,7 @@ addLayer("F", {
 
       doReset(resettingLayer) {
         let keep = [];
+        if (resettingLayer=="E") keep.push("milestones")
         if (hasMilestone("I", 2) && resettingLayer=="I") keep.push("milestones")
         if (hasMilestone("I", 3) && resettingLayer=="I") keep.push("challenges")
         if (hasMilestone("IP", 1) && resettingLayer=="IP") keep.push("challenges")
@@ -3871,7 +3883,7 @@ addLayer("E", {
     milestones:{
         1: {
             requirementDescription: "1 Eternity points",
-            effectDescription: "Keep IP and I milestone, Infinity challenge and Negative numbers challenge on reset. Number ^1.2.",
+            effectDescription: "Keep IP, I, F and UF milestone, Infinity challenge and Negative numbers challenge on reset. Number ^1.2.",
             done() { return player.E.points.gte(1) }
         },
         3: {
