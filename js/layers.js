@@ -4082,14 +4082,7 @@ addLayer("E", {
                         player.E.CPget = new Decimal(0)
                     }
                     },
-                    42:{
-                        display() {return "Reset challenge points."},
-        
-                        canClick(){return true},
-                        onClick(){
-                            player.E.CP = new Decimal(0)
-                        }
-                        },
+             
                         51:{
                             display() {return "Reset E upgrade."},
             
