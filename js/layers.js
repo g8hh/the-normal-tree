@@ -93,7 +93,8 @@ addLayer("N", {
         if (hasChallenge('IP',32)) mult = mult.times(1.35)
         if (hasUpgrade('F',31)&&!hasUpgrade('IP',56)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         if (hasUpgrade('F',43)&&!hasUpgrade('IP',56)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
-        if (hasUpgrade('IP',46)&&(!hasMilestone('IP',6000000))) mult = mult.times(player.I.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
+        if (hasUpgrade('IP',46)&&(!hasMilestone('IP',6000000))||hasMilestone('E',1e31)) mult = mult.times(player.I.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
+        if(hasMilestone('E',1e31))  mult = mult.times(player.I.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))
         if (hasUpgrade('IP',56)) mult = mult.times(1.75)
         if (hasUpgrade('E',11)) mult = mult.times(2)
         if (hasChallenge('NN',11)) mult = mult.times(2)
@@ -109,12 +110,14 @@ addLayer("N", {
         if  (hasMilestone('E',300)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
         if(inChallenge('E',11)) mult = mult.times(player.E.Npower)
         if  (hasMilestone('E',500000)&&(inChallenge('E',11))) mult = mult.times(1.2)
+        if  (hasMilestone('E',5e25)&&(!inChallenge('E',11))) mult = mult.times(1.5)
         if  (hasMilestone('MS',500)) mult = mult.times(25)
         if  (hasMilestone('E',1000000)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
        if(hasMilestone('UF',585555)) mult = mult.times(player.UF.mp.add(1).log(10).add(1).log(10).add(1.1))
         if(hasMilestone('UF',522000)) mult = mult.times(player.UF.mp.add(1).log(10).add(1).log(10).add(1).log(10).add(1.1))
         mult = mult.times(tmp.O.effect)
         if(hasUpgrade('UF',93)) mult = mult.times(player.E.CP.add(1).log(10))
+        if (inChallenge('M',11)) mult = mult.times(0.00002) 
         return mult
 
     },
@@ -1262,7 +1265,7 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
 
        1e25 : {
             requirementDescription: "1e25 Milestone point",
-            effectDescription: "Boost The sixth milestone in E layer .",
+            effectDescription: "Boost The sixth milestone in E layer and remove the second effect in the first milestone.",
             done() { return player.UF.mp.gte(1e25) }
             ,unlocked(){ return (hasUpgrade('UF',32))}
         },
@@ -1469,8 +1472,9 @@ upgrades: {
     currencyLayer:"N",
     effectDisplay() { return "^ "+format(upgradeEffect(this.layer, this.id)) },
     effect() { 
-        if(hasUpgrade('E',13)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15).pow(2)
-        if(hasMilestone('IP',4.4e12)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15)
+        if(hasMilestone('E',1e24)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15).pow(3)
+       else  if(hasUpgrade('E',13)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15).pow(2)
+       else  if(hasMilestone('IP',4.4e12)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15)
         else return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1)},
  
 unlocked(){
@@ -1486,7 +1490,8 @@ unlocked(){
     currencyLayer:"N",
     effectDisplay() { return "^ "+format(upgradeEffect(this.layer, this.id)) },
     effect() { 
-        if(hasUpgrade('E',13)) return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(2)
+        if(hasMilestone('E',1e24)) return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(3)
+       else  if(hasUpgrade('E',13)) return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(2)
         else return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1)},
  
 unlocked(){
@@ -2613,7 +2618,12 @@ addLayer("I", {
               unlocked(){return hasUpgrade('IP',65)},
             },
 
-
+           
+    },
+    autoPrestige(){
+        return hasMilestone('E',1e31);
+    },resetsNothing(){
+        return hasMilestone('E',1e31) ;
     },
     tabFormat: {
         "Milestones":{
@@ -3202,6 +3212,8 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
         if (resettingLayer=="E"&&hasMilestone('E',3)) keep.push("upgrades")
         if (resettingLayer=="E"&&hasMilestone('E',5)) keep.push("challenges")
         if (resettingLayer=="O"&&hasMilestone('O',2)) keep.push("upgrades")
+        if (resettingLayer=="M"&&hasMilestone('M',2)) keep.push("upgrades")
+        if (resettingLayer=="M"&&hasMilestone('M',2)) keep.push("milestones")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     passiveGeneration(){return hasMilestone('IP',30000000)? 1 : 0},
@@ -3582,6 +3594,14 @@ addLayer("MS", {
             effectDescription: "Remove IP challenge but Number ^25.",
             done() { return player.MS.points.gte(5) }
         },
+        600: {
+            requirementDescription: "6 Mathematics Symbol",
+            effectDescription: "MS reset nothing.",
+            done() { return player.MS.points.gte(6) }
+        },
+    },
+    resetsNothing(){
+        return hasMilestone('M',600) ;
     },
     update(diff){
         let xgain = new Decimal(0)
@@ -3621,7 +3641,8 @@ addLayer("MS", {
             cost: new Decimal("1"),
             currencyDisplayName: "Exponentiation points",
             currencyLayer:"MS",
-            currencyInternalName:"Exponentiation"
+            currencyInternalName:"Exponentiation",
+            unlocked(){return hasMilestone('IP',17000) }
         },
         12: {
             title: "^2",
@@ -3972,12 +3993,33 @@ addLayer("E", {
             effectDescription: "Unlock 2 layer.",
             done() { return player.E.points.gte(1e15) },
         },
+        1e24: {
+            requirementDescription: "1e24 Eternity points",
+            effectDescription: "Boost '9' and '10'.",
+            done() { return player.E.points.gte(1e24) },
+        },
+        5e25: {
+            requirementDescription: "5e25 Eternity points",
+            effectDescription: "Number ^1.5 if you are not in E challenge, gain 1000% of EP on reset per second ",
+            done() { return player.E.points.gte(5e25) },
+        },
+        1e27: {
+            requirementDescription: "1e27 Eternity points",
+            effectDescription: "Unlock 1 Mathematician challenge.",
+            done() { return player.E.points.gte(1e27) },
+        },
+        1e31: {
+            requirementDescription: "1e31 Eternity points",
+            effectDescription: "Remove the first effect in the eleventh milestone in IP layer. Auto buy Infinity and Infinity reset nothing.",
+            done() { return player.E.points.gte(1e31) },
+        },
  
     },
     challenges:{
         11:{
             name: "Choose",
-        challengeDescription: "You can choose your nerf",
+        challengeDescription(){ if(hasMilestone('E',500000)) return"You can choose your nerf and Number ^1.2"
+    else  return"You can choose your nerf"},
         canComplete(){
             if(hasMilestone('E',5010))  return player.N.points.gte(1e1000)
         else return player.N.points.gte(1e1000)&&inChallenge('I',62)
@@ -4060,7 +4102,9 @@ addLayer("E", {
 
     },
     update(diff){
-if(hasUpgrade('UF',91)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3))
+        if(hasMilestone('E',5e25)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(10))
+        if(hasChallenge('M',11)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3)).times(player.UF.mp.add(1).log(10).add(1).log(10).add(1))
+else if(hasUpgrade('UF',91)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3))
 else  player.E.CPget2= player.E.CPget
         if(hasMilestone('UF',1e25)) player.E.boost = 6
         else if(hasMilestone('UF',5100)) player.E.boost = 4
@@ -4122,7 +4166,7 @@ else  player.E.CPget2= player.E.CPget
    
         },
     },
-
+   
     layerShown() { return (hasChallenge('I',62))||hasMilestone('E',1) },          // Returns a bool for if this layer's node should be visible in the tree.
     branches:["I"],
     tabFormat: {
@@ -4136,6 +4180,7 @@ else  player.E.CPget2= player.E.CPget
                    
                  
                     if(!hasMilestone('E',22)) s+="You can reset while you are in Boost or nerf 4.<br>"
+                    if(hasMilestone('E',5e25))s+="You are gaining "+ formatWhole(player.N.points.log(10).log(10).minus(15).pow(6).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(10))+" Eternity points per second<br>"
                     return s
                   }],
                 "milestones"
@@ -4273,5 +4318,43 @@ addLayer("M", {
             effectDescription: "Keep Negative numbers, Infinity challenge, UF upgrade on reset. Unlock new UF upgrade.",
             done() { return player.M.points.gte(1) },
         },
+        2: {
+            requirementDescription: "2 Mathematician",
+            effectDescription: "Keep IP content on reset.",
+            done() { return player.M.points.gte(2) },
+        },
+        },
+        challenges:{
+            11: {
+                name: "Euclid",
+                challengeDescription: "Number gain ^0.00002",
+                canComplete(){return player.N.points.gte("e9e15")},
+                goalDescription: "e9e15 Numbers",
+                rewardDescription(){return "MP boost CP gain."},
+              unlocked(){return hasMilestone("E", 1e27)},
+            },
+        },
+        tabFormat: {
+            "Milestones": {
+                content: [
+                    "main-display",
+                    "prestige-button",
+                    "blank",
+                  
+                    "milestones"
+                ]
+            },
+            "Challenges": {
+                content: [
+                    "main-display",
+                    "prestige-button",
+                    "blank",
+                    "challenges",
+                  
+               
+    
+                ]
+            },
+      
         },
 })

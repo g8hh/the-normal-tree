@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.5",
-	name: "Layer choose.",
+	num: "0.2.5.1",
+	name: "MSMSMSMSMSMS.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.5.1</h3><br>
+- Added 1 M milestone.<br>
+- Added 4 E milestone.<br>
+- Added 1 M challenge.<br>
+- Endgame: 6 MS.<br>
 <h3>v0.2.5</h3><br>
 - Added Ordinal and Mathematician.<br>
 - Added 5 O milestone.<br>
@@ -279,7 +284,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.M.points.gte(2)&&player.N.points.gte("e1.5e22")
+	return player.MS.points.gte(6)
 }
 
 
