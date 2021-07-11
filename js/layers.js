@@ -3554,7 +3554,7 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
         },
       
       "Challenges":{
-        unlocked(){return hasUpgrade('IP',21)&&!hasMilestone('MS',500)},
+        unlocked(){return hasUpgrade('IP',12)&&!hasMilestone('MS',500)},
         content:[
           "main-display",
           "blank",
