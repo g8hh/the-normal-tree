@@ -3508,19 +3508,19 @@ if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
     clickables: {
         11:{
             display() {return "Reset Infinity challenge"},
-            canClick(){return true},
+            canClick(){return !(hasChallenge('IP',11)&&hasChallenge('IP',12))},
             onClick(){player.IP.challenges[11] = 0
                 player.IP.challenges[12] = 0 }
             },
         12:{
         display() {return "Reset Eternity challenge"},
-        canClick(){return true},
+        canClick(){return !(hasChallenge('IP',21)&&hasChallenge('IP',22))},
         onClick(){player.IP.challenges[21] = 0
             player.IP.challenges[22] = 0 }
         },
         13:{
             display() {return "Reset Reality challenge"},
-            canClick(){return true},
+            canClick(){return !(hasChallenge('IP',31)&&hasChallenge('IP',32))},
             onClick(){player.IP.challenges[31] = 0
                 player.IP.challenges[32] = 0 
                }
@@ -4194,14 +4194,15 @@ addLayer("E", {
     
         if(hasMilestone('E',1e40)) player.E.base11 = player.E.points.add(1).log(10).add(1).log(10).add(1).log(10).add(0.35)
 
-        if(hasMilestone('O',100)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3)).times(player.UF.mp.add(1).log(10).add(1).log(10).add(1)).times(player.O.points.add(1).log(10).add(1).pow(1.25))
+        if(hasMilestone('O',100)&&hasChallenge('M',11)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3)).times(player.UF.mp.add(1).log(10).add(1).log(10).add(1)).times(player.O.points.add(1).log(10).add(1).pow(1.25))
        else  if(hasChallenge('M',11)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3)).times(player.UF.mp.add(1).log(10).add(1).log(10).add(1))
+       else if(hasUpgrade('UF',91)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3))
+       else  player.E.CPget2= player.E.CPget
        if(hasMilestone('E',1e41)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25))
        else if(hasMilestone('MS',600)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000))
         else if(hasMilestone('E',5e25)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(10))
       
- if(hasUpgrade('UF',91)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3))
-else  player.E.CPget2= player.E.CPget
+
         if(hasMilestone('UF',1e25)) player.E.boost = 6
         else if(hasMilestone('UF',5100)) player.E.boost = 4
           else player.E.boost = 2
