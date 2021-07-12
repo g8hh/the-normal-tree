@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.5.2 BIG BUGFIX",
-	name: "MSMSMSMSMSMSMS.",
+	num: "0.2.5.3",
+	name: "MSMSMSMSMSMSMSMS.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.5.3</h3><br>
+- Added 1 M milestone.<br>
+- Added 1 E milestone.<br>
+- Added 1 UF upgrade.<br>
+- Added 2 MS upgrade.<br>
+- Endgame: 8 MS.<br>
 <h3>v0.2.5.2</h3><br>
 - Added 1 M milestone.<br>
 - Added 1 O milestone.<br>
@@ -273,7 +279,8 @@ function getPointGen() {
 }
 function getPointGenExp(){
 	let exp = new Decimal(1)
-
+	if (hasUpgrade("MS", 33)) exp = exp.times(3)
+	if (hasUpgrade("MS", 32)) exp = exp.times(3)
 	if (hasUpgrade("MS", 31)) exp = exp.times(2)
 	if(hasUpgrade('UF',11)) exp = exp.times(4)
 	if(hasUpgrade('UF',25)) exp = exp.times(upgradeEffect('UF',25))
@@ -292,7 +299,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.MS.points.gte(7)
+	return player.MS.points.gte(8)
 }
 
 
