@@ -3986,7 +3986,7 @@ addLayer("MS", {
         41: {
             title: "F6",
             description: "a gain x1e6.",
-            cost(){ return new Decimal("35").tetrate(6)
+            cost(){ return new Decimal("ee13")
          
             },
             currencyDisplayName: "Exponentiation points",
