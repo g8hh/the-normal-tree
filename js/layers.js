@@ -3807,7 +3807,7 @@ addLayer("MS", {
         else if (hasUpgrade('MS',32)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)))
         else if(hasMilestone("MS",700)) player.MS.z=player.MS.z.plus(zgain.times(diff))
         if (hasUpgrade('MS',41)) player.MS.a=player.MS.a.plus(again.times(diff).times(300000))
-        else player.MS.a=player.MS.a.plus(again.times(diff))
+        else player.MS.a=player.MS.a.plus(player.MS.again.times(diff))
         if(hasUpgrade("MS",34))  player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )).times(player.MS.Prestige3.add(1).pow(1.5)))
         else if(hasMilestone("MS",800)) player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )))
         if(hasMilestone("MS",4000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(9).add(1).log(9).add(1).log(9).add(1).times(diff).times(player.MS.points.add(1).pow(0.4 )).times(player.E.CP.add(1).log(10).add(1).pow(1.5)))
