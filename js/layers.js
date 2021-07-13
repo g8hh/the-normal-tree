@@ -3750,9 +3750,9 @@ addLayer("MS", {
             done() { return player.MS.Prestige3.gte(3) }
         },
         4000: {
-            requirementDescription: "40 Hyper prestige point",
+            requirementDescription: "10 Hyper prestige point",
             effectDescription: "Auto get Challenge point. CP boost super prestige point gain.",
-            done() { return player.MS.Prestige3.gte(40) }
+            done() { return player.MS.Prestige3.gte(10) }
         },
         11000: {
             requirementDescription: "11 Mathematics Symbol with F6.1 Upgrade",
