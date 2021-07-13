@@ -1277,6 +1277,12 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
             done() { return player.UF.mp.gte(1e25) }
             ,unlocked(){ return (hasUpgrade('UF',32))}
         },
+        1e26 : {
+            requirementDescription: "ee16 Milestone point",
+            effectDescription: "Unlock Mastery",
+            done() { return player.UF.mp.gte("ee16") }
+            ,unlocked(){ return (hasUpgrade('UF',32))}
+        },
 
 
         
@@ -1318,8 +1324,7 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
 },
 },
 buyables: {
-    rows: 3,
-    cols: 3,
+
     11: {
         title: "generators",
         display() {
@@ -1405,6 +1410,22 @@ buyables: {
            
             
         }
+    },
+    41: {
+        title: "Number Master",
+        display() {
+           return "Master a upgrade.<br>Cost : " + format(new Decimal("e3e30").pow(getBuyableAmount("UF", 41).add(1).pow(4.5)).pow(2)) + " Numbers"
+        },
+        unlocked() { return hasMilestone("UF", 1e26) },
+        canAfford() { 
+            return player.N.points.gte(new Decimal("e3e30").pow(getBuyableAmount("UF", 41).add(1).pow(4.5)).pow(2)) 
+        },
+        buy() { 
+            {
+               player.N.points = player.N.points.minus(new Decimal("e3e30").pow(getBuyableAmount("UF", 41).add(1).pow(4.5)).pow(2))
+            }
+            setBuyableAmount("UF", 41, getBuyableAmount("UF", 41).add(1))
+        },
     },
 },
 automateStuff(){
@@ -1741,7 +1762,19 @@ unlocked(){
                 return hasMilestone("M",1)
             },
         },
+        95: {
+            title: "Easter egg 5",
+            description: "Boost Ordinal effect. Ordinal boost CP gain.",
+            cost: new Decimal("ee24"),
+            currencyDisplayName: "Infinity points",
+            currencyInternalName:"points",
+            currencyLayer:"IP",
+            unlocked(){
+                return hasMilestone("M",1)
+            },
+        },
 },
+
 update(diff){
     let mp = new Decimal(0)
     let mpgain = new Decimal(buyableEffect('UF',11))
@@ -3348,7 +3381,7 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
     passiveGeneration(){return hasMilestone('IP',30000000)? 1 : 0},
     upgrades:{
         11: {
-            title: "UltraLuigi (Easter Egg 1, 2 and 3)",
+            title: "UltraLuigi (Easter Egg 1, 2, 3 and 4)",
             description: "Unlock 1 Negative numbers buyable.",
             cost: new Decimal(5),
             unlocked(){
@@ -3358,7 +3391,7 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
 
     },
     12: {
-        title: "TrueDiego ΔΔΔ (Easter Egg 1)",
+        title: "TrueDiego ΔΔΔ (Easter Egg 1 and 4)",
         description: "Unlock 1 Infinity point Challenge",
         cost: new Decimal(10),
         unlocked(){
@@ -3438,7 +3471,7 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
     },
 },
 46: {
-    title: "Elliott (Easter Egg 3)",
+    title: "Elliott (Easter Egg 3 and 4)",
     description: "Boost Number gain base on Infinity.",
     cost: new Decimal("1e6400"),
     unlocked(){
@@ -3486,6 +3519,7 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
     },
 },
 66: {
+    title: "bananenkeks (Easter Egg 4)",
     description: "Unlock 1 NN challenge.",
     cost: new Decimal("1e1161161"),
     unlocked(){
@@ -3932,7 +3966,7 @@ addLayer("MS", {
         34: {
             title: "^^4",
             description: "Get more prestige point based on hyper prestige point.",
-            cost: new Decimal("ee1000000"),
+            cost: new Decimal("ee2e5"),
             currencyDisplayName: "Exponentiation points",
             currencyLayer:"MS",
             currencyInternalName:"Exponentiation",
@@ -3942,7 +3976,7 @@ addLayer("MS", {
         35: {
             title: "^^5",
             description: "Get more z based on Infinity. Unlock a.",
-            cost: new Decimal("eee10"),
+            cost: new Decimal("ee5e5"),
             currencyDisplayName: "Exponentiation points",
             currencyLayer:"MS",
             currencyInternalName:"Exponentiation",
@@ -4413,8 +4447,8 @@ addLayer("E", {
         else if(hasMilestone('UF',1e25)) player.E.boost = 6
         else if(hasMilestone('UF',5100)) player.E.boost = 4
           else player.E.boost = 2
-          
-  if(hasMilestone('MS',4000)) player.E.CPgettest= player.N.points.add(1).log(2).add(1).log(2).add(1).times(player.E.points.add(1).log(9).add(1).pow(0.35)).times(player.UF.mp.add(1).log(8).add(1).log(8).add(1)).times(player.O.points.add(1).log(10).add(1).pow(1.5))
+          if(hasUpgrade('UF',95))  player.E.CPgettest= player.N.points.add(1).log(2).add(1).log(2).add(1).times(player.E.points.add(1).log(9).add(1).pow(0.35)).times(player.UF.mp.add(1).log(8).add(1).log(8).add(1)).times(player.O.points.add(1).log(10).add(1).pow(1.5).times(tmp.O.effect))
+  else if(hasMilestone('MS',4000)) player.E.CPgettest= player.N.points.add(1).log(2).add(1).log(2).add(1).times(player.E.points.add(1).log(9).add(1).pow(0.35)).times(player.UF.mp.add(1).log(8).add(1).log(8).add(1)).times(player.O.points.add(1).log(10).add(1).pow(1.5))
   if(hasMilestone('MS',4000)) player.E.CP = player.E.CPgettest
       },
 
@@ -4550,7 +4584,8 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
 
     type: "normal",                         // Determines the formula used for calculating prestige currency.
     exponent: 0.01,                          // "normal" prestige gain is (currency^exponent).
-    effect(){return player.O.points.add(1).log(10).add(1)},
+    effect(){if(hasUpgrade('UF',95))  return player.O.points.add(1).log(10).add(1).pow(1.5)
+        else return player.O.points.add(1).log(10).add(1)},
     effectDescription(){    
         return "Which make Number Gain ^" + format(tmp.O.effect)
     
