@@ -78,6 +78,7 @@ addLayer("N", {
         if (inChallenge('I',22)) mult = mult.times(0.00003333333333)
         if (inChallenge('I',32)) mult = mult.times(5.26315789e-7)
         if (inChallenge('I',21)) mult = mult.times(0.166666)
+        if (inChallenge('O',11)) mult = mult.times(player.O.Goal)
         if (hasChallenge('I',11)) mult = mult.times(1.1)
         if (hasUpgrade('F',45)) mult = mult.times(1.1)
         if (hasChallenge('I',12)) mult = mult.times(1.2)
@@ -109,17 +110,20 @@ addLayer("N", {
         if  (hasMilestone('E',1e70)) mult = mult.times(1.05)
         if  (hasMilestone('E',12)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
         if  (hasMilestone('E',300)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
+        if  (hasMilestone('E',1e71)) mult = mult.times(player.E.points.add(1).log(10).add(1).log(10).add(1))
         if(inChallenge('E',11)) mult = mult.times(player.E.Npower)
         if  (hasMilestone('E',500000)&&(inChallenge('E',11))) mult = mult.times(1.2)
         if  (hasMilestone('E',5e25)&&(!inChallenge('E',11))) mult = mult.times(1.5)
         if  (hasMilestone('MS',500)) mult = mult.times(25)
+        if  (hasUpgrade('MS',42)) mult = mult.times(25)
         if  (hasMilestone('E',1000000)) mult = mult.times(player.F.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1))
        if(hasMilestone('UF',585555)) mult = mult.times(player.UF.mp.add(1).log(10).add(1).log(10).add(1.1))
         if(hasMilestone('UF',522000)) mult = mult.times(player.UF.mp.add(1).log(10).add(1).log(10).add(1).log(10).add(1.1))
         mult = mult.times(tmp.O.effect)
         if(hasUpgrade('UF',93)) mult = mult.times(player.E.CP.add(1).log(10))
         if (inChallenge('M',11)) mult = mult.times(0.00002) 
-        if(hasMilestone('O',100))mult = mult.times(2) 
+        if(hasMilestone('O',100))mult = mult.times(2)
+        mult = mult.times(player.O.reward) 
         return mult
 
     },
@@ -1534,7 +1538,8 @@ upgrades: {
     currencyLayer:"N",
     effectDisplay() { return "^ "+format(upgradeEffect(this.layer, this.id)) },
     effect() { 
-        if(hasMilestone('E',1e52))  return player.N.points.add(1).log(5).add(1).log(5).add(1).log(5).add(1).log(5).add(1).times(1.15).pow(3)
+        if(hasMilestone('MS',11000))   return player.N.points.add(1).log(4).add(1).log(4).add(1).log(4).add(1).log(4).add(1).times(1.15).pow(3.1)
+       else  if(hasMilestone('E',1e52))  return player.N.points.add(1).log(5).add(1).log(5).add(1).log(5).add(1).log(5).add(1).times(1.15).pow(3)
       else   if(hasMilestone('E',1e24)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15).pow(3)
        else  if(hasUpgrade('E',13)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15).pow(2)
        else  if(hasMilestone('IP',4.4e12)) return player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(1.15)
@@ -1553,8 +1558,9 @@ unlocked(){
     currencyLayer:"N",
     effectDisplay() { return "^ "+format(upgradeEffect(this.layer, this.id)) },
     effect() { 
-        if(hasMilestone('E',1e52))  return player.points.add(1).log(5).add(1).log(5).add(1).log(5).add(1).log(5).add(1).pow(3)
-        if(hasMilestone('E',1e24)) return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(3)
+        if(hasMilestone('MS',11000))  return player.points.add(1).log(4).add(1).log(4).add(1).log(4).add(1).log(4).add(1).pow(3.1)
+        else if(hasMilestone('E',1e52))  return player.points.add(1).log(5).add(1).log(5).add(1).log(5).add(1).log(5).add(1).pow(3)
+        else if(hasMilestone('E',1e24)) return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(3)
        else  if(hasUpgrade('E',13)) return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(2)
         else return player.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).log(10).add(1)},
  
@@ -1612,6 +1618,19 @@ unlocked(){
  
     unlocked(){
         return hasMilestone("MS",700 )
+    },
+},
+35: {
+    title: "^",
+    description: "Ordinal boost point gain.",
+    cost: new Decimal("e2e28"),
+    currencyDisplayName: "Numbers",
+    currencyInternalName:"points",
+    currencyLayer:"N",
+    
+ 
+    unlocked(){
+        return hasUpgrade("MS",42 )
     },
 },
         71: {
@@ -1704,6 +1723,17 @@ unlocked(){
             title: "Easter egg 3",
             description: "CP boost Number gain. ",
             cost: new Decimal("e3.82e15"),
+            currencyDisplayName: "Infinity points",
+            currencyInternalName:"points",
+            currencyLayer:"IP",
+            unlocked(){
+                return hasMilestone("M",1)
+            },
+        },
+        94: {
+            title: "Easter egg 4",
+            description: "Unlock a ordinal challenge. ",
+            cost: new Decimal("e1.5e23"),
             currencyDisplayName: "Infinity points",
             currencyInternalName:"points",
             currencyLayer:"IP",
@@ -3214,7 +3244,7 @@ else return 0.01
         if(hasUpgrade('F',46)) mult = mult.times(1e15)
 if(hasUpgrade('F',46)) mult = mult.times(100)
 if(hasAchievement('A',51)) mult = mult.times(1e40)
-if (hasUpgrade('MS',13))mult = mult.times(player.MS.x.pow(100))
+if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(100))
         return mult 
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -3600,12 +3630,15 @@ addLayer("MS", {
         x: new Decimal(1),
         y: new Decimal(1),
         z: new Decimal(1),
+        a: new Decimal(1),
         xgain: new Decimal(0),
         ygain: new Decimal(0),
         zgain: new Decimal(0),
+        again: new Decimal(0),
         Exponentiation: new Decimal(0),
         Prestige: new Decimal(0),
         Prestige2: new Decimal(0),
+        Prestige3: new Decimal(0),
         gainb:new Decimal(0),
     }},
     position: 1,  
@@ -3617,8 +3650,9 @@ addLayer("MS", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:new Decimal("1e2700"),
     exponent(){
-        if(player.MS.points>=4)  return 20.16
-        return 2
+        if(player.MS.points>=8&&!hasUpgrade('MS',42))  return player.MS.points.pow(player.MS.points.pow(0.7).tetrate(1.45)).tetrate(1.2)
+        else if(player.MS.points>=4)  return 20.16
+        else return 2
         
     },
     branches:["IP","I","FS"],
@@ -3705,6 +3739,26 @@ addLayer("MS", {
             effectDescription: "Unlock z in Exponentiation. Unlock more Exponentiation and UF Upgrade.",
             done() { return player.MS.points.gte(7) }
         },
+        800: {
+            requirementDescription: "8 Mathematics Symbol",
+            effectDescription: "Unlock Hyper prestige and auto get prestige point.",
+            done() { return player.MS.points.gte(8) }
+        },
+        3000: {
+            requirementDescription: "3 Hyper prestige point",
+            effectDescription: "Auto get super prestige point.",
+            done() { return player.MS.Prestige3.gte(3) }
+        },
+        4000: {
+            requirementDescription: "40 Hyper prestige point",
+            effectDescription: "Auto get Challenge point. CP boost super prestige point gain.",
+            done() { return player.MS.Prestige3.gte(40) }
+        },
+        11000: {
+            requirementDescription: "11 Mathematics Symbol with F6.1 Upgrade",
+            effectDescription: "Boost '9' and '0'",
+            done() { return player.MS.points.gte(11)&&hasUpgrade('MS',42) }
+        },
     },
     resetsNothing(){
         return hasMilestone('MS',600) ;
@@ -3715,7 +3769,9 @@ addLayer("MS", {
         let ygain = new Decimal(0)
 
         let zgain = new Decimal(0)
-        if(hasMilestone('MS',700)) player.MS.Exponentiation=(Decimal.pow(new Decimal(player.MS.x),(new Decimal(player.MS.y).pow(player.MS.z))))
+        if(hasUpgrade('MS',42))  player.MS.Exponentiation=new Decimal(1)
+        else if(hasUpgrade('MS',35))  player.MS.Exponentiation=(Decimal.tetrate(Decimal.pow(new Decimal(player.MS.x),(new Decimal(player.MS.y).pow(player.MS.z))),player.MS.a))
+        else if(hasMilestone('MS',700)) player.MS.Exponentiation=(Decimal.pow(new Decimal(player.MS.x),(new Decimal(player.MS.y).pow(player.MS.z))))
         else if(hasMilestone('MS',400)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
         else if(player.MS.Exponentiation.gte("1e6000")) return player.MS.Exponentiation=new Decimal("1e6000")
         else if(hasMilestone('IP',1000000)) player.MS.Exponentiation=(Decimal.pow(player.MS.x,player.MS.y))
@@ -3724,6 +3780,7 @@ addLayer("MS", {
         if(hasUpgrade("MS",11))xgain=new Decimal(1)
         if(hasUpgrade("MS",12))ygain=new Decimal(0.01)
         if(hasMilestone("MS",700))zgain=new Decimal(0.025)
+        if(hasUpgrade('MS',35)) again=new Decimal(0.00000001)
         if(hasUpgrade('UF',23)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).add(1).pow(player.MS.Prestige2.add(1).pow(0.5).times(1.5)))
         else if(hasMilestone('MS',41)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).add(1).pow(player.MS.Prestige2.add(1).pow(0.5)))
         else if(hasUpgrade('IP',66)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)))
@@ -3743,9 +3800,18 @@ addLayer("MS", {
         else if (hasUpgrade('MS',15))  player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.y.add(1)))
         else if (hasUpgrade('MS',13)) player.MS.x=player.MS.x.plus(xgain.times(diff).times(player.IP.points.add(1).log(10).add(1).log(10).add(1)))
         else  player.MS.x=player.MS.x.plus(xgain.times(diff))
-        if (hasUpgrade('UF',34)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)).times(player.N.points.add(1).log(10).add(1).log(10).add(1)))
-        if (hasUpgrade('MS',32)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)))
+
+        if (hasUpgrade('MS',35)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)).times(player.N.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.Prestige3.add(1).pow(3)).times(player.I.points.add(1).log(10).add(1).pow(2)))
+        else if (hasMilestone('UF',800)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)).times(player.N.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.Prestige3.add(1).pow(3)))
+        else if (hasUpgrade('UF',34)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)).times(player.N.points.add(1).log(10).add(1).log(10).add(1)))
+        else if (hasUpgrade('MS',32)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)))
         else if(hasMilestone("MS",700)) player.MS.z=player.MS.z.plus(zgain.times(diff))
+        if (hasUpgrade('MS',41)) player.MS.a=player.MS.a.plus(again.times(diff).times(300000))
+        else player.MS.a=player.MS.a.plus(again.times(diff))
+        if(hasUpgrade("MS",34))  player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )).times(player.MS.Prestige3.add(1).pow(1.5)))
+        else if(hasMilestone("MS",800)) player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )))
+        if(hasMilestone("MS",4000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(9).add(1).log(9).add(1).log(9).add(1).times(diff).times(player.MS.points.add(1).pow(0.4 )).times(player.E.CP.add(1).log(10).add(1).pow(1.5)))
+        else if(hasMilestone("MS",3000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.3 )))
     },
     upgrades: {
         11: {
@@ -3863,6 +3929,53 @@ addLayer("MS", {
             unlocked(){return hasMilestone('MS',700)}
      
         },
+        34: {
+            title: "^^4",
+            description: "Get more prestige point based on hyper prestige point.",
+            cost: new Decimal("ee1000000"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+            unlocked(){return hasMilestone('MS',700)}
+     
+        },
+        35: {
+            title: "^^5",
+            description: "Get more z based on Infinity. Unlock a.",
+            cost: new Decimal("eee10"),
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+            unlocked(){return hasMilestone('MS',700)}
+     
+        },
+        41: {
+            title: "F6",
+            description: "a gain x1e6.",
+            cost(){ return new Decimal("35").tetrate(6)
+         
+            },
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+            unlocked(){return hasMilestone('MS',700)}
+     
+        },
+        42: {
+            title: "F6.1",
+            description: "Remove Exponentiation but Number ^25. MS are cheaper. Unlock a UF upgrade. Buy this upgrade will reset your MS and IP.",
+            cost(){ return new Decimal("45").tetrate(6)
+         
+            },
+            currencyDisplayName: "Exponentiation points",
+            currencyLayer:"MS",
+            currencyInternalName:"Exponentiation",
+            unlocked(){return hasMilestone('MS',700)},
+            onPurchase(){
+                player.IP.points = new Decimal(0)
+                 player.MS.points = new Decimal(0)
+                }
+        },
   
     },
     clickables:{
@@ -3896,6 +4009,27 @@ addLayer("MS", {
         },
 
 },
+13:{
+    display() {return "Reset Your x, y, z prestige point and Super prestige point for 1 Hyper Prestige point (Req: ee10000 Exponentiation points and 1000 prestige point.)."},
+    canClick(){return player.MS.Exponentiation.gte("ee10000")&&player.MS.Prestige.gte("1000")},
+    onClick(){
+     
+        player.MS.Prestige=new Decimal(0)
+        player.MS.Prestige2=new Decimal(0)
+        player.MS.Prestige3= player.MS.Prestige3.add(1)
+        player.MS.x=new Decimal(1)
+        player.MS.y=new Decimal(1) 
+        player.MS.z=new Decimal(1)     
+     
+      
+      
+        player.MS.Exponentiation=new Decimal(1) 
+     
+    
+    },
+    unlocked(){return hasMilestone('MS',800)}
+
+},
 },
 
     layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)},
@@ -3910,7 +4044,7 @@ addLayer("MS", {
         },
         "Exponentiation": {
             unlocked(){
-return hasMilestone('IP',17000)||hasMilestone('MS',40)
+return (hasMilestone('IP',17000)||hasMilestone('MS',40))&&!hasUpgrade('MS',42)
             },
             content: [
                 "main-display",
@@ -3922,7 +4056,9 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
               s+="Your x is "+format(player.MS.x)+"<br>"
               s+="Your y is "+format(player.MS.y)+"<br>"
            if(hasMilestone('MS',700)) s+="Your z is "+format(player.MS.z)+"<br>"
-           if(hasMilestone('MS',700))  s+="x^y^z = "+format(Decimal.pow(player.MS.x,new Decimal(player.MS.y.pow(player.MS.z))))+"<br>"
+           if(hasUpgrade('MS',35)) s+="Your a is "+format(player.MS.a)+"<br>"
+           if(hasUpgrade('MS',35)) s+="(x^y^z)^^a = "+format(Decimal.tetrate(Decimal.pow(new Decimal(player.MS.x),(new Decimal(player.MS.y).pow(player.MS.z))),player.MS.a))+"<br>"
+           else if(hasMilestone('MS',700))  s+="x^y^z = "+format(Decimal.pow(player.MS.x,new Decimal(player.MS.y.pow(player.MS.z))))+"<br>"
            else     s+="x^y = "+format(Decimal.pow(player.MS.x,player.MS.y))+"<br>"
               return s
             }],
@@ -3936,7 +4072,7 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
         },
         "Prestige": {
             unlocked(){
-                return hasMilestone('IP',20000)||hasMilestone('MS',40)
+                return (hasMilestone('IP',20000)||hasMilestone('MS',40))&&!hasUpgrade('MS',42)
                             },
             content: [
                 "main-display",
@@ -3947,8 +4083,11 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
               let s=""
               s+="Your x is "+format(player.MS.x)+"<br>"
               s+="Your y is "+format(player.MS.y)+"<br>"
-           
-              s+="x^y = "+format(Decimal.pow(player.MS.x,player.MS.y))+"<br>"
+              if(hasMilestone('MS',700)) s+="Your z is "+format(player.MS.z)+"<br>"
+              if(hasUpgrade('MS',35)) s+="Your a is "+format(player.MS.a)+"<br>"
+              if(hasUpgrade('MS',35)) s+="(x^y^z)^^a = "+format(Decimal.tetrate(Decimal.pow(new Decimal(player.MS.x),(new Decimal(player.MS.y).pow(player.MS.z))),player.MS.a))+"<br>"
+              else if(hasMilestone('MS',700))  s+="x^y^z = "+format(Decimal.pow(player.MS.x,new Decimal(player.MS.y.pow(player.MS.z))))+"<br>"
+             else  s+="x^y = "+format(Decimal.pow(player.MS.x,player.MS.y))+"<br>"
              
               return s
             }],
@@ -3957,6 +4096,7 @@ return hasMilestone('IP',17000)||hasMilestone('MS',40)
               let s="You have "+format(player.MS.Exponentiation)+" Exponentiation points.<br>"
               s+="Your have  "+format(player.MS.Prestige)+" prestige point<br>"
               s+="Your have  "+format(player.MS.Prestige2)+" super prestige point<br>"
+              if(hasMilestone('MS',800))s+="Your have  "+format(player.MS.Prestige3)+" hyper prestige point<br>"
               return s}],
               "blank",
              "clickables",
@@ -3981,7 +4121,9 @@ addLayer("E", {
         CPget: new Decimal(0), 
         CPget2: new Decimal(0),     
         base11: new Decimal(1),    
-        resetgain:new Decimal(0)
+        resetgain:new Decimal(0),
+        CPgettest:new Decimal(0),
+        Nafterpow:new Decimal(0),
     }},
     position: -1,  
     canReset(){if(hasMilestone('E',22))  return player.N.points.gte("e9e15")
@@ -4163,8 +4305,13 @@ addLayer("E", {
         },
         1e70: {
             requirementDescription: "1e70 Eternity points",
-            effectDescription: "Number ^1.05 and ??????. ",
+            effectDescription: "Number ^1.05. ",
             done() { return player.E.points.gte(1e70) },
+        },
+        1e71: {
+            requirementDescription: "57777 Challenge points",
+            effectDescription: "Boost the fifth milestone.",
+            done() { return player.E.CP.gte(57777) },
         },
  
     },
@@ -4261,12 +4408,14 @@ addLayer("E", {
        if(hasMilestone('E',1e41)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25))
        else if(hasMilestone('MS',600)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000))
         else if(hasMilestone('E',5e25)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(10))
-      
-        if(hasUpgrade('MS',33)) player.E.boost = 8
+      if(challengeCompletions('O',11)>0) player.E.boost = new Decimal(8).add(challengeCompletions('O',11)).add(challengeCompletions('O',11))
+        else if(hasUpgrade('MS',33)) player.E.boost = 8
         else if(hasMilestone('UF',1e25)) player.E.boost = 6
         else if(hasMilestone('UF',5100)) player.E.boost = 4
           else player.E.boost = 2
-  
+          
+  if(hasMilestone('MS',4000)) player.E.CPgettest= player.N.points.add(1).log(2).add(1).log(2).add(1).times(player.E.points.add(1).log(9).add(1).pow(0.35)).times(player.UF.mp.add(1).log(8).add(1).log(8).add(1)).times(player.O.points.add(1).log(10).add(1).pow(1.5))
+  if(hasMilestone('MS',4000)) player.E.CP = player.E.CPgettest
       },
 
     upgrades: {
@@ -4382,7 +4531,9 @@ addLayer("E", {
 addLayer("O", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
-        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+        points: new Decimal(0),     
+        Goal: new Decimal(0.0001),    
+        reward: new Decimal(1),   
     }},
 
     color: "#ff00ff",                       // The color for this layer, which affects many elements.
@@ -4444,6 +4595,48 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
         effectDescription: "Number ^2 and Ordinal boost CP gain.",
         done() { return player.O.points.gte(100) },
     },
+    },
+    challenges:{
+        11: {
+            name: "ω",
+            completionLimit(){
+                let limit=10;
+                return limit;
+            },
+            challengeDescription(){return "Number gain ^" + player.O.Goal+"<br>You have completed this challenge "+ challengeCompletions('O',11)+"/10 times." },
+            canComplete(){return player.F.points.gte("1.8e308")},
+            goalDescription: "1.8e308 Factors",
+            rewardDescription(){return "Boost the sixth milestone and Number ^"+format(player.O.reward)},
+          unlocked(){return hasUpgrade("UF", 94)},
+          onExit(){if( player.F.points.gte("1.8e308")) player.O.Goal= player.O.Goal.div(10000)
+        }
+        },
+    },
+    update(diff){
+        player.O.reward=new Decimal(1.5).pow(challengeCompletions('O',11))
+    },
+    tabFormat: {
+        "Milestones": {
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+              
+                "milestones"
+            ]
+        },
+        "Challenges": {
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                "challenges",
+              
+           
+
+            ]
+        },
+  
     },
 })
 addLayer("M", {
@@ -4508,6 +4701,7 @@ addLayer("M", {
                 goalDescription: "e9e15 Numbers",
                 rewardDescription(){return "MP boost CP gain."},
               unlocked(){return hasMilestone("E", 1e27)},
+       
             },
         },
         tabFormat: {

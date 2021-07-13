@@ -13,11 +13,22 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.5.3",
-	name: "MSMSMSMSMSMSMSMS.",
+	num: "0.2.6",
+	name: "No Exponentiation.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.6</h3><br>
+- Added 2 UF upgrade.<br>
+- Added 1 O Challenge.<br>
+- Added 1 MS milestone.<br>
+- Endgame: ee24 IP.<br>
+<h3>v0.2.5.4</h3><br>
+- Added 5 MS upgrade.<br>
+- Added 3 MS milestone.<br>
+- Added 1 E milestone.<br>
+- Added 1 MS clickable.<br>
+- Endgame: e2e28 Numbers.<br>
 <h3>v0.2.5.3</h3><br>
 - Added 1 M milestone.<br>
 - Added 1 E milestone.<br>
@@ -286,6 +297,7 @@ function getPointGenExp(){
 	if(hasUpgrade('UF',25)) exp = exp.times(upgradeEffect('UF',25))
 	if(inChallenge('E',11)) exp = exp.times(player.E.Ppower)
 	if(hasUpgrade('E',15 )) exp = exp.times(2)
+	if(hasUpgrade('UF',35)) exp = exp.times(tmp.O.effect)
 	return exp
 }
 
@@ -299,7 +311,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.MS.points.gte(8)
+	return player.IP.points.gte("ee24")
 }
 
 
