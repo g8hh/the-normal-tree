@@ -3922,6 +3922,7 @@ addLayer("MS", {
         if(hasUpgrade("MS",12))ygain=new Decimal(0.01)
         if(hasMilestone("MS",700))zgain=new Decimal(0.025)
         if(hasUpgrade('MS',35)) again=new Decimal(0.00000001)
+        if (hasUpgrade('MS',41)) again=new Decimal(1)
         if(hasUpgrade('UF',23)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).add(1).pow(player.MS.Prestige2.add(1).pow(0.5).times(1.5)))
         else if(hasMilestone('MS',41)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).add(1).pow(player.MS.Prestige2.add(1).pow(0.5)))
         else if(hasUpgrade('IP',66)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)))
@@ -3947,8 +3948,8 @@ addLayer("MS", {
         else if (hasUpgrade('UF',34)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)).times(player.N.points.add(1).log(10).add(1).log(10).add(1)))
         else if (hasUpgrade('MS',32)) player.MS.z=player.MS.z.plus(zgain.times(diff).times(player.E.CP.add(1).log(10).add(1)))
         else if(hasMilestone("MS",700)) player.MS.z=player.MS.z.plus(zgain.times(diff))
-        if (hasUpgrade('MS',41)) player.MS.a=player.MS.a.plus(player.MS.again.times(diff).times(30000000))
-        else player.MS.a=player.MS.a.plus(player.MS.again.times(diff))
+   
+         player.MS.a=player.MS.a.plus(player.MS.again.times(diff))
         if(hasUpgrade("MS",34))  player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )).times(player.MS.Prestige3.add(1).pow(1.5)))
         else if(hasMilestone("MS",800)) player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )).times(2.5))
         if(hasMilestone("MS",4000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(9).add(1).log(9).add(1).log(9).add(1).times(diff).times(player.MS.points.add(1).pow(0.4 )).times(player.E.CP.add(1).log(10).add(1).pow(1.5)).times(2.5))
