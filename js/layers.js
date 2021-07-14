@@ -420,7 +420,7 @@ addLayer("N", {
         description: "The '+' effect is always 1e120",
         cost: new Decimal("1e487"),
         unlocked(){
-            {return hasUpgrade('N',45)|hasMilestone("I", 2)&&!hasUpgrade("F", 51)}
+            {return (hasUpgrade('N',45)||hasMilestone("I", 2))&&!hasUpgrade("F", 16)}
         },
     },
     26: {
@@ -428,7 +428,7 @@ addLayer("N", {
         description: "The '-' effect is always 1e50",
         cost: new Decimal("1e785"),
         unlocked(){
-            {return hasMilestone('I',2)&&!hasUpgrade("F", 51)}
+            {return hasMilestone('I',2)&&!hasUpgrade("F", 36)}
         },
     },
     36: {
@@ -436,7 +436,7 @@ addLayer("N", {
         description: "The 'x' effect is always 1e100",
         cost: new Decimal("3.14e845"),
         unlocked(){
-            {return hasMilestone('UF',128)&&!hasUpgrade("F", 51)}
+            {return hasMilestone('UF',128)&&!hasUpgrade("F", 36)}
         },
     },
     46: {
@@ -444,7 +444,7 @@ addLayer("N", {
         description: "The '/' effect is always 2.1 ",
         cost: new Decimal("1e895"),
         unlocked(){
-            {return hasMilestone('UF',128)&&!hasUpgrade("F", 51)}
+            {return hasMilestone('UF',128)&&!hasUpgrade("F", 36)}
         },
     },
     51: {
@@ -1443,6 +1443,7 @@ upgrades: {
             currencyDisplayName: "Numbers",
             currencyInternalName:"points",
             currencyLayer:"N",
+          
           
         },
         12: {
