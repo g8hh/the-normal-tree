@@ -3921,8 +3921,9 @@ addLayer("MS", {
         if(hasUpgrade("MS",11))xgain=new Decimal(1)
         if(hasUpgrade("MS",12))ygain=new Decimal(0.01)
         if(hasMilestone("MS",700))zgain=new Decimal(0.025)
-        if(hasUpgrade('MS',35)) again=new Decimal(0.00000001)
         if (hasUpgrade('MS',41)) again=new Decimal(1)
+        else if(hasUpgrade('MS',35)) again=new Decimal(0.00000001)
+       
         if(hasUpgrade('UF',23)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).add(1).pow(player.MS.Prestige2.add(1).pow(0.5).times(1.5)))
         else if(hasMilestone('MS',41)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)).add(1).pow(player.MS.Prestige2.add(1).pow(0.5)))
         else if(hasUpgrade('IP',66)) player.MS.y=player.MS.y.plus(ygain.times(diff).times(player.MS.x.add(1).log(10).add(1).log(10).add(1).log(10).add(1)).times(player.MS.Exponentiation.add(1).log(10).add(1).log(10).pow(0.5)).times(18).times(player.MS.Prestige.add(1)))
@@ -4091,22 +4092,11 @@ addLayer("MS", {
             unlocked(){return hasMilestone('MS',700)}
      
         },
-        41: {
-            title: "F6",
-            description: "a gain x1e6.",
-            cost(){ return new Decimal("ee13")
-         
-            },
-            currencyDisplayName: "Exponentiation points",
-            currencyLayer:"MS",
-            currencyInternalName:"Exponentiation",
-            unlocked(){return hasMilestone('MS',700)}
-     
-        },
+
         42: {
             title: "F6.1",
             description: "Remove Exponentiation but Number ^25. MS are cheaper. Unlock a UF upgrade. Buy this upgrade will reset your MS and IP.",
-            cost(){ return new Decimal("45").tetrate(6)
+            cost(){ return new Decimal("ee10")
          
             },
             currencyDisplayName: "Exponentiation points",
