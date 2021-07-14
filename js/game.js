@@ -3,7 +3,7 @@ var needCanvasUpdate = true;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.6.5",
+	tmtNum: "2.6.5.1",
 	tmtName: "Fixed Reality"
 }
 
@@ -408,7 +408,7 @@ var interval = setInterval(function() {
 			player.offTime.remain -= offlineDiff
 			diff += offlineDiff
 		}
-		if (!player.offlineProd || player.offTime.remain <= 0) player.offTime = undefined
+		if (!options.offlineProd || player.offTime.remain <= 0) player.offTime = undefined
 	}
 	if (player.devSpeed) diff *= player.devSpeed
 	player.time = now
