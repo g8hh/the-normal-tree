@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.6 Bugfix",
-	name: "No Exponentiation.",
+	num: "0.2.6.1",
+	name: "Master again.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.6.1</h3><br>
+- Added 1 UF upgrade.<br>
+- Added 1 UF Challenge.<br>
+- Added 1 O Milestone.<br>
+- Marged v2.6.5.1 of TMT.<br>
+- Endgame: 1e160 EP per second.<br>
 <h3>v0.2.6</h3><br>
 - Added 2 UF upgrade.<br>
 - Added 1 O Challenge.<br>
@@ -220,7 +226,7 @@ If you complete the game. I will give a big hint
 - Added 1 Upgrade factor Challenge.<br>
 - Endgame: 2 Infinity<br>
 <h3>v0.0.1 - 0.1.b</h3><br>
-- Added 4 layer and achievements..<br>
+- Added 4 layer and achievements.<br>
 - Added 1 upgrade Factors Challenge.<br>
 - Added 5 Upgrade factor Milestone.<br>
 - Added 10 Factors Upgrade.<br>
@@ -298,6 +304,8 @@ function getPointGenExp(){
 	if(inChallenge('E',11)) exp = exp.times(player.E.Ppower)
 	if(hasUpgrade('E',15 )) exp = exp.times(2)
 	if(hasUpgrade('UF',35)) exp = exp.times(tmp.O.effect)
+	if(hasUpgrade('UF',11)&&challengeCompletions('UF',21)>=1) exp = exp.times(10)
+	if(hasMilestone('O',103)) exp = exp.times(player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(1.05))
 	return exp
 }
 
@@ -311,7 +319,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.IP.points.gte("ee24")
+	return (player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(1000).pow(1.25).gte(1e160)
 }
 
 
