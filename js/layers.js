@@ -1411,22 +1411,7 @@ buyables: {
             
         }
     },
-    41: {
-        title: "Number Master",
-        display() {
-           return "Master a upgrade.<br>Cost : " + format(new Decimal("e3e30").pow(getBuyableAmount("UF", 41).add(1).pow(4.5)).pow(2)) + " Numbers"
-        },
-        unlocked() { return hasMilestone("UF", 1e26) },
-        canAfford() { 
-            return player.N.points.gte(new Decimal("e3e30").pow(getBuyableAmount("UF", 41).add(1).pow(4.5)).pow(2)) 
-        },
-        buy() { 
-            {
-               player.N.points = player.N.points.minus(new Decimal("e3e30").pow(getBuyableAmount("UF", 41).add(1).pow(4.5)).pow(2))
-            }
-            setBuyableAmount("UF", 41, getBuyableAmount("UF", 41).add(1))
-        },
-    },
+    
 },
 automateStuff(){
     if(hasMilestone("O",6)){
