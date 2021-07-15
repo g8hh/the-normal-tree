@@ -21,6 +21,7 @@ let changelog = `<h1>Changelog:</h1><br>
 <h3>v0.2.6.2</h3><br>
 - Added 1 O Milestone.<br>
 - Added 2 MS Milestone.<br>
+- Added 1 E Milestone.<br>
 - Endgame: e1.5e38 Number.<br>
 <h3>v0.2.6.1</h3><br>
 - Added 1 UF upgrade.<br>
