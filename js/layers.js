@@ -3930,6 +3930,7 @@ addLayer("MS", {
         },
         1.7e30: {
             requirementDescription: "e1.7e30 IP",
+            effectDescription: "Boost game speed based on your IP.",
             done() { return player.IP.points.gte("e1.7e30") },
          
         },
