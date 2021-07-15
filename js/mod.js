@@ -18,6 +18,10 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.6.3</h3><br>
+- Added 2 UF upgrade.<br>
+- Added 5 MS upgrade.<br>
+- Endgame: 1e284 EP Number.<br>
 <h3>v0.2.6.2</h3><br>
 - Added 1 O Milestone.<br>
 - Added 2 MS Milestone.<br>
@@ -311,6 +315,7 @@ function getPointGenExp(){
 	if(hasUpgrade('UF',35)) exp = exp.times(tmp.O.effect)
 	if(hasUpgrade('UF',11)&&challengeCompletions('UF',21)>=1) exp = exp.times(10)
 	if(hasMilestone('O',103)) exp = exp.times(player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(1.05))
+	if(hasUpgrade('MS',55)) exp = exp.times(player.MS.xb.add(1).log(10).add(1).pow(0.5))
 	return exp
 }
 
@@ -324,7 +329,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.N.points.gte("e1.5e38")
+	return player.E.points.gte("1e284")
 }
 
 
