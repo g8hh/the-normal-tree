@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.6.1",
-	name: "Master again.",
+	num: "0.2.6.2",
+	name: "Inflat.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2.6.2</h3><br>
+- Added 1 O Milestone.<br>
+- Added 2 MS Milestone.<br>
+- Endgame: e1.5e38 Number.<br>
 <h3>v0.2.6.1</h3><br>
 - Added 1 UF upgrade.<br>
 - Added 1 UF Challenge.<br>
@@ -319,7 +323,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return (player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(1000).pow(1.25).gte(1e160)&&player.N.points.gte(1)
+	return player.N.points.gte("e1.5e38")
 }
 
 

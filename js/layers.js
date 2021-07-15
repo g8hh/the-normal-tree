@@ -2023,6 +2023,7 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if(hasMilestone('O',104)) return 0.055
         if(hasMilestone('M',3)) return 0.06
         if(hasMilestone('E',1e11)) return 0.06865
         if(hasUpgrade('UF',81))return 0.07
@@ -2845,6 +2846,10 @@ addLayer("I", {
                     else return "??????"
                 },
               unlocked(){return hasUpgrade('IP',45)},
+              onEnter(){player.N.points=new Decimal(0)
+                player.F.points=new Decimal(0)
+                player.UF.points=new Decimal(0)
+                player.NN.points=new Decimal(0)}
             },
             52: {
                 name: "Boost or nerf 2",
@@ -2857,6 +2862,10 @@ addLayer("I", {
                     if(hasChallenge('I',52)) return "Number ^1.1"
                     else return "??????"
                 },
+                onEnter(){player.N.points=new Decimal(0)
+                    player.F.points=new Decimal(0)
+                    player.UF.points=new Decimal(0)
+                    player.NN.points=new Decimal(0)},
               unlocked(){return hasUpgrade('IP',45)},
             },
     
@@ -2872,6 +2881,10 @@ addLayer("I", {
                     else return "??????"
                 },
               unlocked(){return hasMilestone('I',90000)},
+              onEnter(){player.N.points=new Decimal(0)
+                player.F.points=new Decimal(0)
+                player.UF.points=new Decimal(0)
+                player.NN.points=new Decimal(0)},
             },
             62: {
                 name: "Boost or nerf 4",
@@ -2885,6 +2898,11 @@ addLayer("I", {
                     else return "??????"
                 },
               unlocked(){return hasUpgrade('IP',65)},
+         
+              onEnter(){player.N.points=new Decimal(0)
+                player.F.points=new Decimal(0)
+                player.UF.points=new Decimal(0)
+                player.NN.points=new Decimal(0)},
             },
 
            
@@ -3397,6 +3415,10 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
         if (hasMilestone('MS',2)) mult = mult.times(1.1)
         if (hasMilestone('MS',40)) mult = mult.times(1.1)
         if(inChallenge('E',11)&&(!player.E.IPpower.gte(1))) mult = mult.times(0)
+        if (inChallenge('I',51)&&hasMilestone('O',104)) mult = mult.times(1.2)
+        if (inChallenge('I',52)&&hasMilestone('O',104)) mult = mult.times(1.4)
+        if (inChallenge('I',61)&&hasMilestone('O',104)) mult = mult.times(1.8)
+        if (inChallenge('I',62)&&hasMilestone('O',104)) mult = mult.times(3)
         return mult
     },
     softcap(){
@@ -3900,6 +3922,18 @@ addLayer("MS", {
             effectDescription: "Boost '9' and '0'",
             done() { return player.MS.points.gte(11)&&hasUpgrade('MS',42) }
         },
+        8e29: {
+            requirementDescription: "e8e29 IP",
+            effectDescription: "Game speed x10",
+            done() { return player.IP.points.gte("e8e29") },
+            onComplete(){ return       player.devSpeed=10 },
+        },
+        1.7e30: {
+            requirementDescription: "e1.7e30 IP",
+            done() { return player.IP.points.gte("e1.7e30") },
+         
+        },
+
     },
     resetsNothing(){
         return hasMilestone('MS',600) ;
@@ -3955,6 +3989,7 @@ addLayer("MS", {
         else if(hasMilestone("MS",800)) player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )).times(2.5))
         if(hasMilestone("MS",4000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(9).add(1).log(9).add(1).log(9).add(1).times(diff).times(player.MS.points.add(1).pow(0.4 )).times(player.E.CP.add(1).log(10).add(1).pow(1.5)).times(2.5))
         else if(hasMilestone("MS",3000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.3 )).times(2.5))
+        if(hasMilestone('MS',1.7e30)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1)
     },
     upgrades: {
         11: {
@@ -4445,6 +4480,11 @@ addLayer("E", {
             effectDescription: "Boost the fifth milestone.",
             done() { return player.E.CP.gte(57777) },
         },
+        1e144: {
+            requirementDescription: "1e144 Eternity points",
+            effectDescription: "gain 1000% of Ordinal on reset per second. ",
+            done() { return player.E.points.gte(1e144) },
+        },
  
     },
     challenges:{
@@ -4611,9 +4651,14 @@ addLayer("E", {
     tabFormat: {
         "Milestones": {
             content: [
-                "main-display",
-                "prestige-button",
-                "blank",
+            
+                    "main-display",
+                    "blank",
+                  ["prestige-button",function(){return ""}],
+                  "blank",
+                  "resource-display",
+                    "blank",
+                    "blank",
                 ["display-text",function(){
                     let s=""
                    
@@ -4682,7 +4727,9 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
 
     type: "normal",                         // Determines the formula used for calculating prestige currency.
     exponent: 0.01,                          // "normal" prestige gain is (currency^exponent).
-    effect(){if(hasUpgrade('UF',95))  return player.O.points.add(1).log(10).add(1).pow(1.5)
+    effect(){
+        if(hasMilestone('MS',1.7e30)) return player.O.points.add(1).log(9).add(1).pow(2)
+     else if(hasUpgrade('UF',95))  return player.O.points.add(1).log(10).add(1).pow(1.5)
         else return player.O.points.add(1).log(10).add(1)},
     effectDescription(){    
         return "Which make Number Gain ^" + format(tmp.O.effect)
@@ -4733,6 +4780,11 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
         effectDescription: "Number boost point gain.",
         done() { return challengeCompletions('O',11)>2},
     },
+    104: {
+        requirementDescription: "150000 Ordinal",
+        effectDescription: "Factor are cheaper, Boost or nerf is boost IP instead of NN.",
+        done() { return player.O.points.gte(150000)},
+    },
     },
     challenges:{
         11: {
@@ -4753,6 +4805,7 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
     update(diff){
         player.O.reward=new Decimal(1.5).pow(challengeCompletions('O',11))
     },
+    passiveGeneration(){return hasMilestone('E',1e144)? 10 : 0},
     tabFormat: {
         "Milestones": {
             content: [
@@ -4865,4 +4918,5 @@ addLayer("M", {
             },
       
         },
+       
 })
