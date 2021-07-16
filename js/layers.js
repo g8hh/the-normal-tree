@@ -4121,7 +4121,7 @@ addLayer("MS", {
             currencyLayer:"MS",
             currencyInternalName:"Exponentiation",
             unlocked(){return hasMilestone('IP',17000) }
-            
+
         },
         12: {
             title: "^2",
@@ -4694,9 +4694,9 @@ addLayer("E", {
             done() { return player.E.points.gte(1e144) },
         },
         1e284: {
-            requirementDescription: "1e284 Eternity points",
+            requirementDescription: "1e278 Eternity points",
             effectDescription: "Factor are cheaper. ",
-            done() { return player.E.points.gte(1e284) },
+            done() { return player.E.points.gte(1e278) },
         },
  
     },
