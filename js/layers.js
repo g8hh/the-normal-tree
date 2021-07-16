@@ -120,11 +120,13 @@ addLayer("N", {
        if(hasMilestone('UF',585555)) mult = mult.times(player.UF.mp.add(1).log(10).add(1).log(10).add(1.1))
         if(hasMilestone('UF',522000)) mult = mult.times(player.UF.mp.add(1).log(10).add(1).log(10).add(1).log(10).add(1.1))
         mult = mult.times(tmp.O.effect)
-        if(hasUpgrade('UF',93)) mult = mult.times(player.E.CP.add(1).log(10))
+        if(hasUpgrade('UF',93)) mult = mult.times(player.E.CP.add(1).log(10).add(1))
         if (inChallenge('M',11)) mult = mult.times(0.00002) 
         if(hasMilestone('O',100))mult = mult.times(2)
         mult = mult.times(player.O.reward) 
-        if(hasUpgrade('MS',55)) mult = mult.times(player.MS.xb.add(1).log(10).add(1).pow(0.5))
+        if(hasUpgrade('MS',55)) mult = mult.times(player.MS.xb.add(1).log(10).add(1).pow(0.5).add(1))
+        if(hasUpgrade('UF',43))mult = mult.times(player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11)))
+      else  if(hasUpgrade('UF',41)) mult = mult.times(player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).add(10).log(10))
         return mult
 
     },
@@ -1341,12 +1343,14 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
     name: "Master",
     challengeDescription: "You can't buy UF upgrade. Entering this challenge resets your UF upgrade and layer resoruce on Row 1 - 3.",
     goal: function(){
-        return [new Decimal("e5.4e14"),new Decimal("e1.377e15"),new Decimal("e2.95e15"),new Decimal("eeeeeeeee10"),new Decimal(Infinity)][player.UF.challenges[21]];
+        return [new Decimal("e5.4e14"),new Decimal("e1.377e15"),new Decimal("e2.95e15"),new Decimal("e3.16e15"),new Decimal("eeeeeeeee10")][player.UF.challenges[21]];
 },
     rewardDescription(){return "upgrade are better."},
   unlocked(){return hasMilestone('UF',1e26)},
   onEnter(){
-      player.UF.upgrades=[]
+     
+    player.UF.upgrades=[]
+    
       player.N.points=new Decimal(0)
       player.points=new Decimal(0)
       player.F.points=new Decimal(0)
@@ -1715,6 +1719,47 @@ unlocked(){
         return hasUpgrade("MS",42 )
     },
 },
+41: {
+    title: "-1",
+    description: "Dev speed boost Number gain and MS boost game speed.",
+    cost: new Decimal("e4.20e42"),
+    currencyDisplayName: "Numbers",
+    currencyInternalName:"points",
+    currencyLayer :"N",
+    canAfford(){
+        if(inChallenge('UF',21)) return new Decimal(10).lt(0)||hasUpgrade('UF',42)
+         },
+ 
+    unlocked(){
+        return challengeCompletions("UF",21)>3
+    },
+},
+42: {
+    title: "-2",
+    description: "Dev speed boost Point gain.",
+    cost: new Decimal("e2.4e43"),
+    currencyDisplayName: "Numbers",
+    currencyInternalName:"points",
+    currencyLayer :"N",
+   
+ 
+    unlocked(){
+        return challengeCompletions("UF",21)>3
+    },
+},
+43: {
+    title: "-3",
+    description: "Unlock tickspeed (In E layer)",
+    cost: new Decimal("e3.1415926e44"),
+    currencyDisplayName: "Numbers",
+    currencyInternalName:"points",
+    currencyLayer :"N",
+   
+ 
+    unlocked(){
+        return challengeCompletions("UF",21)>3
+    },
+},
         71: {
             title: "Factor alpha",
             description: "Factor alpha effect is better",
@@ -1895,6 +1940,19 @@ unlocked(){
                 if(inChallenge('UF',21)) return new Decimal(10).lt(0)
                  },
         },
+        103: {
+            title: "Easter egg 8",
+            description: "Factor are cheaper.",
+            cost: new Decimal("e1.8e38"),
+            currencyDisplayName: "Infinity points",
+            currencyInternalName:"points",
+            currencyLayer:"IP",
+           
+         
+            unlocked(){
+                return challengeCompletions("UF",21)>3
+            },
+        },
 },
 
 update(diff){
@@ -2003,7 +2061,8 @@ microtabs: {
                     content: [
                            ["row",[ ["upgrade",11], ["upgrade",12], ["upgrade",13], ["upgrade",14], ["upgrade",15]]],
                            ["row",[ ["upgrade",21], ["upgrade",22], ["upgrade",23], ["upgrade",24], ["upgrade",25]]],
-                           ["row",[ ["upgrade",31], ["upgrade",32], ["upgrade",33], ["upgrade",34], ["upgrade",35]]]
+                           ["row",[ ["upgrade",31], ["upgrade",32], ["upgrade",33], ["upgrade",34], ["upgrade",35]]],
+                           ["row",[ ["upgrade",41], ["upgrade",42], ["upgrade",43], ["upgrade",44], ["upgrade",45]]]
                         ],
                     unlocked(){
                             return true
@@ -2053,6 +2112,8 @@ addLayer("F", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 50,
     exponent(){
+        if(hasUpgrade('UF',103))return 0.036
+        if(hasMilestone('E',1e284))return 0.0419
         if(hasMilestone('O',104)) return 0.055
         if(hasMilestone('M',3)) return 0.06
         if(hasMilestone('E',1e11)) return 0.06865
@@ -2192,7 +2253,12 @@ addLayer("F", {
             requirementDescription: "1.25e40 factors",
             effectDescription: "IP gain x 1e15.",
             done() { return player.F.points.gte(1.25e40)}
-        }, 
+        },
+        1e100: {
+            requirementDescription: "1e1000 factors",
+            effectDescription: "O gain ^ 1.5.",
+            done() { return player.F.points.gte('1e1000')}
+        },
 
     },
     upgrades: {
@@ -3968,6 +4034,12 @@ addLayer("MS", {
             done() { return player.IP.points.gte("e1.7e30") },
          
         },
+        1.83e36: {
+            requirementDescription: "e1.83e36 IP",
+            effectDescription: "Boost game speed based on your Factor.",
+            done() { return player.IP.points.gte("e1.83e36") },
+         
+        },
 
     },
     resetsNothing(){
@@ -4025,7 +4097,10 @@ addLayer("MS", {
         else if(hasMilestone("MS",800)) player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )).times(2.5))
         if(hasMilestone("MS",4000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(9).add(1).log(9).add(1).log(9).add(1).times(diff).times(player.MS.points.add(1).pow(0.4 )).times(player.E.CP.add(1).log(10).add(1).pow(1.5)).times(2.5))
         else if(hasMilestone("MS",3000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.3 )).times(2.5))
-        if(hasUpgrade('UF',101)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1))
+        if(hasUpgrade('UF',43)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11))
+       else if(hasUpgrade('UF',41))player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5))
+       else  if(hasMilestone('MS',1.83e36)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1))
+       else if(hasUpgrade('UF',101)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1))
         else if(hasMilestone('MS',1.7e30)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1)
         player.MS.xa=player.MS.xa.times(player.MS.xb.pow(0.05))
         if(hasUpgrade('MS',54))   player.MS.xb= player.MS.xb.plus(player.MS.xbgain.times(player.M.points.add(1).pow(1.25)).times(player.O.points.add(1).log(10).add(1)).times(player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1))) 
@@ -4180,7 +4255,7 @@ addLayer("MS", {
             currencyDisplayName: "Exponentiation points",
             currencyLayer:"MS",
             currencyInternalName:"Exponentiation",
-            unlocked(){return hasMilestone('MS',700)},
+            unlocked(){return hasMilestone('MS',700)&&hasMilestone('MS',4000)},
             onPurchase(){
                 player.IP.points = new Decimal(0)
                  player.MS.points = new Decimal(0)
@@ -4614,6 +4689,11 @@ addLayer("E", {
             effectDescription: "gain 1000% of Ordinal on reset per second. ",
             done() { return player.E.points.gte(1e144) },
         },
+        1e284: {
+            requirementDescription: "1e284 Eternity points",
+            effectDescription: "Factor are cheaper. ",
+            done() { return player.E.points.gte(1e284) },
+        },
  
     },
     challenges:{
@@ -4697,6 +4777,36 @@ addLayer("E", {
                             },
          
 
+    },
+    buyables: {
+
+        11: {
+            title: "Tickspeed",
+            display() {
+               return "Game speed x" + format(tmp.E.buyables[11].effect) + ".<br>Cost : " + format(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1))) + " Eternity points"
+            },
+            unlocked() { return hasUpgrade("UF", 32) },
+            canAfford() { 
+                return player.E.points.gte(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1))) 
+            },
+            buy() { 
+                {
+                   player.E.points = player.E.points.minus(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1)))
+                }
+                setBuyableAmount("E", 11, getBuyableAmount("E", 11).add(1))
+            },
+            effect() { 
+    
+                eff = new Decimal("1.5").pow(getBuyableAmount("E", 11))
+     
+              
+                return  eff
+           
+                
+               
+                
+            }
+        },
     },
     update(diff){
     
@@ -4831,6 +4941,16 @@ addLayer("E", {
                 ["clickable",51],
             ]
         },
+        "Tickspeed": {
+            unlocked(){return (hasUpgrade('UF',43))},
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                "buyables",
+          
+            ]
+        },
     },
 
 
@@ -4871,7 +4991,9 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
         return mult        
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
-        return new Decimal(1)
+        let mult= new Decimal(1)   
+        if(hasMilestone('F',1e100))  mult = mult.times(1.5)
+        return mult  
     },
 
     layerShown() { return hasMilestone('E',1e15) },          // Returns a bool for if this layer's node should be visible in the tree.
