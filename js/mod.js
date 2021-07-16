@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3 Pre 1",
-	name: "Galaxy.",
+	num: "0.3",
+	name: "Finally.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3</h3><br>
+- Added shapes.<br>
+- Added 4 S milestone.<br>
+- Endgame: 4 shapes. (I Maybe not update The Number Tree.)<br>
 <h3>v0.3 Pre 1</h3><br>
 - Added 1 E buyable.<br>
 - Added 3 E challenge.<br>
@@ -344,7 +348,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.I.points.gte("1.8e308")
+	return player.S.points.gte("4")
 }
 
 

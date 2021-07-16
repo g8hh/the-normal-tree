@@ -1066,6 +1066,10 @@ else return new Decimal("1e450000") },
         if (resettingLayer=="E") keep.push("challenges")
         if (resettingLayer=="O") keep.push("challenges")
         if (resettingLayer=="M") keep.push("challenges")
+    
+            
+            if (resettingLayer=="S") keep.push("challenges")
+          
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     tabFormat: {
@@ -1205,6 +1209,8 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
         if (challengeCompletions("UF",21)>0 && resettingLayer=="M") keep.push("challenges")
         if (challengeCompletions("UF",21)>0 && resettingLayer=="O") keep.push("challenges")
         if (challengeCompletions("UF",21)>0 && resettingLayer=="E") keep.push("challenges")
+        if (resettingLayer=="S"&&hasMilestone('S',2)) keep.push("milestones")
+        if (resettingLayer=="S"&&hasMilestone('S',3)) keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     milestones: {
@@ -1471,6 +1477,7 @@ automateStuff(){
       
     }
 },
+
 upgrades: {
   
         11: {
@@ -1995,6 +2002,7 @@ update(diff){
    player.UF.base3= new Decimal("1.05")
 
 },
+
 tabFormat: {
     "Milestones":{
         unlocked(){return !hasChallenge('NN',31)},
@@ -2772,6 +2780,7 @@ addLayer("F", {
         if (hasMilestone("MS", 3) && resettingLayer=="MS") keep.push("challenges")
         if (hasMilestone("UF", 5100) && resettingLayer=="O") keep.push("milestones")
         if (hasMilestone("UF", 5100) && resettingLayer=="M") keep.push("milestones")
+        if (resettingLayer=="S"&&hasMilestone('S',2)) keep.push("milestones")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
       },
       automateStuff(){
@@ -3324,7 +3333,7 @@ addLayer("A", {
         },  
         45:{
             name: "Omega Upgrade",
-            tooltip:"Get 23 Factor Upgrade.Reward:Number x1e5",
+            tooltip:"Get 23 Factor Upgrade. Reward: Number x1e5",
             done()  {
                 if (hasUpgrade('F',36)) return true
             },
@@ -3421,6 +3430,77 @@ addLayer("A", {
         unlocked(){
             return hasMilestone('MS',1)
         }
+},
+61:{
+    name: "True OM",
+    tooltip:"Get 1 Ordinal.",
+    done()  {
+        if (hasMilestone('O',1))  return true
+    },
+    unlocked(){
+        return hasMilestone('O',1)||hasMilestone('M',1)
+    }
+},
+62:{
+    name: "Mathematician",
+    tooltip:"Get 1 Mathematician.",
+    done()  {
+        if (hasMilestone('M',1))  return true
+    },
+    unlocked(){
+        return hasMilestone('O',1)||hasMilestone('M',1)
+    }
+},
+63:{
+    name: "get Both",
+    tooltip:"Get 1 Ordinal  Mathematician.",
+    done()  {
+        if (hasMilestone('M',1)&&hasMilestone('O',1))  return true
+    },
+    unlocked(){
+        return hasMilestone('O',1)||hasMilestone('M',1)
+    }
+},
+
+64:{
+    name: "ω boost",
+    tooltip:"Do ω once.",
+    done()  {
+        if (hasMilestone('M',1)&&hasMilestone('O',1))  return true
+    },
+    unlocked(){
+        return hasMilestone('O',1)||hasMilestone('M',1)
+    }
+},
+65:{
+    name: "Speed",
+    tooltip:"Make game speed >1.",
+    done()  {
+        if (hasMilestone('MS',8e29))  return true
+    },
+    unlocked(){
+        return hasMilestone('O',1)||hasMilestone('M',1)
+    }
+},
+66:{
+    name: "Tickspeed from AD",
+    tooltip:"Unlock tickspeed.",
+    done()  {
+        if (hasUpgrade('UF',43))  return true
+    },
+    unlocked(){
+        return hasMilestone('O',1)||hasMilestone('M',1)
+    }
+},
+67:{
+    name: "The greatest shapes",
+    tooltip:"Get 1 shapes.",
+    done()  {
+        if (hasMilestone('S',1))  return true
+    },
+    unlocked(){
+        return hasMilestone('O',1)||hasMilestone('M',1)
+    }
 },
     }
     
@@ -3629,6 +3709,7 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
         if (resettingLayer=="O"&&hasMilestone('O',2)) keep.push("upgrades")
         if (resettingLayer=="M"&&hasMilestone('M',2)) keep.push("upgrades")
         if (resettingLayer=="M"&&hasMilestone('M',2)) keep.push("milestones")
+        if (resettingLayer=="S"&&hasMilestone('S',2)) keep.push("milestones")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     passiveGeneration(){return hasMilestone('IP',30000000)? 1 : 0},
@@ -3864,7 +3945,10 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
             },
      
     },
-
+    autoUpgrade(){
+        if  (hasMilestone('S',1)) return true
+        else return false
+    },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasMilestone('NN',1.79e308)||hasMilestone('IP',1)||hasMilestone('MS',400)},
     tabFormat: {
@@ -4508,7 +4592,13 @@ return (hasUpgrade('UF',102))
         },
     },
    
-
+    doReset(resettingLayer) {
+        let keep = [];
+    
+        if (resettingLayer=="S"&&hasMilestone('S',3)) keep.push("upgrades")
+        if (resettingLayer=="S") keep.push("milestones")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
 
         
 })
@@ -4579,7 +4669,13 @@ addLayer("E", {
         return "e" + Decimal.pow(10, new Decimal(tmp[this.layer].resetGain).add(16))
 	},
 
-
+    doReset(resettingLayer) {
+        let keep = [];
+    
+        
+        if (resettingLayer=="S") keep.push("milestones")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
     milestones:{
         1: {
             requirementDescription: "1 Eternity points",
@@ -5317,4 +5413,56 @@ addLayer("M", {
       
         },
        
+})
+addLayer("S", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+
+    color: "#ffffff",                       // The color for this layer, which affects many elements.
+    resource: "Shapes",            // The name of this layer's main prestige resource.
+    row: 4,                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "Infinity",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.I.points },  // A function to return the current amount of baseResource.
+
+    requires: new Decimal("1.8e308"),              // The amount of the base needed to  gain 1 of the prestige currency.
+                                            // Also the amount required to unlock the layer.
+
+    type: "normal",                         // Determines the formula used for calculating prestige currency.
+    exponent: 0.0001,                          // "normal" prestige gain is (currency^exponent).
+
+    gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
+        return new Decimal(1)               // Factor in any bonuses multiplying gain here.
+    },
+    gainExp() {                             // Returns the exponent to your gain of the prestige resource.
+        return new Decimal(1)
+    },
+
+    layerShown() { return true },          // Returns a bool for if this layer's node should be visible in the tree.
+
+    branches:["I","M"],
+    milestones: {
+        1: {
+            requirementDescription: "1 Shapes",
+            effectDescription: "Auto buy IP upgrade. Keep E and MS milestone and NN challenge on reset.",
+            done() { return player.S.points.gte(1) }
+        },
+        2: {
+            requirementDescription: "2 Shapes",
+            effectDescription: "Keep IP, F, UF milestone on reset.",
+            done() { return player.S.points.gte(2) }
+        },
+        3: {
+            requirementDescription: "3 Shapes",
+            effectDescription: "Keep MS and UF upgrade on reset.",
+            done() { return player.S.points.gte(3) }
+        },
+        4: {
+            requirementDescription: "4 Shapes",
+            effectDescription: "I will add the effect 5 hours later.",
+            done() { return player.S.points.gte(4) }
+        },
+    }
 })
