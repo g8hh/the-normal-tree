@@ -1767,6 +1767,9 @@ unlocked(){
             currencyDisplayName: "Factors",
             currencyInternalName:"points",
             currencyLayer:"F",
+            unlocked(){
+                return hasChallenge("NN", 31)
+            },
             canAfford(){
                 if(inChallenge('UF',21)) return new Decimal(10).lt(0)
                  },
@@ -4118,6 +4121,7 @@ addLayer("MS", {
             currencyLayer:"MS",
             currencyInternalName:"Exponentiation",
             unlocked(){return hasMilestone('IP',17000) }
+            
         },
         12: {
             title: "^2",
