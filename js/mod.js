@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.6.4",
-	name: "Tickspeed.",
+	num: "0.3 Pre 1",
+	name: "Galaxy.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3 Pre 1</h3><br>
+- Added 1 E buyable.<br>
+- Added 3 E challenge.<br>
+- Added 3 E Milestone.<br>
+- Endgame: 1.8e308 Infinity. (Maybe you can get much more or much less.)<br>
 <h3>v0.2.6.4</h3><br>
 - Added 1 E Milestone.<br>
 - Added 3 UF upgrade.<br>
@@ -315,9 +320,11 @@ function getPointGenExp(){
 	if (hasUpgrade("MS", 31)) exp = exp.times(2)
 	if(hasUpgrade('UF',11)) exp = exp.times(4)
 	if(hasUpgrade('UF',25)) exp = exp.times(upgradeEffect('UF',25))
+	if(hasMilestone('E',1e287)) exp = exp.times(upgradeEffect('UF',24))
 	if(inChallenge('E',11)) exp = exp.times(player.E.Ppower)
 	if(hasUpgrade('E',15 )) exp = exp.times(2)
 	if(hasUpgrade('UF',35)) exp = exp.times(tmp.O.effect)
+	if(hasChallenge('E',31)) exp = exp.times(tmp.O.effect)
 	if(hasUpgrade('UF',11)&&challengeCompletions('UF',21)>=1) exp = exp.times(10)
 	if(hasMilestone('O',103)) exp = exp.times(player.N.points.add(1).log(10).add(1).log(10).add(1).log(10).add(1).pow(1.05))
 	if(hasUpgrade('MS',55)) exp = exp.times(player.MS.xb.add(1).log(10).add(1).pow(0.5))
@@ -337,7 +344,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.E.points.gte("1e575")
+	return player.I.points.gte("1.8e308")
 }
 
 
