@@ -4982,24 +4982,27 @@ unlocked(){return hasMilestone('E',1e286)},
         11: {
             title: "Tickspeed",
             display() {
-                if(getBuyableAmount("E", 11).gte(20))  return "Game speed x" + format(tmp.E.buyables[11].effect) + ".<br>Cost : " + format(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1)).pow(1.2)) + " Eternity points"
+                if(getBuyableAmount("E", 11).gte(45)) return "Game speed x" + format(tmp.E.buyables[11].effect) + ".<br>Cost : " + format(new Decimal(1e40).pow((getBuyableAmount("E", 11).add(1)).pow(1.1))) + " Eternity points"
+               else if(getBuyableAmount("E", 11).gte(20))  return "Game speed x" + format(tmp.E.buyables[11].effect) + ".<br>Cost : " + format(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1)).pow(1.2)) + " Eternity points"
              else  return "Game speed x" + format(tmp.E.buyables[11].effect) + ".<br>Cost : " + format(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1))) + " Eternity points"
             },
             unlocked() { return hasUpgrade("UF", 43) },
             canAfford() { 
-                if(getBuyableAmount("E", 11).gte(20))   return player.E.points.gte(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1)).pow(1.2)) 
+                if(getBuyableAmount("E", 11).gte(45)) return player.E.points.gte(new Decimal(1e40).pow((getBuyableAmount("E", 11).add(1)).pow(1.1))) 
+                else if(getBuyableAmount("E", 11).gte(20))   return player.E.points.gte(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1)).pow(1.2)) 
                else return player.E.points.gte(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1))) 
             },
             buy() { 
                 {
-                    if(getBuyableAmount("E", 11).gte(20))  player.E.points = player.E.points.minus(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1)).pow(1.2))
+                    if(getBuyableAmount("E", 11).gte(45))   player.E.points = player.E.points.minus(new Decimal(1e40).pow((getBuyableAmount("E", 11).add(1)).pow(1.1)))
+                 else   if(getBuyableAmount("E", 11).gte(20))  player.E.points = player.E.points.minus(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1)).pow(1.2))
                else    player.E.points = player.E.points.minus(new Decimal(1e40).pow(getBuyableAmount("E", 11).add(1)))
                 }
                 setBuyableAmount("E", 11, getBuyableAmount("E", 11).add(1))
             },
             effect() { 
-    
-                eff = new Decimal(buyableEffect('E',12).times(1.4)).pow(getBuyableAmount("E", 11))
+    if(hasMilestone('O',277)) eff = new Decimal(buyableEffect('E',12).times(1.7)).pow(getBuyableAmount("E", 11))
+             else   eff = new Decimal(buyableEffect('E',12).times(1.4)).pow(getBuyableAmount("E", 11))
      
               
                 return  eff
@@ -5012,6 +5015,7 @@ unlocked(){return hasMilestone('E',1e286)},
         12: {
             title: "Galaxy",
             display() {
+
                 if(getBuyableAmount("E", 12).gte(20))  return "tickspeed effect base x" + format(tmp.E.buyables[12].effect) + ".<br>Cost : " + format(new Decimal(3).pow(getBuyableAmount("E", 12).add(1).times(0.75).pow(0.91))) + " Mathematics Symbol"
                else return "tickspeed effect base x" + format(tmp.E.buyables[12].effect) + ".<br>Cost : " + format(new Decimal(3).pow(getBuyableAmount("E", 12).add(1).times(0.7).pow(0.9))) + " Mathematics Symbol"
             },
@@ -5273,6 +5277,11 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
         effectDescription: "Factor are cheaper, Boost or nerf is boost IP instead of NN.",
         done() { return player.O.points.gte(150000)},
     },
+    277: {
+        requirementDescription: "1e277 Ordinal",
+        effectDescription: "Tickspeed effect is better.",
+        done() { return player.O.points.gte(1e277)},
+    },
     },
     challenges:{
         11: {
@@ -5280,10 +5289,12 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
             completionLimit(){
                 let limit=10;
                 if(hasChallenge('E',22)) limit=new Decimal(20)
+                if(hasMilestone('S',4)) limit=new Decimal(1000)
                 return limit;
             },
             challengeDescription(){
-                if(hasChallenge('E',22))  return "Number gain ^" + player.O.Goal+"<br>You have completed this challenge "+ challengeCompletions('O',11)+"/20 times." 
+                if(hasMilestone('S',4))  return "Number gain ^" + player.O.Goal+"<br>You have completed this challenge "+ challengeCompletions('O',11)+"/1000 times." 
+               else if(hasChallenge('E',22))  return "Number gain ^" + player.O.Goal+"<br>You have completed this challenge "+ challengeCompletions('O',11)+"/20 times." 
                 else return "Number gain ^" + player.O.Goal+"<br>You have completed this challenge "+ challengeCompletions('O',11)+"/10 times." },
             canComplete(){return player.F.points.gte("1.8e308")},
             goalDescription: "1.8e308 Factors",
@@ -5295,7 +5306,9 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
     },
     update(diff){
         player.O.reward=new Decimal(1.5).pow(challengeCompletions('O',11))
-        player.O.Goal=new Decimal(1).div(new Decimal(10000).pow(challengeCompletions('O',11)))
+        if(challengeCompletions('O',11)>=65) player.O.Goal=new Decimal(1).div(new Decimal(player.O.reward.pow(0.78125)).pow(challengeCompletions('O',11)))
+        else if(challengeCompletions('O',11)>=50) player.O.Goal=new Decimal(1).div(new Decimal(player.O.reward.pow(0.7)).pow(challengeCompletions('O',11)))
+        else  player.O.Goal=new Decimal(1).div(new Decimal(10000).pow(challengeCompletions('O',11)))
     },
     passiveGeneration(){return hasMilestone('E',1e144)? 10 : 0},
     tabFormat: {
@@ -5461,7 +5474,7 @@ addLayer("S", {
         },
         4: {
             requirementDescription: "4 Shapes",
-            effectDescription: "I will add the effect 5 hours later.",
+            effectDescription: "You can complete ω 1000 times.",
             done() { return player.S.points.gte(4) }
         },
     }
