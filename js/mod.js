@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.0.1",
-	name: "Numbr again?.",
+	num: "0.3.0.2",
+	name: "inflat.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.0.2</h3><br>
+- Added 1 O milestone.<br>
+- Added 1 E clickable.<br>
+- Endgame: ee12 Shapes.<br>
 <h3>v0.3.0.1</h3><br>
 - Added 1 O milestone.<br>
 - Added a effect for S milestone.<br>
@@ -352,7 +356,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return challengeCompletions('O',11) >68
+	return player.S.points.gte("ee12")
 }
 
 

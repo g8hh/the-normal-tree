@@ -49,7 +49,7 @@ addLayer("N", {
         if (hasMilestone('F', 1100)) mult = mult.times(player.F.points.add(1))
         if (hasMilestone('UF', 52)) mult = mult.times(player.UF.points.pow(3).add(1))
         if (hasMilestone('UF', 128)) mult = mult.times(player.UF.points.pow(3).add(1))
-      
+      if(hasUpgrade('E',21))mult = mult.tetrate(1.01)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1331,7 +1331,7 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
                 return limit;
             },
             name: "Buyable upgrader",
-            challengeDescription: "'+' and '-' have no effect (You can do 4 times)",
+            challengeDescription(){return  "'+' and '-' have no effect"+"<br>You have completed this challenge "+ challengeCompletions("UF",11)+"/4 times." },
             goal: function(){
                 return [new Decimal("1e30"),new Decimal("1e45"),new Decimal("1e52"),new Decimal("1e65"),new Decimal(Infinity)][player.UF.challenges[11]];
         },
@@ -1357,7 +1357,7 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
         return limit;
     },
     name: "Master",
-    challengeDescription: "You can't buy UF upgrade. Entering this challenge resets your UF upgrade and layer resoruce on Row 1 - 3.",
+    challengeDescription(){return   "You can't buy UF upgrade. Entering this challenge resets your UF upgrade and layer resoruce on Row 1 - 3."+"<br>You have completed this challenge "+ challengeCompletions("UF",21)+"/5 times." },
     goal: function(){
         return [new Decimal("e5.4e14"),new Decimal("e1.377e15"),new Decimal("e2.95e15"),new Decimal("e3.16e15"),new Decimal("e1.61e26"),new Decimal("eeeeeeeee10")][player.UF.challenges[21]];
 },
@@ -4014,6 +4014,7 @@ addLayer("MS", {
         xa: new Decimal(1),
         xb: new Decimal(1),
         xbgain: new Decimal(1),
+        meta:new  Decimal(0)
     }},
     position: 1,  
     color: "#8000ff",
@@ -4024,6 +4025,7 @@ addLayer("MS", {
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base:new Decimal("1e2700"),
     exponent(){
+       
         if(hasChallenge('E',21)) return 17
         if(player.MS.points>=8&&!hasUpgrade('MS',42))  return player.MS.points.pow(player.MS.points.pow(0.7).tetrate(1.45)).tetrate(1.2)
         else if(player.MS.points>=4)  return 20.16
@@ -4209,7 +4211,9 @@ addLayer("MS", {
         else if(hasMilestone("MS",800)) player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )).times(2.5))
         if(hasMilestone("MS",4000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(9).add(1).log(9).add(1).log(9).add(1).times(diff).times(player.MS.points.add(1).pow(0.4 )).times(player.E.CP.add(1).log(10).add(1).pow(1.5)).times(2.5))
         else if(hasMilestone("MS",3000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.3 )).times(2.5))
-        if(challengeCompletions('UF',21)>4) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1).pow(5)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11))
+        if(player.E.meta.gte(1)) player.devSpeed=new  Decimal("1.8e308")
+       else if(challengeCompletions('O',11)>68) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1).pow(5)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11)).pow(1.01)
+      else  if(challengeCompletions('UF',21)>4) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1).pow(5)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11))
       else  if(hasUpgrade('UF',43)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11))
        else if(hasUpgrade('UF',41))player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5))
        else  if(hasMilestone('MS',1.83e36)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1))
@@ -4618,6 +4622,7 @@ addLayer("E", {
         resetgain:new Decimal(0),
         CPgettest:new Decimal(0),
         Nafterpow:new Decimal(0),
+        meta:new Decimal(0),
     }},
     position: -1,  
     canReset(){if(hasMilestone('E',22))  return player.N.points.gte("e9e15")
@@ -4974,6 +4979,23 @@ unlocked(){return hasMilestone('E',1e286)},
                                 player.E.upgrades = []
                             }
                             },
+                            61:{
+                                display() {return "GO META."},
+                             
+                                canClick(){return true},
+                                onClick(){
+                                    player.E.upgrades = []
+                                    player.E.challenges = []
+                            player.E.meta=new  Decimal(1)
+                            player.E.points=new  Decimal(0)
+                                },
+                                style() { return {
+                                    "font-size": "24px",
+                                    "height": "600px",
+                                    "width": "800px"
+                                    }
+                                },
+                            }
          
 
     },
@@ -5052,7 +5074,8 @@ unlocked(){return hasMilestone('E',1e286)},
        else  if(hasChallenge('M',11)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3)).times(player.UF.mp.add(1).log(10).add(1).log(10).add(1))
        else if(hasUpgrade('UF',91)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3))
        else  player.E.CPget2= player.E.CPget
-       if(hasMilestone('E',1e41)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25))
+       if(hasMilestone('O',369)&&player.N.points.gte("e9e15"))  player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25).times(100000))
+       else if(hasMilestone('E',1e41)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25))
        else if(hasMilestone('MS',600)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000))
         else if(hasMilestone('E',5e25)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(10))
       if(challengeCompletions('O',11)>0) player.E.boost = new Decimal(8).add(challengeCompletions('O',11)).add(challengeCompletions('O',11))
@@ -5076,7 +5099,7 @@ unlocked(){return hasMilestone('E',1e286)},
             cost: new Decimal("0"),
             canAfford(){
                if(!hasMilestone('UF',1e25)) return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
-                },
+                },          unlocked(){return !player.E.meta.gte(1)}
 
         
         },
@@ -5087,7 +5110,7 @@ unlocked(){return hasMilestone('E',1e286)},
       
             canAfford(){
                 if(!hasMilestone('UF',1e25)) return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
-                },
+                },          unlocked(){return !player.E.meta.gte(1)}
 
         },
         13: {
@@ -5096,8 +5119,8 @@ unlocked(){return hasMilestone('E',1e286)},
             cost: new Decimal("0"),
             canAfford(){
                 if(!hasMilestone('UF',1e25)) return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
-                },
-},
+                },          unlocked(){return !player.E.meta.gte(1)}
+},         
 
         14: {
             title: "4",
@@ -5107,7 +5130,7 @@ unlocked(){return hasMilestone('E',1e286)},
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
             canAfford(){
                 if(!hasMilestone('UF',1e25))  return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
-                },
+                },          unlocked(){return !player.E.meta.gte(1)}
         },
       
         15: {
@@ -5117,6 +5140,15 @@ unlocked(){return hasMilestone('E',1e286)},
             canAfford(){
                 if(!hasMilestone('UF',1e25))  return new Decimal(player.E.upgrades.length).lt(player.E.CP.pow(0.5).minus(0.99))
                 },
+                unlocked(){return !player.E.meta.gte(1)}
+          
+   
+        },
+        21: {
+            title: "God",
+            description: "Number ^^1.01",
+            cost: new Decimal("0"),
+          unlocked(){return player.E.meta.gte(1)}
           
    
         },
@@ -5149,6 +5181,7 @@ unlocked(){return hasMilestone('E',1e286)},
             ]
         },
         "Challenges": {
+            unlocked(){return (!player.E.meta.gte(1))},
             content: [
                 "main-display",
                 "prestige-button",
@@ -5168,7 +5201,7 @@ unlocked(){return hasMilestone('E',1e286)},
             ]
         },
         "Upgrades": {
-            unlocked(){return (hasMilestone('E',5007))},
+            unlocked(){return (hasMilestone('E',5007)&&!player.E.meta.gte(1))},
             content: [
                 "main-display",
                 "prestige-button",
@@ -5178,12 +5211,32 @@ unlocked(){return hasMilestone('E',1e286)},
             ]
         },
         "Tickspeed": {
-            unlocked(){return (hasUpgrade('UF',43))},
+            unlocked(){return (hasUpgrade('UF',43)&&!player.E.meta.gte(1))},
             content: [
                 "main-display",
                 "prestige-button",
                 "blank",
                 "buyables",
+          
+            ]
+        },
+        "Meta": {
+            unlocked(){return (player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1).pow(5)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11)).pow(1.01).gte("1.8e308")&&!player.E.meta.gte(1))},
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                ["clickable",61],
+          
+            ]
+        },
+        "Metaness": {
+            unlocked(){return (player.E.meta.gte(1))},
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                ["upgrade",21],
           
             ]
         },
@@ -5282,6 +5335,11 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
         effectDescription: "Tickspeed effect is better.",
         done() { return player.O.points.gte(1e277)},
     },
+    369: {
+        requirementDescription: "69 ω completions",
+        effectDescription: "Game speed ^1.01. EP x1e5 and Mathematician is cheaper",
+        done() { return challengeCompletions('O',11)>68},
+    },
     },
     challenges:{
         11: {
@@ -5354,8 +5412,9 @@ addLayer("M", {
                                             // Also the amount required to unlock the layer.
 
     type: "static",                         // Determines the formula used for calculating prestige currency.
-    exponent: 1.95 
-    ,     
+    exponent(){
+        if(hasMilestone('O',369))   return 1.9
+        else return 1.95 } ,     
     base:1e5,                     // "normal" prestige gain is (currency^exponent).
     
     gainMult() {                            
