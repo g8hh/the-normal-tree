@@ -49,7 +49,8 @@ addLayer("N", {
         if (hasMilestone('F', 1100)) mult = mult.times(player.F.points.add(1))
         if (hasMilestone('UF', 52)) mult = mult.times(player.UF.points.pow(3).add(1))
         if (hasMilestone('UF', 128)) mult = mult.times(player.UF.points.pow(3).add(1))
-      if(hasUpgrade('E',21))mult = mult.tetrate(1.01)
+        if(hasUpgrade('E',22))mult = mult.tetrate(1.02)
+   else if(hasUpgrade('E',21))mult = mult.tetrate(1.01)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1150,7 +1151,7 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
     baseAmount() {return player.N.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base(){
-        if(inChallenge('E',31))return new Decimal("eeeeeeeeee10")
+        if(inChallenge('E',31)||hasUpgrade('E',22))return new Decimal("eeeeeeeeee10")
       else  return 1e10},
     exponent(){
    
@@ -2120,7 +2121,7 @@ microtabs: {
   canBuyMax(){
     return hasUpgrade('F',41) 
   },
-  layerShown(){return (hasChallenge('F',22)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('UF',1)||hasMilestone('I',1))&&!inChallenge('NN',31)},
+  layerShown(){return ((hasChallenge('F',22)||hasMilestone('IP',1)||hasMilestone('FS',1)||hasMilestone('UF',1)||hasMilestone('I',1))&&!inChallenge('NN',31))&&!hasUpgrade('E',22)},
 })
 addLayer("F", {
     name: "Factors", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -3520,7 +3521,7 @@ addLayer("FS", {
     baseAmount() {return player.F.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base(){
-        if(inChallenge('E',31))return new Decimal("eeeeeeeeee10")
+        if(inChallenge('E',31)||hasUpgrade('E',22))return new Decimal("eeeeeeeeee10")
        else return 1000},
     exponent(){
         if(player.FS.points>=4) return 2.5
@@ -3559,7 +3560,7 @@ addLayer("FS", {
             done() { return player.FS.points.gte(1) }
         },
     },
-    layerShown(){return hasMilestone('NN',1e50)||hasMilestone('IP',1)||hasMilestone('FS',1)}
+    layerShown(){return (hasMilestone('NN',1e50)||hasMilestone('IP',1)||hasMilestone('FS',1))&&!hasUpgrade('E',22)}
 })
 addLayer("IP", {
     name: "Infinity point", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -3616,7 +3617,7 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
         if (hasAchievement('A',51)) mult = mult.times(1.05)
         if (hasMilestone('MS',2)) mult = mult.times(1.1)
         if (hasMilestone('MS',40)) mult = mult.times(1.1)
-        if(inChallenge('E',11)&&(!player.E.IPpower.gte(1))) mult = mult.times(0)
+        if((inChallenge('E',11)&&(!player.E.IPpower.gte(1)))||hasUpgrade('E',22)) mult = mult.times(0)
         if(inChallenge('E',31))mult = mult.times(0)
         if (inChallenge('I',51)&&hasMilestone('O',104)) mult = mult.times(1.2)
         if (inChallenge('I',52)&&hasMilestone('O',104)) mult = mult.times(1.4)
@@ -3950,7 +3951,7 @@ if (hasUpgrade('MS',13)&&!hasUpgrade('MS',42))mult = mult.times(player.MS.x.pow(
         else return false
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return hasMilestone('NN',1.79e308)||hasMilestone('IP',1)||hasMilestone('MS',400)},
+    layerShown(){return (hasMilestone('NN',1.79e308)||hasMilestone('IP',1)||hasMilestone('MS',400))&&!hasUpgrade('E',22)},
     tabFormat: {
         "Milestones":{
           content:[
@@ -5074,7 +5075,7 @@ unlocked(){return hasMilestone('E',1e286)},
        else  if(hasChallenge('M',11)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3)).times(player.UF.mp.add(1).log(10).add(1).log(10).add(1))
        else if(hasUpgrade('UF',91)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3))
        else  player.E.CPget2= player.E.CPget
-       if(hasMilestone('O',369)&&player.N.points.gte("e9e15"))  player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25).times(100000))
+       if(hasMilestone('O',369)&&player.N.points.gte("e9e15"))  player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25).times(1000000))
        else if(hasMilestone('E',1e41)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25))
        else if(hasMilestone('MS',600)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000))
         else if(hasMilestone('E',5e25)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(10))
@@ -5150,6 +5151,27 @@ unlocked(){return hasMilestone('E',1e286)},
             cost: new Decimal("0"),
           unlocked(){return player.E.meta.gte(1)}
           
+   
+        },
+        22: {
+            title: "True Math",
+            description: "Remove UF, IP and FS layer but God effect +0.01.",
+            cost: new Decimal("e9e15"),
+          unlocked(){return player.E.meta.gte(1)},
+         onPurchase(){
+             player.IP.points=new Decimal(0)
+             player.MS.points=new Decimal(0)
+             player.UF.points=new Decimal(0)
+             player.FS.points=new Decimal(0)
+        }
+   
+        },
+        23: {
+            title: "True inflte",
+            description: "Unlock 3 tab in MS.",
+            cost: new Decimal("ee60"),
+          unlocked(){return player.E.meta.gte(1)},
+      
    
         },
     },
@@ -5230,13 +5252,13 @@ unlocked(){return hasMilestone('E',1e286)},
           
             ]
         },
-        "Metaness": {
+        "meta": {
             unlocked(){return (player.E.meta.gte(1))},
             content: [
                 "main-display",
                 "prestige-button",
                 "blank",
-                ["upgrade",21],
+                ["row",[  ["upgrade",21], ["upgrade",22], ["upgrade",23]]]
           
             ]
         },
