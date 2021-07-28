@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.0.2",
-	name: "inflat.",
+	num: "0.3.1",
+	name: "No inflat.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.1</h3><br>
+- Added 4 MS buyable.<br>
+- Added 6 MS upgrade.<br>
+- Added 2 E upgrade.<br>
+- Endgame: True^2 Math upgrade.<br>
 <h3>v0.3.0.2</h3><br>
 - Added 1 O milestone.<br>
 - Added 1 E clickable.<br>
@@ -356,7 +361,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.S.points.gte("ee12")
+	return hasUpgrade('MS',83)
 }
 
 

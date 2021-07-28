@@ -49,7 +49,7 @@ addLayer("N", {
         if (hasMilestone('F', 1100)) mult = mult.times(player.F.points.add(1))
         if (hasMilestone('UF', 52)) mult = mult.times(player.UF.points.pow(3).add(1))
         if (hasMilestone('UF', 128)) mult = mult.times(player.UF.points.pow(3).add(1))
-        if(hasUpgrade('E',22))mult = mult.tetrate(1.02)
+        if(hasUpgrade('E',22)&&!hasUpgrade('MS',83))mult = mult.tetrate(1.02)
    else if(hasUpgrade('E',21))mult = mult.tetrate(1.01)
         return mult
     },
@@ -133,7 +133,8 @@ addLayer("N", {
       else  if(hasUpgrade('UF',41)) mult = mult.times(player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).add(10).log(10))
       if(inChallenge('E',21)) mult = mult.times(new Decimal(1).div(player.N.points.add(1).pow(0.5)))
       if(inChallenge('E',22)) mult = mult.times(1e-50)
-     
+      if(hasUpgrade('MS',83))mult = mult.times(10)
+  
         return mult
 
     },
@@ -4015,7 +4016,11 @@ addLayer("MS", {
         xa: new Decimal(1),
         xb: new Decimal(1),
         xbgain: new Decimal(1),
-        meta:new  Decimal(0)
+        divcost: new Decimal(1),
+        size: new Decimal(1e20),
+        addpoint: new Decimal(0),
+        cboost: new Decimal(1),
+        minuspoint: new Decimal(0),
     }},
     position: 1,  
     color: "#8000ff",
@@ -4212,7 +4217,8 @@ addLayer("MS", {
         else if(hasMilestone("MS",800)) player.MS.Prestige=player.MS.Prestige.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.5 )).times(2.5))
         if(hasMilestone("MS",4000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(9).add(1).log(9).add(1).log(9).add(1).times(diff).times(player.MS.points.add(1).pow(0.4 )).times(player.E.CP.add(1).log(10).add(1).pow(1.5)).times(2.5))
         else if(hasMilestone("MS",3000)) player.MS.Prestige2=player.MS.Prestige2.plus(player.MS.Exponentiation.add(1).log(10).add(1).log(10).add(1).log(10).add(1).times(diff).times(player.MS.points.add(1).pow(0.3 )).times(2.5))
-        if(player.E.meta.gte(1)) player.devSpeed=new  Decimal("1.8e308")
+        if(hasUpgrade('MS',83))   player.devSpeed=new  Decimal("1")
+      else  if(player.E.meta.gte(1)) player.devSpeed=new  Decimal("1.8e308")
        else if(challengeCompletions('O',11)>68) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1).pow(5)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11)).pow(1.01)
       else  if(challengeCompletions('UF',21)>4) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1).pow(5)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11))
       else  if(hasUpgrade('UF',43)) player.devSpeed=player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11))
@@ -4226,6 +4232,11 @@ addLayer("MS", {
         else if(hasUpgrade('MS',52))   player.MS.xb= player.MS.xb.plus(player.MS.xbgain.times(player.M.points.add(1).pow(1.25)))
         else if(hasUpgrade('MS',51)) player.MS.xb= player.MS.xb.plus(player.MS.xbgain)
         if(player.MS.xa<1) player.MS.xa= new Decimal(1)
+        if(hasUpgrade('MS',101))  player.MS.size=  player.MS.size.div(buyableEffect('MS',11).times(buyableEffect('MS',21)).pow(player.MS.minuspoint.add(1).pow(0.5)).pow(0.05))
+      else  player.MS.size=  player.MS.size.div(buyableEffect('MS',11).times(buyableEffect('MS',21)).pow(0.05))
+        if(hasUpgrade('MS',82)&&!player.MS.size.gte(1))player.MS.minuspoint =player.MS.minuspoint.add(1)
+        if(hasUpgrade('MS',82)&&!player.MS.size.gte(1))player.MS.size =new Decimal(1e20)
+        if(hasUpgrade('MS',102))  player.MS.addpoint=player.MS.addpoint.add(buyableEffect('MS',12).times(new Decimal(1e21).div(player.MS.size).log(10).pow(0.5)).pow(buyableEffect('MS',22)).times(player.MS.minuspoint.add(1)))
     },
     upgrades: {
         11: {
@@ -4368,7 +4379,7 @@ addLayer("MS", {
         42: {
             title: "F6.1",
             description: "Remove Exponentiation but Number ^25. MS are cheaper. Unlock a UF upgrade. Buy this upgrade will reset your MS and IP.",
-            cost(){ return new Decimal("ee10")
+            cost(){ return new Decimal("eee10")
          
             },
             currencyDisplayName: "Exponentiation points",
@@ -4441,6 +4452,83 @@ addLayer("MS", {
             unlocked(){return hasUpgrade('UF',102)},
         
         },
+        81: {
+            title: "add",
+            description: "Alpha divider cost /100",
+            cost(){ return new Decimal("10000")},
+            currencyDisplayName: "addition point",
+            currencyLayer:"MS",
+            currencyInternalName:"addpoint",
+            unlocked(){return hasUpgrade('E',23)},
+      onPurchase(){player.MS.divcost=new Decimal(100)},
+        },
+        82: {
+            title: "again",
+            description: "divide point will reset to 1e20 and give 1 Subtraction point if it smaller than 1.",
+            cost(){ return new Decimal("10000")},
+            currencyDisplayName: "addition point",
+            currencyLayer:"MS",
+            currencyInternalName:"addpoint",
+            unlocked(){return !player.MS.size.gte(1)||hasUpgrade('MS',82)},
+
+        },
+
+        83: {
+            title: "True^2 Math",
+            description: "Remove E layer but Number ^10. Shape reset nothing.",
+            cost(){ return new Decimal("10000000")},
+            currencyDisplayName: "addition point",
+            currencyLayer:"MS",
+            currencyInternalName:"addpoint",
+            unlocked(){return hasUpgrade('MS',103)},
+            onPurchase(){
+                player.points=new Decimal(0)
+                player.E.points=new Decimal(0)
+                player.O.points=new Decimal(0)
+                player.M.points=new Decimal(0)
+             
+                player.N.points=new Decimal(0)
+                player.F.points=new Decimal(0)
+                player.I.points=new Decimal(0)
+                player.S.points=new Decimal(5)
+             
+                player.E.upgrades=[22]
+           }
+          
+        },
+        101: {
+            title: "boost",
+            description: "Subtraction point boost Divider and click gain.",
+            cost(){ return new Decimal("0")},
+            currencyDisplayName: "addition point",
+            currencyLayer:"MS",
+            currencyInternalName:"minuspoint",
+            unlocked(){return player.MS.minuspoint.gte(1)},
+
+        },
+        102: {
+            title: "Automation",
+            description: "Auto click the clickable 20 times per second.",
+            cost(){ return new Decimal("2")},
+            currencyDisplayName: "addition point",
+            currencyLayer:"MS",
+            currencyInternalName:"minuspoint",
+            unlocked(){return hasUpgrade('MS',101)},
+
+        },
+        103: {
+            title: "Alpha cheaper",
+            description: "Divider is 10x cheaper.",
+            cost(){ return new Decimal("4")},
+            currencyDisplayName: "addition point",
+            currencyLayer:"MS",
+            currencyInternalName:"minuspoint",
+            unlocked(){return hasUpgrade('MS',102)},
+            onPurchase(){player.MS.divcost=new Decimal(1000)}
+
+        },
+
+     
   
     },
     clickables:{
@@ -4495,8 +4583,114 @@ addLayer("MS", {
     unlocked(){return hasMilestone('MS',800)}
 
 },
+21:{
+    display() {
+        if(hasUpgrade('MS',101))   return "Get " +format(buyableEffect('MS',12).times(new Decimal(1e21).div(player.MS.size).log(10).pow(0.5)).pow(buyableEffect('MS',22)).times(player.MS.minuspoint.add(1)))+ " addition points."
+     else   return "Get " +format(buyableEffect('MS',12).times(new Decimal(1e21).div(player.MS.size).log(10).pow(0.5)).pow(buyableEffect('MS',22)))+ " addition points."},
+    canClick(){return true},
+    onClick(){
+        if(hasUpgrade('MS',101))  player.MS.addpoint= player.MS.addpoint.add(buyableEffect('MS',12).times(new Decimal(1e21).div(player.MS.size).log(10).pow(0.5)).pow(buyableEffect('MS',22)).times(player.MS.minuspoint.add(1)))
+      else  player.MS.addpoint= player.MS.addpoint.add(buyableEffect('MS',12).times(new Decimal(1e21).div(player.MS.size).log(10).pow(0.5)).pow(buyableEffect('MS',22)))
+     
+    
+    },
+    unlocked(){return hasUpgrade('E',23)}
+
 },
 
+},
+buyables: {
+
+    11: {
+        title: "Alpha Divider",
+        display() {
+
+           return "Cost : " + format(new Decimal("50").pow(getBuyableAmount("MS", 11).add(1).pow(0.9)).div(player.MS.divcost)) + " addition points"
+        },
+        unlocked() { return hasUpgrade("E", 23)},
+        canAfford() { 
+            return player.MS.addpoint.gte(new Decimal("50").pow(getBuyableAmount("MS", 11).add(1).pow(0.9)).div(player.MS.divcost)) 
+        },
+        buy() { 
+            {
+               player.MS.addpoint = player.MS.addpoint.minus(new Decimal("50").pow(getBuyableAmount("MS", 11).add(1).pow(0.9)).div(player.MS.divcost))
+            }
+            setBuyableAmount("MS", 11, getBuyableAmount("MS", 11).add(1))
+        },
+        effect() { 
+         
+          eff = new Decimal("1.075").pow(getBuyableAmount("MS", 11))
+         return eff     
+        },
+        style: {'height':'100px','width':'200px'},
+    },
+    12: {
+        title: "click booster",
+        display() {
+           return"Click gain x"+format(buyableEffect('MS',12))+".<br>Cost : " + format(new Decimal("10").pow(getBuyableAmount("MS", 12).add(1).pow(1.25))) + " addition points"
+        },
+        unlocked() { return hasUpgrade("E", 23)},
+        canAfford() { 
+            return player.MS.addpoint.gte(new Decimal("10").pow(getBuyableAmount("MS", 12).add(1).pow(1.25))) 
+        },
+        buy() { 
+            {
+               player.MS.addpoint = player.MS.addpoint.minus(new Decimal("10").pow(getBuyableAmount("MS", 12).add(1).pow(1.25)))
+            }
+            setBuyableAmount("MS", 12, getBuyableAmount("MS", 12).add(1))
+        },
+        effect() { 
+         
+          eff = new Decimal("2").pow(getBuyableAmount("MS", 12))
+         return eff    
+        },
+        style: {'height':'100px','width':'200px'},
+    },
+    21: {
+        title: "Beta Divider",
+        display() {
+           return "Cost : " + format(new Decimal("80").pow(getBuyableAmount("MS", 21).add(1).pow(1.1)).div(player.MS.divcost)) + " addition points"
+        },
+        unlocked() { return hasUpgrade("E", 23)},
+        canAfford() { 
+            return player.MS.addpoint.gte(new Decimal("80").pow(getBuyableAmount("MS", 21).add(1).pow(1.1)).div(player.MS.divcost)) 
+        },
+        buy() { 
+            {
+               player.MS.addpoint = player.MS.addpoint.minus(new Decimal("80").pow(getBuyableAmount("MS", 21).add(1).pow(1.1)).div(player.MS.divcost))
+            }
+            setBuyableAmount("MS", 21, getBuyableAmount("MS", 21).add(1))
+        },
+        effect() { 
+        
+          eff = new Decimal("1.125").pow(getBuyableAmount("MS", 21))
+         return eff     
+        },
+        style: {'height':'100px','width':'200px'},
+    },
+    22: {
+        title: "click super booster",
+        display() {
+           return"Click gain ^"+format(buyableEffect('MS',22))+".<br>Cost : " + format(new Decimal("1000").pow(getBuyableAmount("MS", 22).add(1).pow(1.2))) + " addition points"
+        },
+        unlocked() { return hasUpgrade("E", 23)},
+        canAfford() { 
+            return player.MS.addpoint.gte(new Decimal("1000").pow(getBuyableAmount("MS", 22).add(1).pow(1.2))) 
+        },
+        buy() { 
+            {
+               player.MS.addpoint = player.MS.addpoint.minus(new Decimal("1000").pow(getBuyableAmount("MS", 22).add(1).pow(1.2)))
+            }
+            setBuyableAmount("MS", 22, getBuyableAmount("MS", 22).add(1))
+        },
+        effect() { 
+         
+          eff = new Decimal("1.25").pow(getBuyableAmount("MS", 22).add(0.1).pow(1.05))
+         return eff    
+        },
+        style: {'height':'100px','width':'200px'},
+    },
+    },
     layerShown(){return hasUpgrade('F',46)||hasMilestone('MS',1)},
     canBuyMax(){
         return hasMilestone('E',1e285)
@@ -4535,7 +4729,10 @@ return (hasMilestone('IP',17000)||hasMilestone('MS',40))&&!hasUpgrade('MS',42)
               let s="You have "+format(player.MS.Exponentiation)+" Exponentiation points."
               return s}],
               "blank",
-             "upgrades",
+              ["row",[ ["upgrade",11], ["upgrade",12], ["upgrade",13], ["upgrade",14], ["upgrade",15]]],
+              ["row",[ ["upgrade",21], ["upgrade",22], ["upgrade",23], ["upgrade",24], ["upgrade",25]]],
+              ["row",[ ["upgrade",31], ["upgrade",32], ["upgrade",33], ["upgrade",34], ["upgrade",35]]],
+              ["row",[ ["upgrade",42]]],
             ],
         },
         "Prestige": {
@@ -4570,6 +4767,56 @@ return (hasMilestone('IP',17000)||hasMilestone('MS',40))&&!hasUpgrade('MS',42)
              "clickables",
             ],
         },
+        "addition": {
+            unlocked(){
+return (hasUpgrade('E',23))
+            },
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                ["clickable",21],
+                "blank",
+                ["buyable",12],
+                "blank",
+                ["buyable",22],
+                "blank",
+            ["display-text",function(){
+              let s=""
+              s+="Your have "+format(player.MS.addpoint)+" Addition points.<br>"
+              return s
+            }],
+            "blank",
+            ["row",[ ["upgrade",81], ["upgrade",82], ["upgrade",83], ["upgrade",84], ["upgrade",85]]],
+          
+        ],
+
+        
+        },
+        "Subtraction": {
+            unlocked(){
+return (hasUpgrade('E',23))
+            },
+            content: [
+                "main-display",
+                "prestige-button",
+                
+                "blank",
+            ["display-text",function(){
+              let s=""
+              s+="Your have "+format(player.MS.minuspoint)+" Subtraction points.<br>"
+              return s
+            }],
+            "blank",
+            ["row",[ ["upgrade",101], ["upgrade",102], ["upgrade",103], ["upgrade",104], ["upgrade",105]]],
+         
+          
+        ],
+
+        
+        },
+      
+      
         "multiple": {
             unlocked(){
 return (hasUpgrade('UF',102))
@@ -4594,6 +4841,34 @@ return (hasUpgrade('UF',102))
               "blank",
              ["row",[ ["upgrade",51], ["upgrade",52], ["upgrade",53], ["upgrade",54], ["upgrade",55]]],
             ],
+        },
+        "Divide": {
+            unlocked(){
+return (hasUpgrade('E',23))
+            },
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+
+        
+     
+            ["buyable",11], 
+            "blank",
+            ["buyable",21],
+            "blank",
+            ["display-text",function(){
+                let s=""
+                s+="Your have "+format(player.MS.size)+" Divide points.<br>"
+  if(hasUpgrade('MS',101))  s+="Divide points /"+format(buyableEffect('MS',11).times(buyableEffect('MS',21)).pow(player.MS.minuspoint.add(1).pow(0.5)))+" per second.<br>"
+              else  s+="Divide points /"+format(buyableEffect('MS',11).times(buyableEffect('MS',21)))+" per second.<br>"
+                s+="Divide points boost click gain.<br>"
+          
+                return s
+              }],
+        ],
+
+        
         },
     },
    
@@ -4656,10 +4931,11 @@ addLayer("E", {
     ],
     getResetGain() {
       
-    
+     
         if(!player.N.points.gte("e9e15")) return 0
         else if(!player.N.points.gte("ee16")&&player.N.points.gte("e9e15")) return 1
-        if(hasMilestone('E',1e41)) return formatWhole((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).pow(1.25))
+        if(hasUpgrade('MS',83)) return 0
+      else   if(hasMilestone('E',1e41)) return formatWhole((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).pow(1.25))
         else if(hasMilestone('O',9)) return formatWhole((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)))
         else if(hasMilestone('E',1e11)) return formatWhole((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)))
         else if(hasUpgrade('E',12)&&hasUpgrade('E',14)) return formatWhole(player.N.points.log(10).log(10).minus(15).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)))
@@ -5075,7 +5351,8 @@ unlocked(){return hasMilestone('E',1e286)},
        else  if(hasChallenge('M',11)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3)).times(player.UF.mp.add(1).log(10).add(1).log(10).add(1))
        else if(hasUpgrade('UF',91)) player.E.CPget2= player.E.CPget.times(player.E.points.add(1).log(10).add(1).pow(0.3))
        else  player.E.CPget2= player.E.CPget
-       if(hasMilestone('O',369)&&player.N.points.gte("e9e15"))  player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25).times(1000000))
+       if(hasUpgrade('MS',83))  player.E.points = new  Decimal(0)
+      else if(hasMilestone('O',369)&&player.N.points.gte("e9e15"))  player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25).times(1000000))
        else if(hasMilestone('E',1e41)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000).pow(1.25))
        else if(hasMilestone('MS',600)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(1000))
         else if(hasMilestone('E',5e25)&&player.N.points.gte("e9e15")) player.E.points = player.E.points.plus((player.N.points.log(10).log(10).minus(15).pow(6)).times(player.E.CP.add(1).pow(player.E.boost)).times(5).times(upgradeEffect('E',14)).times(player.O.points.pow(3)).times(diff).times(10))
@@ -5176,7 +5453,7 @@ unlocked(){return hasMilestone('E',1e286)},
         },
     },
    
-    layerShown() { return (hasChallenge('I',62))||hasMilestone('E',1) },          // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown() { return ((hasChallenge('I',62))||hasMilestone('E',1)) &&!hasUpgrade('MS',83)},          // Returns a bool for if this layer's node should be visible in the tree.
     branches:["I"],
     tabFormat: {
         "Milestones": {
@@ -5369,7 +5646,7 @@ else return new Decimal("1.8e308")} ,              // The amount of the base nee
             completionLimit(){
                 let limit=10;
                 if(hasChallenge('E',22)) limit=new Decimal(20)
-                if(hasMilestone('S',4)) limit=new Decimal(1000)
+                if(hasMilestone('S',4)) limit=new Decimal(100)
                 return limit;
             },
             challengeDescription(){
@@ -5558,5 +5835,8 @@ addLayer("S", {
             effectDescription: "You can complete ω 1000 times.",
             done() { return player.S.points.gte(4) }
         },
-    }
+    },
+    resetsNothing(){
+        return hasUpgrade('MS',83);
+    },
 })
