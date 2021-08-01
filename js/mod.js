@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1",
-	name: "No inflat.",
+	num: "0.3.1.1",
+	name: "Start from 0",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.1.1</h3><br>
+- Added ???.<br>
+- Rewrite 11 upgrade after 1 ???<br>
+- Rewrite 2 challenge after 1 ???<br>
+- Rewrite 1 milestone after 1 ???<br>
+- Endgame: 9 Factors and 1 ???.<br>
 <h3>v0.3.1</h3><br>
 - Added 4 MS buyable.<br>
 - Added 6 MS upgrade.<br>
@@ -361,7 +367,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasUpgrade('MS',83)
+	return player.X.points.gte(1)&&player.F.points.gte(9)
 }
 
 
@@ -381,4 +387,18 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+	if(oldVersion=="0.3.1"&&hasUpgrade('MS',83)){
+		player.points=new Decimal(0)
+		player.E.points=new Decimal(0)
+		player.O.points=new Decimal(0)
+		player.M.points=new Decimal(0)
+	 
+		player.N.points=new Decimal(0)
+		player.F.points=new Decimal(0)
+		player.I.points=new Decimal(0)
+		player.S.points=new Decimal(5)
+		player.UF.upgrades=[]
+		player.E.upgrades=[22]
+	}
+	
 }
