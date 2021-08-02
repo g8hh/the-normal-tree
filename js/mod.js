@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1.1",
+	num: "0.3.1.2",
 	name: "Start from 0",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.1.2</h3><br>
+- Rewrite 3 upgrade after 1 ???<br>
+- Rewrite 2 challenge after 1 ???<br>
+- Added Factor point.<br>
+- Added 1 F upgrade.<br>
 <h3>v0.3.1.1</h3><br>
 - Added ???.<br>
 - Rewrite 11 upgrade after 1 ???<br>
@@ -367,7 +372,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.X.points.gte(1)&&player.F.points.gte(9)
+	return player.X.points.gte(1)&&player.F.points.gte(19)
 }
 
 
