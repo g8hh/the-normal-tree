@@ -13,16 +13,21 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1.2",
+	num: "0.3.1.3",
 	name: "Start from 0",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.1.3</h3><br>
+- Rewrite 5 upgrade after 1 ???<br>
+- Rewrite 3 challenge after 1 ???<br>
+- Endgame: 56 Factors and 1 ???.<br>
 <h3>v0.3.1.2</h3><br>
 - Rewrite 3 upgrade after 1 ???<br>
 - Rewrite 2 challenge after 1 ???<br>
 - Added Factor point.<br>
 - Added 1 F upgrade.<br>
+- Endgame: 19 Factors and 1 ???.<br>
 <h3>v0.3.1.1</h3><br>
 - Added ???.<br>
 - Rewrite 11 upgrade after 1 ???<br>
@@ -338,6 +343,7 @@ function getPointGen() {
 	if (hasMilestone('UF', 10)) gain = gain.times(10000)
 	if (hasMilestone('I', 1)) gain = gain.times(100)
 	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
+	if(hasMilestone('F', 19))gain = gain.times(100)
 	gain = gain.pow(getPointGenExp())
 	return gain
 }
@@ -372,7 +378,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.X.points.gte(1)&&player.F.points.gte(19)
+	return player.X.points.gte(1)&&player.F.points.gte(56)
 }
 
 
