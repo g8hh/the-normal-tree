@@ -552,7 +552,7 @@ addLayer("N", {
     72: {
         title: "1.798F308",
         description: "unlock ???.",
-        cost: new Decimal("ee160"),
+        cost: new Decimal("ee100"),
        
         unlocked(){
             {return hasUpgrade('MS',83)}
@@ -6113,7 +6113,7 @@ addLayer("X", {
     baseResource: "Number",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.N.points },  // A function to return the current amount of baseResource.
 
-    requires: new Decimal("ee160"),              // The amount of the base needed to  gain 1 of the prestige currency.
+    requires: new Decimal("ee100"),              // The amount of the base needed to  gain 1 of the prestige currency.
                                             // Also the amount required to unlock the layer.
 
     type: "static",                         // Determines the formula used for calculating prestige currency.
