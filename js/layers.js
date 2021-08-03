@@ -2296,7 +2296,7 @@ addLayer("F", {
         },
        3: {
             requirementDescription: "3 factors",
-            effectDescription: "Unlock 1 more Number upgrade.",
+            effectDescription: "Unlock 2 more Number upgrade.",
             done() { return player.F.points.gte(3)&&player.X.points.gte(1)},
             unlocked() { return player.X.points.gte(1)}
         },
@@ -2304,8 +2304,8 @@ addLayer("F", {
         4: {
             requirementDescription: "4 factors",
             effectDescription: "Unlock 1 more Number upgrade.",
-            done() { return player.F.points.gte(4)},
-         
+            done() { return player.F.points.gte(4)&&!player.X.points.gte(1)},
+            unlocked() { return !player.X.points.gte(1)}
         },
         5: {
             requirementDescription: "5 factors",

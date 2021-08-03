@@ -374,6 +374,28 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	function(){
+     
+   
+		if (player.X.best.gte(1)&&player.F.points.gte(56))  return "Congratulations, You reach the endgame."
+if (player.X.best.gte(1))  return "You have 0 layers left to unlock."
+		
+		if (player.S.best.gte(1))  return "You have 1 layers left to unlock.<br> Next layer at '1.798F308' upgrade (Just a upgrade name)."
+		if ((player.M.best.gte(1)&&player.O.best.gte(1)))  return "You have 2 layers left to unlock.<br> Next layer at 1.8e308 Infinity."
+		if ((player.M.best.gte(1)))  return "You have 3 layers left to unlock.<br> Next layer at 1.8e312 Factors."
+		if ((player.O.best.gte(1)))  return "You have 3 layers left to unlock.<br> Next layer at 1e20 Eternity points."
+		if (player.E.best.gte(1))  return "You have 4 layers left to unlock.<br> Next layer at 1e15 Eternity points."
+		if (player.MS.best.gte(1)) return "You have 5 layers left to unlock. <br>Next layer at complete Boost or nerf 4."
+		if (player.IP.best.gte(1))  return "You have 6 layers left to unlock.<br> Next layer at 1e1800 Infinity points."
+	if (player.FS.best.gte(1))  return "You have 7 layers left to unlock.<br> Next layer at 1.8e308 Negative Number."
+		if (player.NN.best.gte(1))  return "You have 8 layers left to unlock.<br> Next layer at 9.6e10 Factors."
+		if (player.I.best.gte(1))  return "You have 9 layers left to unlock.<br> Next layer at 3 Infinity."
+		if (player.UF.best.gte(1))  return "You have 10 layers left to unlock.<br> Next layer at 1.8e308 Numbers."
+		if (player.F.points.gte(1)) return "You have 11 layers left to unlock.<br> Next layer at 5 Factor challenge"
+		if (player.N.points.gte(0)) return "You have 12 layers left to unlock. <br>Next layer at 5 Number upgrade"
+
+
+	},  
 ]
 
 // Determines when the game "ends"
