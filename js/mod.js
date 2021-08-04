@@ -13,14 +13,20 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1.3",
+	num: "0.3.1.4",
 	name: "Start from 0",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.1.4</h3><br>
+- Rewrite 3 upgrade after 1 ???<br>
+- Rewrite 1 challenge after 1 ???<br>
+- Rewrite 1 buyable after 1 ???<br>
+- Endgame: 1 Infinity and 1 ???.<br>
 <h3>v0.3.1.3</h3><br>
 - Rewrite 5 upgrade after 1 ???<br>
 - Rewrite 3 challenge after 1 ???<br>
+- Rewrite 2 buyable after 1 ???<br>
 - Endgame: 56 Factors and 1 ???.<br>
 <h3>v0.3.1.2</h3><br>
 - Rewrite 3 upgrade after 1 ???<br>
@@ -377,7 +383,7 @@ var displayThings = [
 	function(){
      
    
-		if (player.X.best.gte(1)&&player.F.points.gte(56))  return "Congratulations, You reach the endgame."
+		if (player.X.best.gte(1)&&player.I.points.gte(1))  return "Congratulations, You reach the endgame."
 if (player.X.best.gte(1))  return "You have 0 layers left to unlock."
 		
 		if (player.S.best.gte(1))  return "You have 1 layers left to unlock.<br> Next layer at '1.798F308' upgrade (Just a upgrade name)."
@@ -400,7 +406,7 @@ if (player.X.best.gte(1))  return "You have 0 layers left to unlock."
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.X.points.gte(1)&&player.F.points.gte(56)
+	return player.X.points.gte(1)&&player.I.points.gte(1)
 }
 
 
