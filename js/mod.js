@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1.4",
+	num: "0.3.1.5",
 	name: "Start from 0",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.1.5</h3><br>
+- Added 4 UF clickable.<br>
+- Added 3 UF challenge.<br>
+- Added 1 F milestone.<br>
+- Rewrite 2 upgrade after 1 ???<br>
+- Endgame: 2 Infinity and 1 ???.<br>
 <h3>v0.3.1.4</h3><br>
 - Rewrite 3 upgrade after 1 ???<br>
 - Rewrite 1 challenge after 1 ???<br>
@@ -329,9 +335,10 @@ function getPointGen() {
 	if (inChallenge('F', 13)) gain = gain.times(0.3)
 	if (inChallenge('F', 23)) gain = gain.times(0.3)
 	if (hasChallenge('F', 11)) gain = gain.times(3)
-	if (hasUpgrade('N', 11)&&(!hasUpgrade('UF',11))) gain = gain.times(4)
+	if (hasUpgrade('N', 11)&&(!hasUpgrade('UF',11))&&(!inChallenge('UF',101))) gain = gain.times(4)
 	if (hasAchievement("A", 11)) gain = gain.times(1.25)
-	if (hasUpgrade('N', 12)) gain = gain.times(upgradeEffect('N', 12))
+	if (hasUpgrade('N', 12)&&!inChallenge('UF',102)) gain = gain.times(upgradeEffect('N', 12))
+	if(inChallenge('UF',102)) gain = gain.div(upgradeEffect('N', 12))
 	if (hasUpgrade('UF', 12)) gain = gain.times(upgradeEffect('UF', 12))
 	if (hasUpgrade('UF', 13)) gain = gain.times(upgradeEffect('UF', 13))
 	if (hasUpgrade('NN', 12)) gain = gain.times(upgradeEffect('NN', 12))
@@ -359,6 +366,7 @@ function getPointGenExp(){
 	if (hasUpgrade("MS", 32)) exp = exp.times(3)
 	if (hasUpgrade("MS", 31)) exp = exp.times(2)
 	if(hasUpgrade('UF',11)) exp = exp.times(4)
+	if(hasChallenge('UF',101)&&player.X.points.gte(1)) exp = exp.times(1.14)
 	if(hasUpgrade('UF',25)) exp = exp.times(upgradeEffect('UF',25))
 	if(hasMilestone('E',1e287)) exp = exp.times(upgradeEffect('UF',24))
 	if(inChallenge('E',11)) exp = exp.times(player.E.Ppower)
@@ -370,7 +378,7 @@ function getPointGenExp(){
 	if(hasUpgrade('MS',55)) exp = exp.times(player.MS.xb.add(1).log(10).add(1).pow(0.5))
 	if(hasUpgrade('UF',43))exp = exp.times(player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).times(buyableEffect('E',11)))
 	else if(hasUpgrade('UF',42)) exp = exp.times(player.IP.points.add(1).log(10).add(1).log(10).add(1).times(player.M.points.add(1)).times(player.F.points.add(1).log(10).add(1).log(10).add(1)).times(player.MS.points.add(1).pow(0.5)).add(10).log(10))
-
+if(inChallenge('UF',101)) exp = exp.times(0.25)
 	return exp
 }
 
@@ -383,7 +391,7 @@ var displayThings = [
 	function(){
      
    
-		if (player.X.best.gte(1)&&player.I.points.gte(1))  return "Congratulations, You reach the endgame."
+		if (player.X.best.gte(1)&&player.I.points.gte(2))  return "Congratulations, You reach the endgame."
 if (player.X.best.gte(1))  return "You have 0 layers left to unlock."
 		
 		if (player.S.best.gte(1))  return "You have 1 layers left to unlock.<br> Next layer at '1.798F308' upgrade (Just a upgrade name)."
@@ -406,7 +414,7 @@ if (player.X.best.gte(1))  return "You have 0 layers left to unlock."
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.X.points.gte(1)&&player.I.points.gte(1)
+	return player.X.points.gte(1)&&player.I.points.gte(2)
 }
 
 
