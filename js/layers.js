@@ -614,7 +614,7 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
                 setBuyableAmount("N", 11, getBuyableAmount("N", 11).add(1))
             },
             effect() { 
-               
+
                 if (inChallenge('I',12)) eff = new Decimal("1")
                 if (hasUpgrade('N',31)) eff = new Decimal("6").pow(getBuyableAmount("N", 11))
                 else   eff = new Decimal("3").pow(getBuyableAmount("N", 11))
@@ -627,6 +627,7 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
                 if ( player.UF.challenges[11]>=2&&player.X.points.gte(1)) eff = new Decimal("15").pow(getBuyableAmount("N", 11))
                 if ( player.UF.challenges[11]>=3&&player.X.points.gte(1)) eff = new Decimal("25").pow(getBuyableAmount("N", 11))
                 if (hasMilestone('I',2)&&player.X.points.gte(1)) eff = new Decimal("200").pow(getBuyableAmount("N", 11))
+                if(hasMilestone('NN',3)&&player.X.points.gte(1)) eff = new Decimal("1e50")
                 if (inChallenge('UF',11)) eff = new Decimal("1")
                 if (inChallenge('UF',11) && hasUpgrade('N',33)) eff =  new Decimal("3").pow(getBuyableAmount("N", 11))
                 if (eff>=1e50 &&(!hasMilestone('F',6000))&&(!hasUpgrade('N',16))&&(!hasMilestone('F',12500))&&!inChallenge('I',12)) return eff = new Decimal("1e50")
@@ -664,16 +665,18 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
                 setBuyableAmount("N", 12, getBuyableAmount("N", 12).add(1))
             },
             effect() { 
-                
+    
                  if (hasChallenge('F',32)) eff = new Decimal("4").pow(getBuyableAmount("N", 12))
                 else eff = new Decimal("2").pow(getBuyableAmount("N", 12))
                 if (hasChallenge('F',33)) eff = new Decimal("8").pow(getBuyableAmount("N", 12))
                  if (inChallenge('UF',11)) eff = new Decimal("1")
                  if (inChallenge('UF',11) && hasUpgrade('F',25)&&player.X.points.gte(1)) eff =  new Decimal("3").pow(getBuyableAmount("N", 12))
+                 if(hasMilestone('NN',3)&&player.X.points.gte(1)) eff = new Decimal("1e30")
                  if (eff>=1e20&& ( player.UF.challenges[11]<=3)&&(!hasUpgrade('N',26))&&!inChallenge('I',12)) return eff = new Decimal("1e20")
                  else if (eff>=1e30&& ( player.UF.challenges[11]>=4)&&(!hasUpgrade('N',26))&&!inChallenge('I',12)) return eff = new Decimal("1e30")
                 else if (hasUpgrade('N',26)&&!inChallenge('I',12) )return eff = new Decimal("1e50")
                 else if (inChallenge('I',12))return eff = new Decimal("1")
+         
                 else return eff = eff
     
                
@@ -736,6 +739,7 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
                 setBuyableAmount("N", 21, getBuyableAmount("N", 21).add(1))
             },
             effect() { 
+        
                 if ( (new Decimal("1").add(0.025).pow(getBuyableAmount("N", 21)) ).gte(1.5)  &&player.X.points.gte(1)) return eff = new Decimal("1.5")
               else  if(player.X.points.gte(1)&&hasMilestone('F',240))  eff = new Decimal("1").add(0.025).pow(getBuyableAmount("N", 21))   
            else   if(player.X.points.gte(1))  eff = new Decimal("1").add(0.02).pow(getBuyableAmount("N", 21)) 
@@ -744,6 +748,7 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
                 else if (eff>=2&&(!hasUpgrade('N',46))) return eff = new Decimal("2")
                 else if(hasUpgrade('N',46)&&!hasUpgrade('F',36)) return eff = new Decimal("2.1") 
                 else if(hasUpgrade('F',36)) return eff = new Decimal("3.08") 
+                if(hasMilestone('NN',3)&&player.X.points.gte(1)) eff = new Decimal("1.5")
                 return eff = eff
                   
             }
@@ -823,7 +828,7 @@ addLayer("NN", {
     }},
     color: "#ffa0ff",
     requires(){
-        if(player.X.points.gte(1)) return new Decimal("eeeeeeeee10")
+        if(player.X.points.gte(1)) return new Decimal("e920")
         if(hasMilestone('I',7)&&((inChallenge('I',11))||(inChallenge('I',12))||(inChallenge('I',21))||(inChallenge('I',31)))) return new Decimal("1e400")
         if(hasMilestone('I',6)&&((inChallenge('I',11))||(inChallenge('I',12))||(inChallenge('I',21)))) return new Decimal("1e470")
         else return new Decimal("1e940")
@@ -1059,8 +1064,10 @@ else return new Decimal("1e450000") },
     milestones: {
         3: {
             requirementDescription: "3 Negative numbers",
+            effectDescription(){ "'+' effect is always 1e50, '-' effect is always 1e30 and '/' effect is always 1.5"} , 
             effectDescription: "Keep master +, -, x, /, '2', '3', '4' and '19' on ALL resets.",
-            done() { return player.NN.points.gte(3) }
+            done() { return player.NN.points.gte(3)},
+
         },
         4e21: {
             requirementDescription: "4e21 Negative number",
