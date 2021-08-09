@@ -13,14 +13,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
+	num: "0.2",
 	name: "first",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.1</h3><br>
-		- Added 9 upgrade.<br>
-		- Endgame: 1e26 prestige points.`
+<h3>v0.2</h3><br>
+- Added booster.<br>
+- Added 7 upgrade.<br>
+- Added 3 milestone.<br>
+- Endgame: 20 boosters.<br>
+<h3>v0.1</h3><br>
+- Added 9 upgrade.<br>
+- Endgame: 1e26 prestige points.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -48,6 +53,8 @@ if(hasUpgrade('p',12)) gain=gain.pow(upgradeEffect('p',12))
 if(hasUpgrade('p',21)) gain=gain.times(upgradeEffect('p',21))
 if(hasUpgrade('p',22)) gain=gain.pow(upgradeEffect('p',22))
 if(hasUpgrade('p',31)) gain=gain.times(upgradeEffect('p',31))
+if(hasUpgrade('p',14)) gain=gain.times(1e10)
+if(hasUpgrade('p',41)) gain=gain.times(upgradeEffect('p',32))         
 	return gain
 }
 
@@ -63,7 +70,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.p.points.gte(new Decimal("1e26"))
+	return player.b.points.gte(new Decimal("20"))
 }
 
 
