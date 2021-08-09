@@ -1,8 +1,8 @@
 let modInfo = {
-	name: "The speed of tree",
-	id: "speed",
+	name: "The game of tree",
+	id: "game",
 	author: "3^3=7",
-	pointsName: "points",
+	pointsName: "antimatter",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -42,9 +42,11 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(1)
+	let gain = new Decimal(0)
+gain = gain.add(getBuyableAmount('D',11))
 	return gain
 }
+
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
