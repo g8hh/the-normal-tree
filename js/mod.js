@@ -1,26 +1,26 @@
 let modInfo = {
-	name: "The game of tree",
+	name: "The normal tree",
 	id: "game",
 	author: "3^3=7",
-	pointsName: "antimatter",
+	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "0.1",
+	name: "first 9",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+	<h3>v0.1</h3><br>
+		- Added 9 upgrade.<br>
+		- Endgame: 1e26 prestige points.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -42,8 +42,12 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(0)
-gain = gain.add(getBuyableAmount('D',11))
+	let gain = new Decimal(1)
+if(hasUpgrade('p',11)) gain=gain.times(upgradeEffect('p',11))
+if(hasUpgrade('p',12)) gain=gain.pow(upgradeEffect('p',12))
+if(hasUpgrade('p',21)) gain=gain.times(upgradeEffect('p',21))
+if(hasUpgrade('p',22)) gain=gain.pow(upgradeEffect('p',22))
+if(hasUpgrade('p',31)) gain=gain.times(upgradeEffect('p',31))
 	return gain
 }
 
@@ -54,11 +58,12 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.p.points.gte(new Decimal("1e26"))
 }
 
 
