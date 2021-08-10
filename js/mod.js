@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
-	name: "first",
+	num: "0.3",
+	name: "third",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3</h3><br>
+- Added Amoebas.<br>
+- Added 5 upgrade.<br>
+- Added 3 milestone.<br>
+- Endgame: 52 boosters and 3.14e17 Amoebas.<br>
 <h3>v0.2</h3><br>
 - Added booster.<br>
 - Added 7 upgrade.<br>
@@ -54,7 +59,8 @@ if(hasUpgrade('p',21)) gain=gain.times(upgradeEffect('p',21))
 if(hasUpgrade('p',22)) gain=gain.pow(upgradeEffect('p',22))
 if(hasUpgrade('p',31)) gain=gain.times(upgradeEffect('p',31))
 if(hasUpgrade('p',14)) gain=gain.times(1e10)
-if(hasUpgrade('p',41)) gain=gain.times(upgradeEffect('p',32))         
+if(hasUpgrade('p',41)) gain=gain.times(upgradeEffect('p',32))     
+if(hasUpgrade('a',11)) gain=gain.times(upgradeEffect('a',11))        
 	return gain
 }
 
@@ -70,7 +76,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.b.points.gte(new Decimal("20"))
+	return player.b.points.gte(new Decimal("52"))&&player.a.points.gte(new Decimal("3.14e17"))
 }
 
 

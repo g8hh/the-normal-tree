@@ -43,8 +43,9 @@ addLayer("p", {
                 title:"upgrade boost 1",
                 description: "point gain x2 per upgrade",
                 effect(){
-
-                  if(hasUpgrade('p',23)) return new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length) 
+                    if(hasUpgrade('a',23))  return new Decimal(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.a.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.b.upgrades.length))
+                    if(hasUpgrade('a',21)) return new Decimal(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.a.upgrades.length))
+                else  if(hasUpgrade('p',23)) return new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length) 
                   else  return new Decimal(2).add(tmp.b.effect).pow(player.p.upgrades.length)},
                 effectDisplay(){return format(upgradeEffect('p',11))+"x"},
                 cost: new Decimal(1),
@@ -52,7 +53,9 @@ addLayer("p", {
             12: {
                 title:"upgrade boost 2",
                 description: "point gain ^1.1 per upgrade",
-                effect(){return new Decimal(1.1).pow(player.p.upgrades.length)},
+                effect(){
+                    if(hasUpgrade('a',22))    return new Decimal(new Decimal(1.1).pow(player.p.upgrades.length)).times(new Decimal(1.1).pow(player.a.upgrades.length))
+                  else  return new Decimal(new Decimal(1.1).pow(player.p.upgrades.length))},
                 effectDisplay(){return "^"+format(upgradeEffect('p',12))},
                 unlocked(){return hasUpgrade('p',11)},
                 cost: new Decimal(2),
@@ -160,15 +163,24 @@ addLayer("p", {
             },
         },
         doReset(resettingLayer) {
+            let extraUpgrades = [];
+       
+            if (hasMilestone("b",4)) extraUpgrades.push(11);
             let keep = [];
           
             if (hasMilestone("b", 1) && resettingLayer=="b")  keep.push("upgrades")
+            if (hasUpgrade("a", 31) && resettingLayer=="a")  keep.push("upgrades")
             if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+            for(i in extraUpgrades) {
+                if (!player[this.layer].upgrades.includes(extraUpgrades[i])) {
+                  player[this.layer].upgrades.push(extraUpgrades[i])
+                }
+              }
         },
 })
 addLayer("b", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
-        unlocked: true,                     // You can add more variables here to add them to your layer.
+        unlocked: false,                     // You can add more variables here to add them to your layer.
         points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
     }},
 
@@ -213,6 +225,21 @@ addLayer("b", {
             effectDescription: "unlock 3 more upgrade",
             done() { return player.b.points.gte(11) }
         },
+        3: {
+            requirementDescription: "20 boosters",
+            effectDescription: "unlock amoebas.",
+            done() { return player.b.points.gte(20) }
+        },
+        4: {
+            requirementDescription: "23 boosters",
+            effectDescription: "Keep upgrade boost 1 on ALL resets.",
+            done() { return player.b.points.gte(23) }
+        },
+        5: {
+            requirementDescription: "30 boosters",
+            effectDescription: "You can buy max boosters.",
+            done() { return player.b.points.gte(30) }
+        },
     },
     upgrades: {
         11: {
@@ -225,9 +252,79 @@ addLayer("b", {
             cost: new Decimal(9),
         },
     },
-
+    canBuyMax(){return hasMilestone('b',5)},
     layerShown() { return hasUpgrade('p',33)||player.b.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
 
     branches:'p'
      
+})
+addLayer("a", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: false,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+
+    color: "#ff4040",                       // The color for this layer, which affects many elements.
+    resource: "amoebas",            // The name of this layer's main prestige resource.
+    row: 1,                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "prestige points",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.p.points },  // A function to return the current amount of baseResource.
+
+    requires(){ 
+       return  new Decimal("1e527")},              // The amount of the base needed to  gain 1 of the prestige currency.
+      
+    type: "normal",
+    exponent: 0.01,                        
+    gainMult() {   
+        let gain  = new Decimal(1)  
+     
+        return gain        
+    },
+    gainExp() {    
+        let gain  = new Decimal(1)  
+      
+        return gain 
+    },
+    upgrades: {
+        11: {
+            title:"Amoeba Boost 1",
+            description: "Amoeba boost point gain.",
+            effect(){
+
+             return player.a.points.add(2).pow(1.25)},
+            effectDisplay(){return format(upgradeEffect('a',11))+"x"},
+            cost: new Decimal(2),
+        },
+        21: {
+            title:"Upgrade Boost 1",
+            description: "Amoeba upgrade are count in upgrade effect 1.",
+           
+            cost: new Decimal(5),
+            unlocked(){return hasUpgrade('a',11)}
+        },
+        22: {
+            title:"Upgrade Boost 2",
+            description: "Amoeba upgrade are count in upgrade effect 2.",
+            unlocked(){return hasUpgrade('a',21)},
+            cost: new Decimal(100),
+        },
+        23: {
+            title:"Upgrade Boost 3",
+            description: "Booster upgrade are count in upgrade effect 1.",
+            unlocked(){return hasUpgrade('a',31)},
+            cost: new Decimal(5e10),
+        },
+        31: {
+            title:"Keep Boost 1",
+            description: "keep prestige upgrade on reset.",
+            unlocked(){return hasUpgrade('a',22)},
+            cost: new Decimal(5000000),
+        },
+    },
+
+    layerShown() { return hasMilestone('b',3)||player.a.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
+
+    branches:'p',
+
 })
