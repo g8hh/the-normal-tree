@@ -343,20 +343,20 @@ addLayer("a", {
         },
         21: {
             title:"Upgrade Boost 1",
-            description: "Amoeba upgrade are count in upgrade effect 1.",
+            description: "Amoeba upgrade are count in upgrade boost 1.",
            
             cost: new Decimal(5),
             unlocked(){return hasUpgrade('a',11)}
         },
         22: {
             title:"Upgrade Boost 2",
-            description: "Amoeba upgrade are count in upgrade effect 2.",
+            description: "Amoeba upgrade are count in upgrade boost 2.",
             unlocked(){return hasUpgrade('a',21)},
             cost: new Decimal(100),
         },
         23: {
             title:"Upgrade Boost 3",
-            description: "Booster upgrade are count in upgrade effect 1.",
+            description: "Booster upgrade are count in upgrade boost 1.",
             unlocked(){return hasUpgrade('a',31)},
             cost: new Decimal(5e10),
         },
