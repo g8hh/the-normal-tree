@@ -177,6 +177,12 @@ addLayer("p", {
                 }
               }
         },
+        hotkeys: [
+            {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+            onPress() { if (player.p.unlocked) doReset("p") },
+            unlocked() {return true} 
+        },
+        ],
 })
 addLayer("b", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
@@ -255,8 +261,13 @@ addLayer("b", {
     canBuyMax(){return hasMilestone('b',5)},
     layerShown() { return hasUpgrade('p',33)||player.b.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
 
-    branches:'p'
-     
+    branches:'p',
+    hotkeys: [
+        {key: "b", description: "B: Reset for boosters", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.b.unlocked) doReset("b") },
+        unlocked() {return hasUpgrade('p',33)} 
+    },
+    ], 
 })
 addLayer("a", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
@@ -326,5 +337,10 @@ addLayer("a", {
     layerShown() { return hasMilestone('b',3)||player.a.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
 
     branches:'p',
-
+    hotkeys: [
+        {key: "a", description: "A: Reset for amoebas", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.a.unlocked) doReset("a") },
+        unlocked() {return hasMilestone('b',3)} 
+    },
+    ], 
 })
