@@ -3397,7 +3397,7 @@ addLayer("I", {
         3: {
             requirementDescription: "3 Infinity",
             effectDescription() {
-                if(player.X.points.gte(1))    return "keep Factor challenge on reset."
+                if(player.X.points.gte(1))    return "keep Factor challenge on reset. Unlock challenge point and new challenges."
                 else  return "keep Factor challenge on reset, and '9' to '16' on ALL reset."},
         
             done() { return player.I.points.gte(3) }
@@ -6450,7 +6450,7 @@ addLayer("X", {
         points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
     }},
 
-    color: "#004000",                       // The color for this layer, which affects many elements.
+    color: "#198964",                       // The color for this layer, which affects many elements.
     resource: "???",            // The name of this layer's main prestige resource.
     row: 10,                                 // The row this layer is on (0 is the first row).
 
