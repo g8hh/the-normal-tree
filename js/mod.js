@@ -439,4 +439,5 @@ function fixOldSave(oldVersion){
 	if(player.NN.points.gte(1)&&player.X.points.gte(1)&&oldVersion=="0.3.1.6")
 	player.NN.points=new  Decimal(0)
 	player.NN.upgrades=[]
+	player.NN.milestones=[]
 }
