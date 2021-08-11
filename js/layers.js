@@ -710,5 +710,85 @@ addLayer("d", {
       
     passiveGeneration(){return hasMilestone('d',3)? 10 : 0},
 })
+addLayer("ach", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+symbol(){return  "★"},
+tooltip(){return  "Achievements"},
+    color: "#ffff00",                       // The color for this layer, which affects many elements.
+    resource: "achievements",            // The name of this layer's main prestige resource.
+    row: "side",                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "boosters",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.b.points },  // A function to return the current amount of baseResource.
+
+    requires(){ 
+       return  new Decimal(10).tetrate(1e300)},              // The amount of the base needed to  gain 1 of the prestige currency.
+    
+    type: "normal",
+    exponent: 3,                        
+    gainMult() {   
+        let gain  = new Decimal(1)  
+    
+        return gain        
+    },
+    gainExp() {    
+        let gain  = new Decimal(1)  
+        if(hasUpgrade('c',12)) gain=gain.times(upgradeEffect('c',12))
+        return gain 
+    },
+    achievements: {
+        11: {
+            name: "first layer",
+            done(){return player.p.points.gte(1)},
+            tooltip:"Get 1 prestige point."  
+        },
+        12: {
+            name: "second layer",
+            done(){return player.b.points.gte(1)},
+            tooltip:"Get 1 boosters."  
+        },
+        13: {
+            name: "A",
+            done(){return player.a.points.gte(1)},
+            tooltip:"Get 1 amoebas."  
+        },
+        14: {
+            name: "coding",
+            done(){return player.c.points.gte(1)},
+            tooltip:"Get 1 codes."  
+        },
+        15: {
+            name: "challenged",
+            done(){return hasChallenge('c',11)},
+            tooltip:"Complete a challenge."  
+        },
+        16: {
+            name: "DI?",
+            done(){return player.d.points.gte(1)},
+            tooltip:"Get 1 distance."  
+        },
+        17: {
+            name: "Inflating",
+            done(){return player.points.gte(new Decimal(10).tetrate(100))},
+            tooltip:"Get 1F100 points. Reward: Unlock universe. (not yet)"  
+        },
+    },
+    layerShown() { return true},          // Returns a bool for if this layer's node should be visible in the tree.
+    tabFormat: {
+        "achievements":{
+            content:[
+         
+              "blank",
+              "achievements",
+            ]
+          },
+       
+  
+      
+        },
+})
 
 
