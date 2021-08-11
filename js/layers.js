@@ -29,12 +29,14 @@ addLayer("p", {
       if(hasUpgrade('p',43)) gain=gain.times(upgradeEffect('p',31))  
       if(hasUpgrade('a',13)) gain=gain.times(upgradeEffect('a',13))  
       if(inChallenge('c',11))gain=gain.times(player.c.points.add(1).pow(3))
+     
         return gain        
     },
     gainExp() {    
         let gain  = new Decimal(1)  
         if(hasUpgrade('p',33)) gain=gain.times(upgradeEffect('p',33))    
         if(inChallenge('c',11))gain=gain.times(0.75)
+        if(hasUpgrade('b',14)) gain=gain.times(upgradeEffect('b',14))
         return gain 
     },
 
@@ -221,12 +223,15 @@ addLayer("a", {
         let gain  = new Decimal(1)  
         if(hasUpgrade('p',44)) gain=gain.times(1e10)   
         if(hasUpgrade('c',11)) gain=gain.times(upgradeEffect('c',11))   
-        if(hasUpgrade('b',12)) gain=gain.times(upgradeEffect('b',12))   
+        if(hasUpgrade('b',12)) gain=gain.times(upgradeEffect('b',12))  
+        if(hasMilestone('d',5))    gain=gain.tetrate(new Decimal(100).pow(new Decimal(100).pow(player.d.points.pow(100))))  
         return gain        
     },
     gainExp() {    
         let gain  = new Decimal(1)  
         if(hasUpgrade('b',13)) gain=gain.times(upgradeEffect('b',13))
+        if(hasMilestone('d',4))    gain=gain.times(new Decimal(100).pow(player.d.points.pow(100)))  
+        
         return gain 
     },
     upgrades: {
@@ -258,6 +263,7 @@ return player.a.points.add(2).pow(0.75)},
                effectDisplay(){return format(upgradeEffect('a',13))+"x"},
             cost: new Decimal(1e180),
         },
+      
         21: {
             title:"Upgrade Boost 1",
             description: "Amoeba upgrade are count in upgrade boost 1.",
@@ -306,7 +312,7 @@ return player.a.points.add(2).pow(0.75)},
      
         let keep = [];
         if (hasMilestone("c", 2) && resettingLayer=="c")  keep.push("upgrades")
- 
+        if (hasMilestone("d", 1) && resettingLayer=="d")  keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     layerShown() { return hasMilestone('b',3)||player.a.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
@@ -360,6 +366,8 @@ addLayer("b", {
         let keep = [];
         if (hasMilestone("c", 1) && resettingLayer=="c")  keep.push("milestones")
         if (hasMilestone("b", 7) && resettingLayer=="c")  keep.push("upgrades")
+        if (hasMilestone("d", 0) && resettingLayer=="d")  keep.push("milestones")
+        if (hasMilestone("d", 1) && resettingLayer=="d")  keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     milestones:{
@@ -432,11 +440,26 @@ addLayer("b", {
             effectDisplay(){return "^"+format(upgradeEffect('b',13))},
             cost: new Decimal(465),
         },
+        14: {
+            title:"Booster Boost 4",
+            description: "Booster boost prestige point gain.",
+            unlocked(){return hasUpgrade('b',13)},
+            effect(){
+                return player.b.points.add(10).log(10).pow(0.1)},
+            effectDisplay(){return "^"+format(upgradeEffect('b',14))},
+            cost: new Decimal(600),
+        },
         41: {
             title:"unlocker 1",
             description: "Unlock code.",
           unlocked(){return hasUpgrade('a',41)},
             cost: new Decimal(95),
+        },
+        42: {
+            title:"unlocker 2",
+            description: "Unlock distance.",
+          unlocked(){return hasUpgrade('b',14)},
+            cost: new Decimal(777),
         },
     },
     canBuyMax(){return hasMilestone('b',5)},
@@ -482,21 +505,23 @@ addLayer("c", {
         return gain 
     },
     getResetGain() {
-     return formatWhole(player.p.points.add(1).log(10).minus(5386))
+        if(hasMilestone('d',2))  return formatWhole(player.p.points.add(1).log(10).minus(5386).times(player.d.points.add(1).pow(2)))
+   else  return formatWhole(player.p.points.add(1).log(10).minus(5386))
     },
     getNextAt: function(){
        
         return formatWhole(Decimal.pow(10, new Decimal(tmp[this.layer].resetGain).add(5387)))
 	},
     prestigeButtonText(){
-        if(!player.p.points.gte("1e5387"))   return "Reset for 0 code.<br>Next at 1.00e5387 prestige point"
+        if(player.p.points.gte("1e6387")) return "Reset for " + tmp[this.layer].resetGain +" code."
+       else if(!player.p.points.gte("1e5387"))   return "Reset for 0 code.<br>Next at 1.00e5387 prestige point"
       else  return "Reset for " + tmp[this.layer].resetGain +" code.<br>Next at " + tmp[this.layer].getNextAt + " prestige point"},
     layerShown() { return hasUpgrade('b',41)||player.c.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
 
     branches: ['a','b'],
     hotkeys: [
         {key: "c", description: "C: Reset for codes", onPress(){if (canReset(this.layer)) doReset(this.layer)},
-        onPress() { if (player.a.unlocked) doReset("c") },
+        onPress() { if (player.c.unlocked) doReset("c") },
         unlocked() {return hasUpgrade('b',41)||player.c.points.gte(1)} 
     },
     ], 
@@ -537,6 +562,15 @@ addLayer("c", {
 return player.c.points.add(2).pow(player.c.points.add(1).pow(0.3))},
                effectDisplay(){return format(upgradeEffect('c',11))+"x"},
             cost: new Decimal(2),
+        },
+        12: {
+            title:"code Boost 2",
+            description: "code boost distance gain.",
+            effect(){
+return player.c.points.add(10).log(10).pow(1.25)},
+               effectDisplay(){return "^"+format(upgradeEffect('c',12))},
+            cost: new Decimal("ee10"),
+            unlocked(){return hasMilestone('d',3)}
         },
      
     },
@@ -598,4 +632,83 @@ return player.c.points.add(2).pow(player.c.points.add(1).pow(0.3))},
   
       
         },
+     update(diff){
+         if(hasMilestone('d',0)) player.c.points=player.c.points.add(new Decimal(1000).times(tmp.c.resetGain))
+     }
 })
+addLayer("d", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+
+    color: "#008000",                       // The color for this layer, which affects many elements.
+    resource: "distance",            // The name of this layer's main prestige resource.
+    row: 2,                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "boosters",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.b.points },  // A function to return the current amount of baseResource.
+
+    requires(){ 
+       return  new Decimal("888")},              // The amount of the base needed to  gain 1 of the prestige currency.
+    
+    type: "normal",
+    exponent: 3,                        
+    gainMult() {   
+        let gain  = new Decimal(1)  
+    
+        return gain        
+    },
+    gainExp() {    
+        let gain  = new Decimal(1)  
+        if(hasUpgrade('c',12)) gain=gain.times(upgradeEffect('c',12))
+        return gain 
+    },
+   
+    layerShown() { return hasUpgrade('b',42)||player.d.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
+
+    branches: ['b'],
+    hotkeys: [
+        {key: "d", description: "D: Reset for distances", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.d.unlocked) doReset("d") },
+        unlocked() {return hasUpgrade('b',42)||player.d.points.gte(1)} 
+    },
+    ], 
+    milestones:{
+
+        0: {
+            requirementDescription: "1 distance",
+            effectDescription: "gain 1000% of codes on reset per second, keep booster milestone on reset",
+            done() { return player.d.points.gte(1) }
+        },
+        1: {
+            requirementDescription: "5 distance",
+            effectDescription: "keep booster and amoeba upgrade on reset",
+            done() { return player.d.points.gte(5) }
+        },
+        2: {
+            requirementDescription: "20 distance",
+            effectDescription: "distance boost code gain.",
+            done() { return player.d.points.gte(20) }
+        },
+        3: {
+            requirementDescription: "30000 distance",
+            effectDescription: "gain 1000% of distance on reset per second",
+            done() { return player.d.points.gte(30000) }
+        },
+        4: {
+            requirementDescription: "ee1000000 distance",
+            effectDescription: "distance boost amoebas.",
+            done() { return player.d.points.gte("ee1000000") }
+        },
+        5: {
+            requirementDescription: "1F10 distance",
+            effectDescription: "distance boost amoebas again.",
+            done() { return player.d.points.gte("eeeeeeeee10") }
+        },
+    },
+      
+    passiveGeneration(){return hasMilestone('d',3)? 10 : 0},
+})
+
+
