@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4",
+	num: "0.4.1",
 	name: "fourth",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.4.1</h3><br>
+- Added 5 upgrade.<br>
+- Added 3 milestone.<br>
+- Added 1 challenge.<br>
+- Endgame: 1e66666 presstige point.<br>
 <h3>v0.4</h3><br>
 - Added code.<br>
 - Added 4 upgrade.<br>
@@ -82,7 +87,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.a.points.gte(new Decimal("1e80"))
+	return player.p.points.gte(new Decimal("1e66666"))
 }
 
 

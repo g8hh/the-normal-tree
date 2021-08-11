@@ -27,11 +27,14 @@ addLayer("p", {
       if(hasUpgrade('b',11)) gain=gain.times(upgradeEffect('b',11))   
       if(hasUpgrade('p',42)) gain=gain.times(upgradeEffect('p',21))       
       if(hasUpgrade('p',43)) gain=gain.times(upgradeEffect('p',31))  
+      if(hasUpgrade('a',13)) gain=gain.times(upgradeEffect('a',13))  
+      if(inChallenge('c',11))gain=gain.times(player.c.points.add(1).pow(3))
         return gain        
     },
     gainExp() {    
         let gain  = new Decimal(1)  
         if(hasUpgrade('p',33)) gain=gain.times(upgradeEffect('p',33))    
+        if(inChallenge('c',11))gain=gain.times(0.75)
         return gain 
     },
 
@@ -43,8 +46,9 @@ addLayer("p", {
                 title:"upgrade boost 1",
                 description: "point gain x2 per upgrade",
                 effect(){
-                    if(hasUpgrade('a',23))  return new Decimal(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.a.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.b.upgrades.length))
-                    if(hasUpgrade('a',21)) return new Decimal(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.a.upgrades.length))
+                    if(hasChallenge('c',11)) return new Decimal(new Decimal(2).add(upgradeEffect('p',23)).times(tmp.b.effect).pow(player.p.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).times(tmp.b.effect).pow(player.a.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).times(tmp.b.effect).pow(player.b.upgrades.length))
+                  else  if(hasUpgrade('a',23))  return new Decimal(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.a.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.b.upgrades.length))
+                  else  if(hasUpgrade('a',21)) return new Decimal(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length)).times(new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.a.upgrades.length))
                 else  if(hasUpgrade('p',23)) return new Decimal(2).add(upgradeEffect('p',23)).add(tmp.b.effect).pow(player.p.upgrades.length) 
                   else  return new Decimal(2).add(tmp.b.effect).pow(player.p.upgrades.length)},
                 effectDisplay(){return format(upgradeEffect('p',11))+"x"},
@@ -54,7 +58,8 @@ addLayer("p", {
                 title:"upgrade boost 2",
                 description: "point gain ^1.1 per upgrade",
                 effect(){
-                    if(hasUpgrade('a',22))    return new Decimal(new Decimal(1.1).pow(player.p.upgrades.length)).times(new Decimal(1.1).pow(player.a.upgrades.length))
+                    if(hasUpgrade('a',24)) return new Decimal(new Decimal(1.1).pow(player.p.upgrades.length)).times(new Decimal(1.1).pow(player.a.upgrades.length)).times(new Decimal(1.1).pow(player.b.upgrades.length))
+                  else  if(hasUpgrade('a',22))    return new Decimal(new Decimal(1.1).pow(player.p.upgrades.length)).times(new Decimal(1.1).pow(player.a.upgrades.length))
                   else  return new Decimal(new Decimal(1.1).pow(player.p.upgrades.length))},
                 effectDisplay(){return "^"+format(upgradeEffect('p',12))},
                 unlocked(){return hasUpgrade('p',11)},
@@ -177,6 +182,7 @@ addLayer("p", {
           
             if (hasMilestone("b", 1) && resettingLayer=="b")  keep.push("upgrades")
             if (hasUpgrade("a", 31) && resettingLayer=="a")  keep.push("upgrades")
+            if (hasMilestone("c", 4) && resettingLayer=="c")  keep.push("upgrades")
             if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
             for(i in extraUpgrades) {
                 if (!player[this.layer].upgrades.includes(extraUpgrades[i])) {
@@ -192,106 +198,7 @@ addLayer("p", {
         ],
         passiveGeneration(){return hasMilestone('c',0)? 100 : 0},
 })
-addLayer("b", {
-    startData() { return {                  // startData is a function that returns default data for a layer. 
-        unlocked: false,                     // You can add more variables here to add them to your layer.
-        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
-    }},
 
-    color: "#0060ff",                       // The color for this layer, which affects many elements.
-    resource: "boosters",            // The name of this layer's main prestige resource.
-    row: 1,                                 // The row this layer is on (0 is the first row).
-
-    baseResource: "prestige points",                 // The name of the resource your prestige gain is based on.
-    baseAmount() { return player.p.points },  // A function to return the current amount of baseResource.
-
-    requires(){ 
-       return  new Decimal(1e26)},              // The amount of the base needed to  gain 1 of the prestige currency.
-       effect(){return player.b.points},
-       effectDescription(){return "Which make upgrade effect 1 base +" + format(tmp.b.effect)},
-    type: "static",                         // Determines the formula used for calculating prestige currency.
-    exponent: 1.5,                          // "normal" prestige gain is (currency^exponent).
-    base:1e6,
-    gainMult() {   
-        let gain  = new Decimal(1)  
-        if(hasUpgrade('p',34)) gain=gain.div(1e10)   
-        if(hasUpgrade('a',12)) gain=gain.div(upgradeEffect('a',12))
-        return gain        
-    },
-    gainExp() {    
-        let gain  = new Decimal(1)  
-      
-        return gain 
-    },
-    milestones:{
-
-        0: {
-            requirementDescription: "2 boosters",
-            effectDescription: "unlock 3 more upgrade.",
-            done() { return player.b.points.gte(2) }
-        },
-        1: {
-            requirementDescription: "8 boosters",
-            effectDescription: "keep prestige upgrade on reset.",
-            done() { return player.b.points.gte(8) }
-        },
-        2: {
-            requirementDescription: "11 boosters",
-            effectDescription: "unlock 3 more upgrade",
-            done() { return player.b.points.gte(11) }
-        },
-        3: {
-            requirementDescription: "20 boosters",
-            effectDescription: "unlock amoebas.",
-            done() { return player.b.points.gte(20) }
-        },
-        4: {
-            requirementDescription: "23 boosters",
-            effectDescription: "Keep upgrade boost 1 on ALL resets.",
-            done() { return player.b.points.gte(23) }
-        },
-        5: {
-            requirementDescription: "30 boosters",
-            effectDescription: "You can buy max boosters.",
-            done() { return player.b.points.gte(30) }
-        },
-        6: {
-            requirementDescription: "60 boosters",
-            effectDescription: "boosters reset nothing and auto buy it.",
-            done() { return player.b.points.gte(30) }
-        },
-    },
-    upgrades: {
-        11: {
-            title:"Booster Boost 1",
-            description: "Booster boost prestige point gain.",
-            effect(){
-
-             return player.b.points.add(1).pow(player.b.points.times(1.5))},
-            effectDisplay(){return format(upgradeEffect('b',11))+"x"},
-            cost: new Decimal(9),
-        },
-        41: {
-            title:"unlocker 1",
-            description: "Unlock code.",
-          unlocked(){return hasUpgrade('a',41)},
-            cost: new Decimal(95),
-        },
-    },
-    canBuyMax(){return hasMilestone('b',5)},
-    resetsNothing(){return hasMilestone('b',6)},
-    autoPrestige(){return hasMilestone('b',6)},
-
-    layerShown() { return hasUpgrade('p',33)||player.b.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
-
-    branches:'p',
-    hotkeys: [
-        {key: "b", description: "B: Reset for boosters", onPress(){if (canReset(this.layer)) doReset(this.layer)},
-        onPress() { if (player.b.unlocked) doReset("b") },
-        unlocked() {return hasUpgrade('p',33)} 
-    },
-    ], 
-})
 addLayer("a", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: false,                     // You can add more variables here to add them to your layer.
@@ -314,11 +221,12 @@ addLayer("a", {
         let gain  = new Decimal(1)  
         if(hasUpgrade('p',44)) gain=gain.times(1e10)   
         if(hasUpgrade('c',11)) gain=gain.times(upgradeEffect('c',11))   
+        if(hasUpgrade('b',12)) gain=gain.times(upgradeEffect('b',12))   
         return gain        
     },
     gainExp() {    
         let gain  = new Decimal(1)  
-      
+        if(hasUpgrade('b',13)) gain=gain.times(upgradeEffect('b',13))
         return gain 
     },
     upgrades: {
@@ -341,6 +249,15 @@ addLayer("a", {
             cost: new Decimal(2e42),
             unlocked(){return hasUpgrade('a',41)}
         },
+        13: {
+            title:"Amoeba Boost 3",
+            description: "Amoeba boost prestige point gain.",
+            unlocked(){return hasMilestone('c',3)},
+            effect(){
+return player.a.points.add(2).pow(0.75)},
+               effectDisplay(){return format(upgradeEffect('a',13))+"x"},
+            cost: new Decimal(1e180),
+        },
         21: {
             title:"Upgrade Boost 1",
             description: "Amoeba upgrade are count in upgrade boost 1.",
@@ -360,6 +277,12 @@ addLayer("a", {
             unlocked(){return hasUpgrade('a',31)},
             cost: new Decimal(5e10),
         },
+        24: {
+            title:"Upgrade Boost 4",
+            description: "Booster upgrade are count in upgrade boost 2.",
+            unlocked(){return hasMilestone('c',3)},
+            cost: new Decimal(1e80),
+        },
         31: {
             title:"Keep Boost 1",
             description: "keep prestige upgrade on reset.",
@@ -371,6 +294,12 @@ addLayer("a", {
             description: "unlock 3 upgrade.",
             unlocked(){return hasUpgrade('a',31)},
             cost: new Decimal(3.14e17),
+        },
+        42: {
+            title:"Unlocker 2",
+            description: "unlock code challenge.",
+            unlocked(){return hasMilestone('c',3)},
+            cost: new Decimal("1e570"),
         },
     },
     doReset(resettingLayer) {
@@ -389,6 +318,7 @@ addLayer("a", {
         unlocked() {return hasMilestone('b',3)} 
     },
     ], 
+    passiveGeneration(){return hasMilestone('b',7)? 100 : 0},
 })
 addLayer("b", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
@@ -405,8 +335,12 @@ addLayer("b", {
 
     requires(){ 
        return  new Decimal(1e26)},              // The amount of the base needed to  gain 1 of the prestige currency.
-       effect(){return player.b.points},
-       effectDescription(){return "Which make upgrade effect 1 base +" + format(tmp.b.effect)},
+       effect(){
+         if(hasChallenge('c',11)) return player.b.points.add(1) 
+      else  return player.b.points},
+       effectDescription()
+       {if(hasChallenge('c',11)) return "Which make upgrade effect 1 base x" + format(tmp.b.effect)
+       else return "Which make upgrade effect 1 base +" + format(tmp.b.effect)},
     type: "static",                         // Determines the formula used for calculating prestige currency.
     exponent: 1.5,                          // "normal" prestige gain is (currency^exponent).
     base:1e6,
@@ -425,7 +359,7 @@ addLayer("b", {
      
         let keep = [];
         if (hasMilestone("c", 1) && resettingLayer=="c")  keep.push("milestones")
- 
+        if (hasMilestone("b", 7) && resettingLayer=="c")  keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     milestones:{
@@ -465,16 +399,38 @@ addLayer("b", {
             effectDescription: "boosters reset nothing and auto buy it.",
             done() { return player.b.points.gte(60) }
         },
+        7: {
+            requirementDescription: "585 boosters",
+            effectDescription: "gain 10000% of amoeba on reset per second and keep booster upgrade on reset.",
+            done() { return player.b.points.gte(585) }
+        },
     },
     upgrades: {
         11: {
             title:"Booster Boost 1",
             description: "Booster boost prestige point gain.",
             effect(){
-
-             return player.b.points.add(1).pow(player.b.points.times(1.5))},
+                return player.b.points.add(1).pow(player.b.points.times(1.5))},
             effectDisplay(){return format(upgradeEffect('b',11))+"x"},
             cost: new Decimal(9),
+        },
+        12: {
+            title:"Booster Boost 2",
+            description: "Booster boost amoeba gain.",
+            unlocked(){return hasMilestone('c',3)},
+            effect(){
+                return player.b.points.add(1).pow(player.b.points.pow(0.8))},
+            effectDisplay(){return format(upgradeEffect('b',12))+"x"},
+            cost: new Decimal(200),
+        },
+        13: {
+            title:"Booster Boost 3",
+            description: "Booster boost amoeba gain.",
+            unlocked(){return hasChallenge('c',11)},
+            effect(){
+                return player.b.points.add(10).log(10).pow(0.3)},
+            effectDisplay(){return "^"+format(upgradeEffect('b',13))},
+            cost: new Decimal(465),
         },
         41: {
             title:"unlocker 1",
@@ -561,6 +517,16 @@ addLayer("c", {
             effectDescription: "keep amoeba upgrade on reset.",
             done() { return player.c.points.gte(50) }
         },
+        3: {
+            requirementDescription: "314 code",
+            effectDescription: "unlock 4 more upgrade.",
+            done() { return player.c.points.gte(314) }
+        },
+        4: {
+            requirementDescription: "30000 code",
+            effectDescription: "Keep prestige upgrade on reset.",
+            done() { return player.c.points.gte(30000) }
+        },
       
     },
     upgrades: {
@@ -574,4 +540,62 @@ return player.c.points.add(2).pow(player.c.points.add(1).pow(0.3))},
         },
      
     },
+    challenges:{
+        11: {
+            name: "download GitHub",
+          
+            challengeDescription(){
+             return "prestige point gain ^0.75 but code boost prestige point gain. enter this challenge will reset a, b, and p content" },
+            canComplete(){return player.p.points.gte("1e120")},
+            goalDescription: "1e120 prestige point",
+            rewardDescription(){return "Booster effect is multiple instead of addition and unlock a upgrade."},
+          unlocked(){return hasUpgrade("a", 42)||inChallenge('c',11)||hasChallenge('c',11)},
+          onEnter(){
+              player.p.upgrades=[]
+              player.a.upgrades=[]
+              player.b.upgrades=[]
+              player.b.milestones=[]
+        }
+        }
+        
+    },
+    tabFormat: {
+        "Milestone":{
+            content:[
+              "main-display",
+              "blank",
+            ["prestige-button",function(){return ""}],
+              "blank",
+              "resource-display",
+              "blank",
+              "milestones",
+            ]
+          },
+        "Upgrades":{
+     
+          content:[
+            "main-display",
+            "blank",
+          ["prestige-button",function(){return ""}],
+         
+          
+            "blank",
+            "upgrades",
+          ]
+        },
+        "Challenges":{
+    
+            content:[
+              "main-display",
+              "blank",
+            ["prestige-button",function(){return ""}],
+           
+            
+              "blank",
+              "challenges",
+            ]
+          },
+  
+      
+        },
 })
