@@ -436,5 +436,7 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+	if(player.NN.points.gte(1)&&player.X.points.gte(1)&&oldVersion=="0.3.1.6")
+	player.NN.points=new  Decimal(0)
 	
 }
