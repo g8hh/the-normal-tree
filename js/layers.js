@@ -177,7 +177,11 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
         if (hasMilestone("UF", 1) && resettingLayer=="UF")  keep.push("upgrades")
         if (hasMilestone("IP", 1) && resettingLayer=="IP")  keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
-        player[this.layer].upgrades.push(...extraUpgrades)
+        for(i in extraUpgrades) {
+            if (!player[this.layer].upgrades.includes(extraUpgrades[i])) {
+              player[this.layer].upgrades.push(extraUpgrades[i])
+            }
+          }
     },
     upgrades: {
         11: {
