@@ -828,7 +828,7 @@ addLayer("NN", {
     }},
     color: "#ffa0ff",
     requires(){
-        if(player.X.points.gte(1)) return new Decimal("e920")
+        if(player.X.points.gte(1)) return new Decimal("e1250")
         if(hasMilestone('I',7)&&((inChallenge('I',11))||(inChallenge('I',12))||(inChallenge('I',21))||(inChallenge('I',31)))) return new Decimal("1e400")
         if(hasMilestone('I',6)&&((inChallenge('I',11))||(inChallenge('I',12))||(inChallenge('I',21)))) return new Decimal("1e470")
         else return new Decimal("1e940")
