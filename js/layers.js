@@ -516,7 +516,7 @@ addLayer("c", {
         if(player.p.points.gte("1e6387")) return "Reset for " + tmp[this.layer].resetGain +" code."
        else if(!player.p.points.gte("1e5387"))   return "Reset for 0 code.<br>Next at 1.00e5387 prestige point"
       else  return "Reset for " + tmp[this.layer].resetGain +" code.<br>Next at " + tmp[this.layer].getNextAt + " prestige point"},
-    layerShown() { return hasUpgrade('b',41)||hasMilestone('c',0).gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown() { return hasUpgrade('b',41)||hasMilestone('c',0)},          // Returns a bool for if this layer's node should be visible in the tree.
 
     branches: ['a','b'],
     hotkeys: [
