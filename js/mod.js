@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.0",
-	name: "end?",
+	num: "1.1",
+	name: "Not end.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v1.1</h3><br>
+- Added challenge point.<br>
+- Added 4 upgrade.<br>
+- Added 4 buyable.<br>
+- Added 5 clickable.<br>
+- Endgame: 8 challenge point.<br>
 <h3>v1.0</h3><br>
 - Added distance.<br>
 - Added achievement.<br>
@@ -78,6 +84,11 @@ if(hasUpgrade('p',14)) gain=gain.times(1e10)
 if(hasUpgrade('p',41)) gain=gain.times(upgradeEffect('p',32))     
 if(hasUpgrade('a',11)) gain=gain.times(upgradeEffect('a',11))    
 if(hasMilestone('c',0))     gain=gain.times(100)
+if(hasUpgrade('cp',11)) gain=gain.times(upgradeEffect('cp',11))   
+if(hasUpgrade('cp',14))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2))   
+else if(hasUpgrade('cp',12))gain=gain.times(player.cp.bank1.add(1).log(10).add(1).pow(2))   
+ 
+if(hasUpgrade('cp',13))gain=gain.times(buyableEffect('cp',11))   
 	return gain
 }
 
@@ -93,7 +104,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal(10).tetrate(100))
+	return player.cp.points.gte(new Decimal(8))
 }
 
 

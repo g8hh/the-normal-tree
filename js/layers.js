@@ -40,7 +40,7 @@ addLayer("p", {
         return gain 
     },
 
-    layerShown() { return true },          // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown() { return (!player.ach.uni.gte(1)&&player.ach.uni.gte(0)) },          // Returns a bool for if this layer's node should be visible in the tree.
 
 
         upgrades: {
@@ -710,10 +710,238 @@ addLayer("d", {
       
     passiveGeneration(){return hasMilestone('d',3)? 10 : 0},
 })
+addLayer("cp", {
+    symbol(){return"C"},
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),  
+        bank1: new Decimal(0), 
+        auto: new Decimal(0), 
+        active: new Decimal(0), 
+    }},
+
+    color: "#008000",                       // The color for this layer, which affects many elements.
+    resource: "Challenge point",            // The name of this layer's main prestige resource.
+    row: 0,                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "points",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.points },  // A function to return the current amount of baseResource.
+
+    requires(){ 
+       return  new Decimal("10")},              // The amount of the base needed to  gain 1 of the prestige currency.
+    base:10,
+    type: "static",
+    exponent(){return 1},                 
+    gainMult() {   
+        let gain  = new Decimal(1)  
+    
+        return gain        
+    },
+    gainExp() {    
+        let gain  = new Decimal(1)  
+        if(hasUpgrade('c',12)) gain=gain.times(upgradeEffect('c',12))
+        return gain 
+    },
+    upgrades: {
+        11: {
+            title:"start",
+            description: "Boost point gain based on your Challenge point",
+            effect(){
+                if(new Decimal(2).pow(player.cp.points.add(1)).gte(314))  return new Decimal(314)
+          else  return new Decimal(2).pow(player.cp.points.add(1))},
+            effectDisplay(){return format(upgradeEffect('cp',11))+"x"},
+            cost: new Decimal(1),
+        },
+        12: {
+            title:"Banker",
+            description: "Unlock bank.",
+           
+            cost: new Decimal(2),
+        },
+        13: {
+            title:"buyable",
+            description: "Unlock buyables.",         
+            cost: new Decimal(3),
+        },
+        14: {
+            title:"Greater bank",
+            description: "get more Sacrificed challenge point and bank effect is greater.",         
+            cost: new Decimal(4),
+        },
+    },
+    clickables: {
+        11: {
+            display() {
+                
+            if(hasUpgrade('cp',14))    return "Sacrifice challenge point for buff.<br>You have Sacrificed "+player.cp.bank1+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(2).add(1).pow(2))
+        else  return "Sacrifice challenge point for buff.<br>You have Sacrificed "+player.cp.bank1+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(10).add(1).pow(2))},
+            canClick(){return player.cp.points.gte(1)},
+            onClick(){
+          if(hasUpgrade('cp',14))  player.cp.bank1=  player.cp.bank1.add(player.cp.points.pow(2))
+          else player.cp.bank1=  player.cp.bank1.add(player.cp.points)
+            player.cp.points=new Decimal(0)
+  
+            },
+            unlocked(){return hasUpgrade('cp',12)},
+            style() { return {
+                "font-size": "13px",
+                "height": "250px",
+                "width": "250px"
+                }
+            },
+    },
+    101: {
+        display() {
+            
+       return "Auto Sacrifice amount -1"},
+        canClick(){return player.cp.auto.gte(1)},
+        onClick(){
+        player.cp.auto= player.cp.auto.minus(1)
+        },
+        unlocked(){return hasMilestone('cp',1)},
+},
+102: {
+    display() {
+        
+   return "Auto Sacrifice amount +1"},
+    canClick(){return true},
+    onClick(){
+    player.cp.auto= player.cp.auto.add(1)
+    },
+    unlocked(){return hasMilestone('cp',1)},
+},
+103: {
+    display() {    
+        if(player.cp.active.gte(1))    return "Auto Sacrifice: active"
+    else return "Auto Sacrifice: inactive"},
+    canClick(){return true},
+    onClick(){
+   if(player.cp.active.gte(1)) player.cp.active= new Decimal(0)
+   else player.cp.active= new Decimal(1)
+    },
+    unlocked(){return hasMilestone('cp',1)},
+},
+},
+  milestones:{
+    
+        0: {
+            requirementDescription: "100 Sacrifice challenge point",
+            effectDescription: "Auto buy challenge point.",
+            done() { return player.cp.bank1.gte(100) }
+        },
+       
+        1: {
+            requirementDescription: "300 Sacrifice challenge point",
+            effectDescription: "Unlock auto Sacrifice.",
+            done() { return player.cp.bank1.gte(300) }
+        },
+  },
+   
+    buyables: {
+        rows: 2,
+        cols: 3,
+        11: {
+            title: "mult",
+            display() {
+               return "Boosts point gain by " + format(tmp.cp.buyables[11].effect) + "x<br>Cost : " + format(new Decimal("10").pow(getBuyableAmount("cp", 11).add(2))) + " points"
+            },
+            unlocked() { return hasUpgrade("cp", 13)},
+            canAfford() { 
+              return player.points.gte(new Decimal("10").pow(getBuyableAmount("cp", 11).add(2))) 
+            },
+            buy() { 
+                {
+                   player.points = player.points.minus(new Decimal("10").pow(getBuyableAmount("cp", 11).add(2)))
+                }
+                setBuyableAmount("cp", 11, getBuyableAmount("cp", 11).add(1))
+            },
+            effect() { 
+            eff = new Decimal("2").pow(getBuyableAmount("cp", 11))
+        return eff     
+            }
+        },
+    },
+    layerShown() { return player.ach.uni.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
+    autoPrestige(){return hasMilestone('cp',0)} ,  
+    branches: ['b'],
+    hotkeys: [
+        {key: "d", description: "D: Reset for distances", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.d.unlocked) doReset("d") },
+        unlocked() {return hasUpgrade('b',42)||player.d.points.gte(1)} 
+    },
+    ],
+    automate(){
+        if(player.cp.active.gte(1)&&player.cp.points.gte(player.cp.auto)) layers[this.layer].clickables[11].onClick()
+    } ,
+    tabFormat: {
+        "Upgrades":{
+            content:[
+                "main-display",
+                "blank",
+              ["prestige-button",function(){return ""}],
+                "blank",
+                "resource-display",
+                "blank",
+         
+              "upgrades",
+            ]
+          },
+          "bank":{
+              unlocked(){return hasUpgrade('cp',12)},
+            content:[
+                "main-display",
+                "blank",
+              ["prestige-button",function(){return ""}],
+                "blank",
+                "resource-display",
+               
+              "blank",
+              "clickables",
+              ["display-text",function(){
+                let s = ""
+                if(hasMilestone('cp',1)) s += "auto Sacrifice amount: "+player.cp.auto
+                return s
+              }],
+            ]
+          },
+          "buyables":{
+            unlocked(){return hasUpgrade('cp',13)},
+          content:[
+              "main-display",
+              "blank",
+            ["prestige-button",function(){return ""}],
+              "blank",
+              "resource-display",
+             
+            "blank",
+            "buyables",
+          ]
+        },
+        "milestones":{
+            unlocked(){return hasUpgrade('cp',12)},
+          content:[
+              "main-display",
+              "blank",
+            ["prestige-button",function(){return ""}],
+              "blank",
+              "resource-display",
+             
+            "blank",
+            "milestones",
+          ]
+        },
+      
+        },
+      
+    passiveGeneration(){return hasMilestone('d',3)? 10 : 0},
+  
+})
+
 addLayer("ach", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
-        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+        points: new Decimal(0),  
+        uni:new Decimal(0),  
     }},
 symbol(){return  "★"},
 tooltip(){return  "Achievements"},
@@ -776,16 +1004,44 @@ tooltip(){return  "Achievements"},
             tooltip:"Get 1F100 points. Reward: Unlock universe. (not yet)"  
         },
     },
+    clickables: {
+        11: {
+            display() {return "Reset ALL progess but go to another universe. <br>Req: 1F100 points"},
+            canClick(){return player.points.gte(new Decimal(10).tetrate(100))},
+            onClick(){
+                player.ach.uni= new Decimal(1)
+            player.a.upgrades=[]
+            player.b.upgrades=[]
+            player.c.upgrades=[]
+            player.p.upgrades=[]
+            player.b.milestones=[]
+            player.c.milestones=[]
+            player.d.milestones=[]
+            player.a.points=new Decimal(0)
+            player.b.points=new Decimal(0)
+            player.c.points=new Decimal(0)
+            player.d.points=new Decimal(0)
+            player.p.points=new Decimal(0)
+            player.points=new Decimal(0)
+        }
+    },
+  
+    },
     layerShown() { return true},          // Returns a bool for if this layer's node should be visible in the tree.
     tabFormat: {
         "achievements":{
             content:[
-         
-              "blank",
+               
               "achievements",
             ]
           },
-       
+          "universe":{
+              unlocked(){return hasAchievement('ach',17)},
+            content:[
+               
+              "clickables",
+            ]
+          },
   
       
         },
