@@ -1023,6 +1023,7 @@ tooltip(){return  "Achievements"},
             player.d.points=new Decimal(0)
             player.p.points=new Decimal(0)
             player.points=new Decimal(0)
+            player.cp.points=new Decimal(0)
         }
     },
   
