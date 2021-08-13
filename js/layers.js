@@ -711,7 +711,7 @@ addLayer("d", {
     passiveGeneration(){return hasMilestone('d',3)? 10 : 0},
 })
 addLayer("cp", {
-    symbol(){return"C"},
+    symbol(){return"CP"},
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
         points: new Decimal(0),  
@@ -733,7 +733,10 @@ addLayer("cp", {
     requires(){ 
         if(inChallenge('cp',11))  return  new Decimal("10^^10")
     else   return  new Decimal("10")},              // The amount of the base needed to  gain 1 of the prestige currency.
-    base:10,
+    base(){
+        if(hasUpgrade('cp',35))  return new Decimal(4) 
+      else if(hasUpgrade('cp',34)) return new Decimal(5) 
+       else return new Decimal(10)},
     type: "static",
     exponent(){return 1},                 
     gainMult() {   
@@ -813,6 +816,43 @@ addLayer("cp", {
                return player.cp.best.add(10).log(4).add(10).log(4)},
                effectDisplay(){return "^"+format(upgradeEffect('cp',25))},
         },
+        31: {
+            title:"Super bank",
+            description: "get more Sacrificed challenge point.",         
+            cost: new Decimal(25),
+           
+        },
+        32: {
+            title:"No reset",
+            description: "challenge point reset nothing.",         
+            cost: new Decimal(32),
+           
+        },
+        33: {
+            title:"Buyable booster",
+            description: "buyable base +0.5.",         
+            cost: new Decimal(37),
+           
+        },
+        34: {
+            title:"Auto Banker",
+            description: "Auto click two bank per tick and bank reset nothing. challenge point cost base -5.",         
+            cost: new Decimal(50),
+           
+        },
+        35: {
+            title:"coin",
+            description: "Unlock challenge coin, challenge point cost base -1. point x100",         
+            cost: new Decimal(190),
+           
+        },
+        41: {
+            title:"C2 - C6",
+            description: "each upgrade in this row unlock a challenge (not yet) and point ^1.01.",     
+            unlocked(){return hasMilestone('cc',6)},
+            cost: new Decimal(270),
+           
+        },
     },
     challenges:{
         11: {
@@ -835,15 +875,17 @@ addLayer("cp", {
     clickables: {
         11: {
             display() {
+               
                 if(hasUpgrade('cp',22))  return "Sacrifice challenge point for buff.<br>You have Sacrificed "+format(player.cp.bank1)+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(2).add(1).pow(2).pow(upgradeEffect('cp',22)))
             else   if(hasUpgrade('cp',14))    return "Sacrifice challenge point for buff.<br>You have Sacrificed "+format(player.cp.bank1)+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(2).add(1).pow(2))
         else  return "Sacrifice challenge point for buff.<br>You have Sacrificed "+player.cp.bank1+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(10).add(1).pow(2))},
             canClick(){return player.cp.points.gte(1)},
             onClick(){
-                if(hasUpgrade('cp',22))         player.cp.bank1=  player.cp.bank1.add(player.cp.points.pow(2).pow(upgradeEffect('cp',22)))
+                if(hasUpgrade('cp',31))   player.cp.bank1=  player.cp.bank1.add(player.cp.points.pow(3).pow(upgradeEffect('cp',22)))
+            else    if(hasUpgrade('cp',22))         player.cp.bank1=  player.cp.bank1.add(player.cp.points.pow(2).pow(upgradeEffect('cp',22)))
         else  if(hasUpgrade('cp',14))  player.cp.bank1=  player.cp.bank1.add(player.cp.points.pow(2))
           else player.cp.bank1=  player.cp.bank1.add(player.cp.points)
-            player.cp.points=new Decimal(0)
+         if(!hasUpgrade('cp',34))   player.cp.points=new Decimal(0)
   
             },
             unlocked(){return hasUpgrade('cp',12)},
@@ -860,9 +902,10 @@ addLayer("cp", {
           else  return "Sacrifice challenge point for buff.<br>You have Sacrificed "+format(player.cp.bank2)+" challenge point, which boost point by "+format(player.cp.bank2.add(1).pow(0.2))},
         canClick(){return player.cp.points.gte(1)},
         onClick(){
-        player.cp.bank2=  player.cp.bank2.add(player.cp.points.pow(2).pow(upgradeEffect('cp',22)))
+            if(hasUpgrade('cp',31))    player.cp.bank2=  player.cp.bank2.add(player.cp.points.pow(3).pow(upgradeEffect('cp',22)))
+     else   player.cp.bank2=  player.cp.bank2.add(player.cp.points.pow(2).pow(upgradeEffect('cp',22)))
    
-        player.cp.points=new Decimal(0)
+     if(!hasUpgrade('cp',34))   player.cp.points=new Decimal(0)
 
         },
         unlocked(){return hasUpgrade('cp',23)},
@@ -956,7 +999,9 @@ addLayer("cp", {
             },
 
             effect() { 
-                if(hasUpgrade('cp',24)) eff = new Decimal("3").pow(getBuyableAmount("cp", 11))
+                if(new Decimal("3.5").pow(getBuyableAmount("cp", 11)).gte(1e75))  eff = new Decimal("1e75")
+            else    if(hasUpgrade('cp',33)) eff = new Decimal("3.5").pow(getBuyableAmount("cp", 11))
+            else    if(hasUpgrade('cp',24)) eff = new Decimal("3").pow(getBuyableAmount("cp", 11))
             else    if(inChallenge('cp',11)||hasChallenge('cp',11))  eff = new Decimal("2.5").pow(getBuyableAmount("cp", 11))
          else   eff = new Decimal("2").pow(getBuyableAmount("cp", 11))
         return eff     
@@ -969,6 +1014,7 @@ addLayer("cp", {
     layerShown() { return player.ach.uni.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
     autoPrestige(){return hasMilestone('cp',0)} ,  
     canBuyMax(){return hasUpgrade('cp',15)} , 
+    resetsNothing(){return hasUpgrade('cp',32)} , 
 
     branches: ['b'],
     hotkeys: [
@@ -978,8 +1024,8 @@ addLayer("cp", {
     },
     ],
     automate(){
-        if(player.cp.active.gte(1)&&player.cp.points.gte(player.cp.auto)&&player.cp.sbank.gte(1)&&!player.cp.sbank.gte(2)) layers[this.layer].clickables[11].onClick()
-        if(player.cp.active.gte(1)&&player.cp.points.gte(player.cp.auto)&&player.cp.sbank.gte(2)&&!player.cp.sbank.gte(3)) layers[this.layer].clickables[12].onClick()
+        if((player.cp.active.gte(1)&&player.cp.points.gte(player.cp.auto)&&player.cp.sbank.gte(1)&&!player.cp.sbank.gte(2))||hasUpgrade('cp',34)) layers[this.layer].clickables[11].onClick()
+        if((player.cp.active.gte(1)&&player.cp.points.gte(player.cp.auto)&&player.cp.sbank.gte(2)&&!player.cp.sbank.gte(3))||hasUpgrade('cp',34)) layers[this.layer].clickables[12].onClick()
     } ,
     tabFormat: {
         "Upgrades":{
@@ -1051,13 +1097,106 @@ addLayer("cp", {
             "challenges",
           ]
         },
-      
+       
         },
-      
+        automateStuff(){
+            if(hasMilestone("cc",3)){
+              if(layers.cp.buyables[11].canAfford())setBuyableAmount("cp",11,player.points.log("10").floor())
+              
+            }
+        },
+        doReset(resettingLayer) {
+            let extraUpgrades = [];
+       
+            if (hasMilestone("cc",0)) extraUpgrades.push(12,23,34);
+            if (hasMilestone("cc",1)) extraUpgrades.push(24,33);
+            if (hasMilestone("cc",2)) extraUpgrades.push(15,32);
+            if (hasMilestone("cc",3)) extraUpgrades.push(13);
+            if (hasMilestone("cc",4)) extraUpgrades.push(35);
+            if (hasMilestone("cc",5)) extraUpgrades.push(11,14,21,22,25,31);
+            let keep = [];
+            if (hasMilestone("cc",1)) keep.push("challenges")
+            if (hasMilestone("cc",2)) keep.push("milestones")
+            if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+            for(i in extraUpgrades) {
+                if (!player[this.layer].upgrades.includes(extraUpgrades[i])) {
+                  player[this.layer].upgrades.push(extraUpgrades[i])
+                }
+              }
+        },   
 
   
 })
+addLayer("cc", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+symbol:"CC",
+    color: "#4BDC13",                       // The color for this layer, which affects many elements.
+    resource: "challenge coins",            // The name of this layer's main prestige resource.
+    row: 1,                                 // The row this layer is on (0 is the first row).
+branches:["cp"],
+    baseResource: "challenge points",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.cp.points },  // A function to return the current amount of baseResource.
 
+    requires: new Decimal(256),              // The amount of the base needed to  gain 1 of the prestige currency.
+                                            // Also the amount required to unlock the layer.
+
+    type: "normal",                         // Determines the formula used for calculating prestige currency.
+    exponent: 1.2,                          // "normal" prestige gain is (currency^exponent).
+
+    gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
+        return new Decimal(1)               // Factor in any bonuses multiplying gain here.
+    },
+    gainExp() {                             // Returns the exponent to your gain of the prestige resource.
+        return new Decimal(1)
+    },
+
+    layerShown() { return true },          // Returns a bool for if this layer's node should be visible in the tree.
+
+   
+        milestones: {
+            0: {
+                requirementDescription: "1 challenge coin",
+                effectDescription: "point x3, keep Banker, Bankerer and auto banker on reset",
+                done() { return player.cc.points.gte(1) }
+            },
+            1: {
+                requirementDescription: "2 challenge coin",
+                effectDescription: "point x3, keep buyable boost, buyable booster and challenge on reset",
+                done() { return player.cc.points.gte(1) }
+            },
+            2: {
+                requirementDescription: "3 challenge coin",
+                effectDescription: "point x3, keep Maxer, No reset and milestones on reset",
+                done() { return player.cc.points.gte(3) }
+            },
+            3: {
+                requirementDescription: "4 challenge coin",
+                effectDescription: "point x3, Auto buy max buyable. keep buyable on reset.",
+                done() { return player.cc.points.gte(4) }
+            },
+            4: {
+                requirementDescription: "5 challenge coin",
+                effectDescription: "point x3, keep coin on reset.",
+                done() { return player.cc.points.gte(5) }
+            },
+            5: {
+                requirementDescription: "6 challenge coin",
+                effectDescription: "point x3, keep first 3 rows upgrade on reset.",
+                done() { return player.cc.points.gte(6) }
+            },
+            6: {
+                requirementDescription: "10 challenge coin",
+                effectDescription: "point x3, challenge coin boost point gain and unlock more challenge point upgrade.",
+                done() { return player.cc.points.gte(10) }
+            },
+
+        },
+       
+    
+})
 addLayer("ach", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
@@ -1124,6 +1263,7 @@ tooltip(){return  "Achievements"},
             done(){return player.points.gte(new Decimal(10).tetrate(100))},
             tooltip:"Get 1F100 points. Reward: Unlock universe."  
         },
+        
     },
     clickables: {
         11: {
@@ -1149,7 +1289,7 @@ tooltip(){return  "Achievements"},
     },
   
     },
-    layerShown() { return true},          // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown() { return hasUpgrade('cp',35)||hasMilestone('cc',0)},          // Returns a bool for if this layer's node should be visible in the tree.
     tabFormat: {
         "achievements":{
             content:[

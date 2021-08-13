@@ -13,20 +13,25 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.1.1",
-	name: "Not end.",
+	num: "1.2",
+	name: "CC",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-<h3>v1.1.1</h3><br>
+<h3>v1.2</h3><br>
+- Added challenge coin.<br>
 - Added 5 upgrade.<br>
+- Added 7 milestone.<br>
+- Endgame: C2 - C6 upgrade.<br>
+<h3>v1.1.1</h3><br>
+- Added 6 upgrade.<br>
 - Added 2 clickable.<br>
 - Added 3 milestone.<br>
 - Added 1 challenge.<br>
 - Endgame: 25 challenge point.<br>
 <h3>v1.1</h3><br>
 - Added challenge point.<br>
-- Added 5 upgrade.<br>
+- Added 4 upgrade.<br>
 - Added 1 buyable.<br>
 - Added 4 clickable.<br>
 - Endgame: 8 challenge point.<br>
@@ -97,7 +102,17 @@ else if(hasUpgrade('cp',12))gain=gain.times(player.cp.bank1.add(1).log(10).add(1
 
 if(hasUpgrade('cp',25))gain=gain.times(player.cp.bank2.add(1).pow(0.2).pow(upgradeEffect('cp',25)))
 else if(hasUpgrade('cp',23))gain=gain.times(player.cp.bank2.add(1).pow(0.2))
-if(hasUpgrade('cp',13))gain=gain.times(buyableEffect('cp',11))   
+if(hasUpgrade('cp',13))gain=gain.times(buyableEffect('cp',11))  
+if(hasUpgrade('cp',35))     gain=gain.times(100) 
+if(hasMilestone('cc',0))     gain=gain.times(3) 
+if(hasMilestone('cc',1))     gain=gain.times(3) 
+if(hasMilestone('cc',2))     gain=gain.times(3) 
+if(hasMilestone('cc',3))     gain=gain.times(3) 
+if(hasMilestone('cc',4))     gain=gain.times(3) 
+if(hasMilestone('cc',5))     gain=gain.times(3) 
+if(hasMilestone('cc',6))     gain=gain.times(3) 
+if(hasMilestone('cc',6))     gain=gain.times(player.cc.points.add(1).pow(0.75)) 
+if(hasUpgrade('cp',41))gain=gain.pow(1.01) 
 	return gain
 }
 
@@ -113,7 +128,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-return player.cp.points.gte(25)&&player.ach.uni.gte(1)
+return hasUpgrade('cp',41)
 }
 
 
