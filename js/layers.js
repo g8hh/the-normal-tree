@@ -1122,7 +1122,7 @@ tooltip(){return  "Achievements"},
         17: {
             name: "Inflating",
             done(){return player.points.gte(new Decimal(10).tetrate(100))},
-            tooltip:"Get 1F100 points. Reward: Unlock universe. (not yet)"  
+            tooltip:"Get 1F100 points. Reward: Unlock universe."  
         },
     },
     clickables: {
