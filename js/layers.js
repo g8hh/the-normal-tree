@@ -195,7 +195,7 @@ addLayer("p", {
         hotkeys: [
             {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)},
             onPress() { if (player.p.unlocked) doReset("p") },
-            unlocked() {return true} 
+            unlocked() {return !player.ach.uni.gte(1)} 
         },
         ],
         passiveGeneration(){return hasMilestone('c',0)? 100 : 0},
@@ -716,8 +716,11 @@ addLayer("cp", {
         unlocked: true,                     // You can add more variables here to add them to your layer.
         points: new Decimal(0),  
         bank1: new Decimal(0), 
+        bank2: new Decimal(0), 
+        sbank: new Decimal(1), 
         auto: new Decimal(0), 
         active: new Decimal(0), 
+        cp: new Decimal(0), 
     }},
 
     color: "#008000",                       // The color for this layer, which affects many elements.
@@ -728,7 +731,8 @@ addLayer("cp", {
     baseAmount() { return player.points },  // A function to return the current amount of baseResource.
 
     requires(){ 
-       return  new Decimal("10")},              // The amount of the base needed to  gain 1 of the prestige currency.
+        if(inChallenge('cp',11))  return  new Decimal("10^^10")
+    else   return  new Decimal("10")},              // The amount of the base needed to  gain 1 of the prestige currency.
     base:10,
     type: "static",
     exponent(){return 1},                 
@@ -747,7 +751,9 @@ addLayer("cp", {
             title:"start",
             description: "Boost point gain based on your Challenge point",
             effect(){
-                if(new Decimal(2).pow(player.cp.points.add(1)).gte(314))  return new Decimal(314)
+
+                if(new Decimal(2).pow(player.cp.points.add(1)).gte(314)&&!hasMilestone('cp',2))  return new Decimal(314)
+            else if(hasMilestone('cp',2))    return new Decimal(2).pow(player.cp.points.add(1)).minus(314).pow(0.7).add(314)
           else  return new Decimal(2).pow(player.cp.points.add(1))},
             effectDisplay(){return format(upgradeEffect('cp',11))+"x"},
             cost: new Decimal(1),
@@ -768,16 +774,74 @@ addLayer("cp", {
             description: "get more Sacrificed challenge point and bank effect is greater.",         
             cost: new Decimal(4),
         },
+        15: {
+            title:"Maxer",
+            description: "You can buy max challenge point.",         
+            cost: new Decimal(6),
+        },
+        21: {
+            title:"C1",
+            description: "Unlock the first challenge.",         
+            cost: new Decimal(7),
+        },
+        22: {
+            title:"Bank boost",
+            description: "get more Sacrificed challenge point and boost the first bank buff based on your points",         
+            cost: new Decimal(9),
+            effect(){
+
+            if(hasMilestone('cp',2))   return player.cp.best.add(10).log(10).add(10).log(10)
+               else return player.points.add(10).log(10).add(10).log(10)},
+                               effectDisplay(){return "^"+format(upgradeEffect('cp',22))},
+        },
+        23: {
+            title:"Bankerer",
+            description: "Unlock a new bank.",         
+            cost: new Decimal(11),
+        },
+        24: {
+            title:"buyable boost",
+            description: "buyable base +0.5.",         
+            cost: new Decimal(13),
+        },
+        25: {
+            title:"Rank boost 2",
+            description: "boost the second bank buff based on your best point.",         
+            cost: new Decimal(16),
+            effect(){
+
+               return player.cp.best.add(10).log(4).add(10).log(4)},
+               effectDisplay(){return "^"+format(upgradeEffect('cp',25))},
+        },
+    },
+    challenges:{
+        11: {
+            name: "No challenge",
+          
+            challengeDescription(){
+             return "Buyable base is 2.5 and you can't get challenge point. Enter this challenge will reset your buyable and challenge point." },
+            canComplete(){return player.points.gte("100000")},
+            goalDescription: "100000 point",
+            rewardDescription(){return "Buyable base +0.5"},
+          unlocked(){return hasUpgrade("cp", 21)},
+          onEnter(){
+             
+              player.cp.points=new Decimal(0)
+              setBuyableAmount('cp',11,new Decimal(0))
+        }
+        }
+        
     },
     clickables: {
         11: {
             display() {
-                
-            if(hasUpgrade('cp',14))    return "Sacrifice challenge point for buff.<br>You have Sacrificed "+player.cp.bank1+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(2).add(1).pow(2))
+                if(hasUpgrade('cp',22))  return "Sacrifice challenge point for buff.<br>You have Sacrificed "+format(player.cp.bank1)+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(2).add(1).pow(2).pow(upgradeEffect('cp',22)))
+            else   if(hasUpgrade('cp',14))    return "Sacrifice challenge point for buff.<br>You have Sacrificed "+format(player.cp.bank1)+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(2).add(1).pow(2))
         else  return "Sacrifice challenge point for buff.<br>You have Sacrificed "+player.cp.bank1+" challenge point, which boost point by "+format(player.cp.bank1.add(1).log(10).add(1).pow(2))},
             canClick(){return player.cp.points.gte(1)},
             onClick(){
-          if(hasUpgrade('cp',14))  player.cp.bank1=  player.cp.bank1.add(player.cp.points.pow(2))
+                if(hasUpgrade('cp',22))         player.cp.bank1=  player.cp.bank1.add(player.cp.points.pow(2).pow(upgradeEffect('cp',22)))
+        else  if(hasUpgrade('cp',14))  player.cp.bank1=  player.cp.bank1.add(player.cp.points.pow(2))
           else player.cp.bank1=  player.cp.bank1.add(player.cp.points)
             player.cp.points=new Decimal(0)
   
@@ -790,6 +854,25 @@ addLayer("cp", {
                 }
             },
     },
+    12: {
+        display() {
+            if(hasUpgrade('cp',25))   return "Sacrifice challenge point for buff.<br>You have Sacrificed "+format(player.cp.bank2)+" challenge point, which boost point by "+format(player.cp.bank2.add(1).pow(0.2).pow(upgradeEffect('cp',25)))
+          else  return "Sacrifice challenge point for buff.<br>You have Sacrificed "+format(player.cp.bank2)+" challenge point, which boost point by "+format(player.cp.bank2.add(1).pow(0.2))},
+        canClick(){return player.cp.points.gte(1)},
+        onClick(){
+        player.cp.bank2=  player.cp.bank2.add(player.cp.points.pow(2).pow(upgradeEffect('cp',22)))
+   
+        player.cp.points=new Decimal(0)
+
+        },
+        unlocked(){return hasUpgrade('cp',23)},
+        style() { return {
+            "font-size": "13px",
+            "height": "250px",
+            "width": "250px"
+            }
+        },
+},
     101: {
         display() {
             
@@ -821,6 +904,17 @@ addLayer("cp", {
     },
     unlocked(){return hasMilestone('cp',1)},
 },
+104: {
+    display() {    
+        if(player.cp.sbank.gte(2))    return "Sacrifice bank: 2"
+    else return "Sacrifice bank: 1"},
+    canClick(){return true},
+    onClick(){
+   if(player.cp.sbank.gte(2)) player.cp.sbank= new Decimal(1)
+   else player.cp.sbank= new Decimal(2)
+    },
+    unlocked(){return hasUpgrade('cp',23)},
+},
 },
   milestones:{
     
@@ -834,6 +928,11 @@ addLayer("cp", {
             requirementDescription: "300 Sacrifice challenge point",
             effectDescription: "Unlock auto Sacrifice.",
             done() { return player.cp.bank1.gte(300) }
+        },
+        2: {
+            requirementDescription: "6000 Sacrifice challenge point",
+            effectDescription: "Bank boost effect is based on max. Start effect is softcap instead of hardcap.",
+            done() { return player.cp.bank1.gte(6000) }
         },
   },
    
@@ -855,23 +954,32 @@ addLayer("cp", {
                 }
                 setBuyableAmount("cp", 11, getBuyableAmount("cp", 11).add(1))
             },
+
             effect() { 
-            eff = new Decimal("2").pow(getBuyableAmount("cp", 11))
+                if(hasUpgrade('cp',24)) eff = new Decimal("3").pow(getBuyableAmount("cp", 11))
+            else    if(inChallenge('cp',11)||hasChallenge('cp',11))  eff = new Decimal("2.5").pow(getBuyableAmount("cp", 11))
+         else   eff = new Decimal("2").pow(getBuyableAmount("cp", 11))
         return eff     
             }
         },
     },
+    update(diff){
+        if(player.points.gte(player.cp.best)&&player.ach.uni.gte(1)) player.cp.best=player.points
+    },
     layerShown() { return player.ach.uni.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
     autoPrestige(){return hasMilestone('cp',0)} ,  
+    canBuyMax(){return hasUpgrade('cp',15)} , 
+
     branches: ['b'],
     hotkeys: [
-        {key: "d", description: "D: Reset for distances", onPress(){if (canReset(this.layer)) doReset(this.layer)},
-        onPress() { if (player.d.unlocked) doReset("d") },
-        unlocked() {return hasUpgrade('b',42)||player.d.points.gte(1)} 
+        {key: "C", description: "Shift + C: Reset for challenge points", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.cp.unlocked) doReset("cp") },
+        unlocked() {return player.ach.uni.gte(1)} 
     },
     ],
     automate(){
-        if(player.cp.active.gte(1)&&player.cp.points.gte(player.cp.auto)) layers[this.layer].clickables[11].onClick()
+        if(player.cp.active.gte(1)&&player.cp.points.gte(player.cp.auto)&&player.cp.sbank.gte(1)&&!player.cp.sbank.gte(2)) layers[this.layer].clickables[11].onClick()
+        if(player.cp.active.gte(1)&&player.cp.points.gte(player.cp.auto)&&player.cp.sbank.gte(2)&&!player.cp.sbank.gte(3)) layers[this.layer].clickables[12].onClick()
     } ,
     tabFormat: {
         "Upgrades":{
@@ -930,10 +1038,23 @@ addLayer("cp", {
             "milestones",
           ]
         },
+        "challenge":{
+            unlocked(){return hasUpgrade('cp',21)},
+          content:[
+              "main-display",
+              "blank",
+            ["prestige-button",function(){return ""}],
+              "blank",
+              "resource-display",
+             
+            "blank",
+            "challenges",
+          ]
+        },
       
         },
       
-    passiveGeneration(){return hasMilestone('d',3)? 10 : 0},
+
   
 })
 

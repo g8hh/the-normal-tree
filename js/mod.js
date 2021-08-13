@@ -13,16 +13,22 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.1",
+	num: "1.1.1",
 	name: "Not end.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v1.1.1</h3><br>
+- Added 5 upgrade.<br>
+- Added 2 clickable.<br>
+- Added 3 milestone.<br>
+- Added 1 challenge.<br>
+- Endgame: 25 challenge point.<br>
 <h3>v1.1</h3><br>
 - Added challenge point.<br>
-- Added 4 upgrade.<br>
-- Added 4 buyable.<br>
-- Added 5 clickable.<br>
+- Added 5 upgrade.<br>
+- Added 1 buyable.<br>
+- Added 4 clickable.<br>
 - Endgame: 8 challenge point.<br>
 <h3>v1.0</h3><br>
 - Added distance.<br>
@@ -84,10 +90,13 @@ if(hasUpgrade('p',14)) gain=gain.times(1e10)
 if(hasUpgrade('p',41)) gain=gain.times(upgradeEffect('p',32))     
 if(hasUpgrade('a',11)) gain=gain.times(upgradeEffect('a',11))    
 if(hasMilestone('c',0))     gain=gain.times(100)
-if(hasUpgrade('cp',11)) gain=gain.times(upgradeEffect('cp',11))   
-if(hasUpgrade('cp',14))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2))   
+if(hasUpgrade('cp',11)) gain=gain.times(upgradeEffect('cp',11))  
+if(hasUpgrade('cp',22))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2).pow(upgradeEffect('cp',22))) 
+else if(hasUpgrade('cp',14))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2))   
 else if(hasUpgrade('cp',12))gain=gain.times(player.cp.bank1.add(1).log(10).add(1).pow(2))   
- 
+
+if(hasUpgrade('cp',25))gain=gain.times(player.cp.bank2.add(1).pow(0.2).pow(upgradeEffect('cp',25)))
+else if(hasUpgrade('cp',23))gain=gain.times(player.cp.bank2.add(1).pow(0.2))
 if(hasUpgrade('cp',13))gain=gain.times(buyableEffect('cp',11))   
 	return gain
 }
@@ -104,7 +113,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-
+return player.cp.points.gte(25)&&player.ach.uni.gte(1)
 }
 
 
