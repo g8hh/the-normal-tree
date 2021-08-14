@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.2 bugfix",
+	num: "1.2.1",
 	name: "CC",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v1.2.1</h3><br>
+- Added 2 upgrade.<br>
+- Added 3 challenge.<br>
+- Endgame: 4900 challenge point.<br>
 <h3>v1.2</h3><br>
 - Added challenge coin.<br>
 - Added 5 upgrade.<br>
@@ -95,12 +99,18 @@ if(hasUpgrade('p',14)) gain=gain.times(1e10)
 if(hasUpgrade('p',41)) gain=gain.times(upgradeEffect('p',32))     
 if(hasUpgrade('a',11)) gain=gain.times(upgradeEffect('a',11))    
 if(hasMilestone('c',0))     gain=gain.times(100)
+
+
+
+
+
 if(hasUpgrade('cp',11)) gain=gain.times(upgradeEffect('cp',11))  
-if(hasUpgrade('cp',22))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2).pow(upgradeEffect('cp',22))) 
+if(hasUpgrade('cp',42))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(6).pow(upgradeEffect('cp',22)))
+else if(hasUpgrade('cp',22))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2).pow(upgradeEffect('cp',22))) 
 else if(hasUpgrade('cp',14))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2))   
 else if(hasUpgrade('cp',12))gain=gain.times(player.cp.bank1.add(1).log(10).add(1).pow(2))   
-
-if(hasUpgrade('cp',25))gain=gain.times(player.cp.bank2.add(1).pow(0.2).pow(upgradeEffect('cp',25)))
+if(hasUpgrade('cp',43)) gain=gain.times(player.cp.bank2.add(1).pow(0.3).pow(upgradeEffect('cp',25)))
+else if(hasUpgrade('cp',25))gain=gain.times(player.cp.bank2.add(1).pow(0.2).pow(upgradeEffect('cp',25)))
 else if(hasUpgrade('cp',23))gain=gain.times(player.cp.bank2.add(1).pow(0.2))
 if(hasUpgrade('cp',13))gain=gain.times(buyableEffect('cp',11))  
 if(hasUpgrade('cp',35))     gain=gain.times(100) 
@@ -111,8 +121,11 @@ if(hasMilestone('cc',3))     gain=gain.times(3)
 if(hasMilestone('cc',4))     gain=gain.times(3) 
 if(hasMilestone('cc',5))     gain=gain.times(3) 
 if(hasMilestone('cc',6))     gain=gain.times(3) 
-if(hasMilestone('cc',6))     gain=gain.times(player.cc.points.add(1).pow(0.75)) 
+if(hasMilestone('cc',6))     gain=gain.times(player.cc.points.add(1).pow(0.85)) 
 if(hasUpgrade('cp',41))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',42))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',43))gain=gain.pow(1.01) 
+if(inChallenge('cc',11))gain=gain.pow(0.9) 
 	return gain
 }
 
@@ -128,7 +141,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-return hasUpgrade('cp',41)
+return player.cp.points.gte(4900)&&player.ach.uni.gte(1)
 }
 
 
