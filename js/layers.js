@@ -1289,7 +1289,7 @@ tooltip(){return  "Achievements"},
     },
   
     },
-    layerShown() { return hasUpgrade('cp',35)||hasMilestone('cc',0)},          // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown() { return true},          // Returns a bool for if this layer's node should be visible in the tree.
     tabFormat: {
         "achievements":{
             content:[
