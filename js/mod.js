@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.2.1",
-	name: "CC",
+	num: "2.0",
+	name: "universe 3",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v2.0</h3><br>
+- Added 8 upgrade.<br>
+- Added 4 challenge.<br>
+- Endgame: Go to timewall universe.<br>
 <h3>v1.2.1</h3><br>
 - Added 2 upgrade.<br>
 - Added 3 challenge.<br>
@@ -125,7 +129,14 @@ if(hasMilestone('cc',6))     gain=gain.times(player.cc.points.add(1).pow(0.85))
 if(hasUpgrade('cp',41))gain=gain.pow(1.01) 
 if(hasUpgrade('cp',42))gain=gain.pow(1.01) 
 if(hasUpgrade('cp',43))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',44))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',44))gain=gain.pow(1.25) 
+if(hasUpgrade('cp',45))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',45))gain=gain.pow(1.5) 
 if(inChallenge('cc',11))gain=gain.pow(0.9) 
+if(inChallenge('cc',101))gain=gain.pow(0.75) 
+if(inChallenge('cc',102))gain=gain.pow(0.4) 
+if(hasChallenge('cp',12))gain=gain.pow(player.cp.points.add(1).pow(player.cp.points))
 	return gain
 }
 
@@ -136,13 +147,16 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	
+	function(){
+	if(player.ach.uni.gte(2)) return "You are in timewall universe"
+	else if(player.ach.uni.gte(1)) return "You are in challenge universe"
+	else return "You are in normal universe"
+	}
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-return player.cp.points.gte(4900)&&player.ach.uni.gte(1)
-}
+return player.ach.uni.gte(2)}
 
 
 
