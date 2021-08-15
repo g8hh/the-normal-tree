@@ -1577,7 +1577,7 @@ tooltip(){return  "Achievements"},
             player.p.upgrades=[]
             player.b.milestones=[]
             player.c.milestones=[]
-            player.c.challenges=[]
+            player.c.challenges[11]=0
             player.d.milestones=[]
             player.a.points=new Decimal(0)
             player.b.points=new Decimal(0)
@@ -1587,8 +1587,15 @@ tooltip(){return  "Achievements"},
             player.points=new Decimal(0)
             player.cp.points=new Decimal(0)
             player.cc.points=new Decimal(0)
-            player.cp.challenges=[]
-            player.cc.challenges=[]
+            player.cp.challenges[11]=0
+            player.cp.challenges[12]=0
+            player.cc.challenges[11]=0
+            player.cc.challenges[12]=0
+            player.cc.challenges[21]=0
+            player.cc.challenges[22]=0
+            player.cc.challenges[101]=0
+            player.cc.challenges[102]=0
+      
             player.cp.upgrades=[]
             player.cp.milestones=[]
             player.cc.milestones=[]
