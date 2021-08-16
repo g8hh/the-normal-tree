@@ -1618,6 +1618,7 @@ tooltip(){return  "Achievements"},
             player.c.points=new Decimal(0)
             player.d.points=new Decimal(0)
             player.p.points=new Decimal(0)
+            player.t.points=new Decimal(0)
             player.points=new Decimal(0)
             player.cp.points=new Decimal(0)
             player.cc.points=new Decimal(0)
