@@ -1489,7 +1489,7 @@ addLayer("t", {
             unlocked() {return player.ach.uni.gte(2)} 
         },
         ],
-        passiveGeneration(){return hasMilestone('c',0)? 100 : 0},
+       
 })
 addLayer("ach", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
