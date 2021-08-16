@@ -13,11 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "2.0",
-	name: "universe 3",
+	num: "2.1",
+	name: "normal",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v2.1</h3><br>
+- Added 5 upgrade.<br>
+- Endgame: 1000 timewall.<br>
 <h3>v2.0</h3><br>
 - Added 8 upgrade.<br>
 - Added 4 challenge.<br>
@@ -137,6 +140,14 @@ if(inChallenge('cc',11))gain=gain.pow(0.9)
 if(inChallenge('cc',101))gain=gain.pow(0.75) 
 if(inChallenge('cc',102))gain=gain.pow(0.4) 
 if(hasChallenge('cp',12))gain=gain.pow(player.cp.points.add(1).pow(player.cp.points))
+
+
+
+
+
+if(hasUpgrade('t',11)) gain=gain.times(tmp.t.effect)
+if(hasUpgrade('t',12)) gain=gain.times(upgradeEffect('t',12))  
+if(hasUpgrade('t',13)&&!player.points.gte(10)) gain=gain.times(3)
 	return gain
 }
 
@@ -156,7 +167,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-return player.ach.uni.gte(2)}
+return player.t.points.gte(1000)}
 
 
 

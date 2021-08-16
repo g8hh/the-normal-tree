@@ -1445,8 +1445,42 @@ addLayer("t", {
     },
 
     layerShown() { return (!player.ach.uni.gte(3)&&player.ach.uni.gte(2)) },          // Returns a bool for if this layer's node should be visible in the tree.
-
-
+    effect(){
+        if(hasUpgrade('t',15)&&!player.points.gte(100))  return player.t.points.add(1).pow(0.3).pow(4)
+        else if(hasUpgrade('t',14)) return player.t.points.add(1).pow(0.3).pow(2)
+        else if(hasUpgrade('t',11))     return player.t.points.add(1).pow(0.3)},
+      effectDescription()
+      {if(hasUpgrade('t',11))return "Which boost point gain by " + format(tmp.t.effect)},
+    upgrades: {
+        11: {
+            title:"1m timewall",
+            description: "Timewall has an effect now.",
+            cost: new Decimal(2),
+        },
+        12: {
+            title:"2m timewall",
+            description: "point boost themselves.",
+            effect(){return player.points.add(1).log(10).pow(0.5).add(1)},
+            effectDisplay(){return format(upgradeEffect('t',12))+"x"},
+            cost: new Decimal(5),
+        },
+        13: {
+            title:"5m timewall",
+            description: "point x3 if you have less than 10 points.",
+        cost: new Decimal(20),
+        },
+        14: {
+            title:"10m timewall",
+            description: "Timewall effect ^2.",
+        cost: new Decimal(50),
+        },
+        15: {
+            title:"30m timewall",
+            description: "Timewall effect ^2 if you have less than 100 points.",
+        cost: new Decimal(100),
+        },
+       
+    },
         
         
         hotkeys: [
@@ -1602,7 +1636,7 @@ tooltip(){return  "Achievements"},
             player.cp.bank1=new Decimal(0)
             player.cp.bank2=new Decimal(0)
             player.cp.active=new Decimal(0)
-            player.cp.sbank=new Decimal(0)
+            player.cp.sbank=new Decimal(1)
             player.cp.auto=new Decimal(0)
         }
     },
