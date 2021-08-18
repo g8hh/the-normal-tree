@@ -505,16 +505,16 @@ addLayer("c", {
         return gain 
     },
     getResetGain() {
-        if(hasMilestone('d',2))  return formatWhole(player.p.points.add(1).log(10).minus(5386).times(player.d.points.add(1).pow(2)))
+        if(!player.p.points.gte("1e5387")) return new  Decimal(0)
+      else  if(hasMilestone('d',2))  return formatWhole(player.p.points.add(1).log(10).minus(5386).times(player.d.points.add(1).pow(2)))
    else  return formatWhole(player.p.points.add(1).log(10).minus(5386))
     },
     getNextAt: function(){
-       
+       if(!player.p.points.gte("1e5387"))  return new  Decimal("1e5387")
         return formatWhole(Decimal.pow(10, new Decimal(tmp[this.layer].resetGain).add(5387)))
 	},
     prestigeButtonText(){
-        if(player.p.points.gte("1e6387")) return "Reset for " + tmp[this.layer].resetGain +" code."
-       else if(!player.p.points.gte("1e5387"))   return "Reset for 0 code.<br>Next at 1.00e5387 prestige point"
+        if(player.p.points.gte("1e6387"))   return "Reset for " + tmp[this.layer].resetGain +" code."   
       else  return "Reset for " + tmp[this.layer].resetGain +" code.<br>Next at " + tmp[this.layer].getNextAt + " prestige point"},
     layerShown() { return hasUpgrade('b',41)||hasMilestone('c',0)},          // Returns a bool for if this layer's node should be visible in the tree.
 
