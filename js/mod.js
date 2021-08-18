@@ -148,6 +148,7 @@ if(hasChallenge('cp',12))gain=gain.pow(player.cp.points.add(1).pow(player.cp.poi
 if(hasUpgrade('t',11)) gain=gain.times(tmp.t.effect)
 if(hasUpgrade('t',12)) gain=gain.times(upgradeEffect('t',12))  
 if(hasUpgrade('t',13)&&!player.points.gte(10)) gain=gain.times(3)
+if(hasUpgrade('t',25))gain=gain.pow(1.5)
 	return gain
 }
 

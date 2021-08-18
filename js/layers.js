@@ -1425,8 +1425,9 @@ addLayer("t", {
     baseResource: "points",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.points },  // A function to return the current amount of baseResource.
 
-    requires(){ 
-      return  new Decimal(10)},              // The amount of the base needed to  gain 1 of the prestige currency.
+    requires(){
+
+      return  new Decimal(10).div(tmp.ts.effect)},              // The amount of the base needed to  gain 1 of the prestige currency.
                                             // Also the amount required to unlock the layer.
 
     type: "normal",                         // Determines the formula used for calculating prestige currency.
@@ -1435,20 +1436,22 @@ addLayer("t", {
     gainMult() {   
         let gain  = new Decimal(1)  
       
-     
+      if(hasUpgrade('t',21))  gain=gain.times(upgradeEffect('t',12))
         return gain        
     },
     gainExp() {    
         let gain  = new Decimal(1)  
-        
+        if(hasUpgrade('t',31))  gain=gain.times(1.5)
         return gain 
     },
 
     layerShown() { return (!player.ach.uni.gte(3)&&player.ach.uni.gte(2)) },          // Returns a bool for if this layer's node should be visible in the tree.
     effect(){
-        if(hasUpgrade('t',15)&&!player.points.gte(100))  return player.t.points.add(1).pow(0.3).pow(4)
+        if(tmp.t.effect.gte(1e15)) return new Decimal(1e15)
+      else  if((hasUpgrade('t',15)&&!player.points.gte(100))||hasUpgrade('t',23))  return player.t.points.add(1).pow(0.3).pow(4)
         else if(hasUpgrade('t',14)) return player.t.points.add(1).pow(0.3).pow(2)
-        else if(hasUpgrade('t',11))     return player.t.points.add(1).pow(0.3)},
+        else if(hasUpgrade('t',11))     return player.t.points.add(1).pow(0.3)
+    else return new Decimal(1)},
       effectDescription()
       {if(hasUpgrade('t',11))return "Which boost point gain by " + format(tmp.t.effect)},
     upgrades: {
@@ -1460,7 +1463,10 @@ addLayer("t", {
         12: {
             title:"2m timewall",
             description: "point boost themselves.",
-            effect(){return player.points.add(1).log(10).pow(0.5).add(1)},
+            effect(){
+                if(hasUpgrade('t',24))  return player.points.add(1).log(10).pow(0.5).add(1).pow(6)
+              else if(hasUpgrade('t',21))  return player.points.add(1).log(10).pow(0.5).add(1).pow(3)
+              else  return player.points.add(1).log(10).pow(0.5).add(1)},
             effectDisplay(){return format(upgradeEffect('t',12))+"x"},
             cost: new Decimal(5),
         },
@@ -1479,9 +1485,38 @@ addLayer("t", {
             description: "Timewall effect ^2 if you have less than 100 points.",
         cost: new Decimal(100),
         },
-       
+        21: {
+            title:"1h timewall",
+            description: "2m timewall effect ^3 and 2m timewall affect timewall gain.",
+        cost: new Decimal(1000),
+        },
+        22: {
+            title:"2h timewall",
+            description: "gain 100% of timewalls on reset per second",
+        cost: new Decimal(100000),
+        },
+        23: {
+            title:"True 2m timewall",
+            description: "30m timewall is always active.",
+        cost: new Decimal(5e6),
+        },
+        24: {
+            title:"True 2m timewall 2",
+            description: "2m timewall effect ^2.",
+        cost: new Decimal(1e12),
+        },
+        25: {
+            title:"True 2m timewall 3",
+            description: "point ^1.5",
+        cost: new Decimal(5e16),
+        },
+        31: {
+            title:"True 2m timewall 4",
+            description: "unlock timewall shrinker and timewall ^1.5.",
+        cost: new Decimal(2.5e22),
+        },
     },
-        
+    passiveGeneration(){return hasUpgrade('t',22)? 1 : 0},
         
         hotkeys: [
             {key: "t", description: "T: Reset for timewall", onPress(){if (canReset(this.layer)) doReset(this.layer)},
@@ -1489,7 +1524,52 @@ addLayer("t", {
             unlocked() {return player.ach.uni.gte(2)} 
         },
         ],
-       
+        branches:["ts"],
+})
+addLayer("ts", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: false,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+    
+    color: "#0060ff",                       // The color for this layer, which affects many elements.
+    resource: "timewall shrinker",            // The name of this layer's main prestige resource.
+    row: 1,                                 // The row this layer is on (0 is the first row).
+symbol:"TS",
+    baseResource: "timewall",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.t.points },  // A function to return the current amount of baseResource.
+   
+    requires(){ 
+       return  new Decimal(1e33)},              // The amount of the base needed to  gain 1 of the prestige currency.
+       effect(){
+       return player.ts.points.add(1).pow(1.5)},
+       effectDescription()
+       {return "Which make timewall cost /" + format(tmp.ts.effect)},
+    type: "static",                         // Determines the formula used for calculating prestige currency.
+    exponent: 1.5,                          // "normal" prestige gain is (currency^exponent).
+    base:1e6,
+    gainMult() {   
+        let gain  = new Decimal(1)  
+        return gain        
+    },
+    gainExp() {    
+        let gain  = new Decimal(1)  
+      
+        return gain 
+    },
+    
+   
+   
+    
+    layerShown() { return hasUpgrade('t',31)||player.ts.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
+
+    branches:'p',
+    hotkeys: [
+        {key: "T", description: "Shift + T: Reset for timewall shrinker", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+        onPress() { if (player.ts.unlocked) doReset("ts") },
+        unlocked() {return hasUpgrade('t',31)} 
+    },
+    ], 
 })
 addLayer("ach", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
