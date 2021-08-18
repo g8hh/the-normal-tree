@@ -1201,7 +1201,7 @@ if(inChallenge('cc',21)) return new Decimal(1)
         },
         doReset(resettingLayer) {
             let extraUpgrades = [];
-       
+      
             if (hasMilestone("cc",0)&&!inChallenge('cc',11)&&!inChallenge('cc',12)&&!inChallenge('cc',21)&&!inChallenge('cc',22)) extraUpgrades.push(12,23,34);
             if (hasMilestone("cc",1)&&!inChallenge('cc',11)&&!inChallenge('cc',12)&&!inChallenge('cc',21)&&!inChallenge('cc',22)) extraUpgrades.push(24,33);
             if (hasMilestone("cc",2)&&!inChallenge('cc',11)&&!inChallenge('cc',12)&&!inChallenge('cc',21)&&!inChallenge('cc',22)) extraUpgrades.push(15,32);
@@ -1427,27 +1427,36 @@ addLayer("t", {
 
     requires(){
 
-      return  new Decimal(10).div(tmp.ts.effect)},              // The amount of the base needed to  gain 1 of the prestige currency.
+      return  new Decimal(10)},              // The amount of the base needed to  gain 1 of the prestige currency.
                                             // Also the amount required to unlock the layer.
 
     type: "normal",                         // Determines the formula used for calculating prestige currency.
     exponent: 0.5,                          // "normal" prestige gain is (currency^exponent).
 
     gainMult() {   
-        let gain  = new Decimal(1)  
+        let gain  = new Decimal(1) 
+        if(hasUpgrade('ts',23)&&!inChallenge('ts',22))gain=gain.times(player.ts.timewallpower.add(1).add(1).pow(0.3))
+     else   if(hasUpgrade('ts',14)&&!inChallenge('ts',22)) gain=gain.times(player.ts.timewallpower.add(1).log(2).add(1).pow(5))
+      else  if(hasUpgrade('ts',11)&&!inChallenge('ts',22))gain=gain.times(player.ts.timewallpower.add(1).log(10).add(1).pow(5))
       
-      if(hasUpgrade('t',21))  gain=gain.times(upgradeEffect('t',12))
+      if(hasUpgrade('t',21))  gain=gain.times(upgradeEffect('t',12))        
+ 
         return gain        
     },
     gainExp() {    
         let gain  = new Decimal(1)  
+
         if(hasUpgrade('t',31))  gain=gain.times(1.5)
+        if(hasUpgrade('t',32))  gain=gain.times(1.25)
+        if(hasUpgrade('ts',22))  gain=gain.times(1.25)
+        if(hasUpgrade('t',33))  gain=gain.times(1.3)
         return gain 
     },
 
     layerShown() { return (!player.ach.uni.gte(3)&&player.ach.uni.gte(2)) },          // Returns a bool for if this layer's node should be visible in the tree.
     effect(){
-        if(tmp.t.effect.gte(1e15)) return new Decimal(1e15)
+        if(inChallenge('ts',12))return new Decimal(1)
+      else  if(player.t.points.add(1).pow(0.3).pow(4).gte(1e15)) return new Decimal(1e15)
       else  if((hasUpgrade('t',15)&&!player.points.gte(100))||hasUpgrade('t',23))  return player.t.points.add(1).pow(0.3).pow(4)
         else if(hasUpgrade('t',14)) return player.t.points.add(1).pow(0.3).pow(2)
         else if(hasUpgrade('t',11))     return player.t.points.add(1).pow(0.3)
@@ -1515,7 +1524,39 @@ addLayer("t", {
             description: "unlock timewall shrinker and timewall ^1.5.",
         cost: new Decimal(2.5e22),
         },
+        32: {
+            title:"True 30s timewall",
+          
+            description: "timewall ^1.25.",
+        cost: new Decimal(2.5e42),
+        },
+        33: {
+            title:"in challenge",
+            cost(){ 
+              
+                if(player.ts.activeChallenge!=12)return new Decimal(Infinity);
+                return new Decimal(1e141);
+            },
+            description: "timewall ^1.3. you can buy this upgrade while you are in No effect.",
+        },
+        34: {
+            title:"in challenge 2",
+            cost(){ 
+              
+                if(player.ts.activeChallenge!=11)return new Decimal(Infinity);
+                return new Decimal(1e269);
+            },
+            description: "point ^1.3. you can buy this upgrade while you are in Simple Nerf.",
+        },
     },
+    doReset(resettingLayer) {
+       
+        
+        let keep = [];
+      
+        if (hasMilestone("ts",0)) keep.push("upgrades")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },   
     passiveGeneration(){return hasUpgrade('t',22)? 1 : 0},
         
         hotkeys: [
@@ -1529,7 +1570,8 @@ addLayer("t", {
 addLayer("ts", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: false,                     // You can add more variables here to add them to your layer.
-        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+        points: new Decimal(0), 
+        timewallpower   : new Decimal(0),        
     }},
     
     color: "#0060ff",                       // The color for this layer, which affects many elements.
@@ -1542,14 +1584,21 @@ symbol:"TS",
     requires(){ 
        return  new Decimal(1e33)},              // The amount of the base needed to  gain 1 of the prestige currency.
        effect(){
-       return player.ts.points.add(1).pow(1.5)},
+        if(hasUpgrade('ts',24))  return player.ts.points.add(1).pow(9).minus(1).times(upgradeEffect('ts',11)).times(new Decimal(1e5).pow(challengeCompletions('ts',12))).pow(2)
+   else if(hasChallenge('ts',22)) return player.ts.points.add(1).pow(3).minus(1).times(upgradeEffect('ts',11)).times(new Decimal(1e5).pow(challengeCompletions('ts',12))).pow(2)
+        else   if(challengeCompletions('ts',12)>0) return player.ts.points.add(1).pow(3).minus(1).times(upgradeEffect('ts',11)).times(new Decimal(10).pow(challengeCompletions('ts',12))).pow(2)
+      else  if(hasUpgrade('ts',13))    return player.ts.points.add(1).pow(3).minus(1).times(upgradeEffect('ts',11)).pow(2)
+        else   if(hasUpgrade('ts',11))   return player.ts.points.add(1).pow(3).minus(1).times(upgradeEffect('ts',11))
+      else return player.ts.points.add(1).pow(2).minus(1)},
        effectDescription()
-       {return "Which make timewall cost /" + format(tmp.ts.effect)},
+       {return "which are generating "+format(tmp.ts.effect)+" timewall Power/sec" },
     type: "static",                         // Determines the formula used for calculating prestige currency.
-    exponent: 1.5,                          // "normal" prestige gain is (currency^exponent).
-    base:1e6,
+    exponent: 1.375,                          // "normal" prestige gain is (currency^exponent).
+    base:10,
     gainMult() {   
         let gain  = new Decimal(1)  
+if(hasChallenge('ts',22))  gain=gain.div(new Decimal(1e50).pow(challengeCompletions('ts',11)))
+  else  gain=gain.div(new Decimal(100).pow(challengeCompletions('ts',11)))
         return gain        
     },
     gainExp() {    
@@ -1557,12 +1606,187 @@ symbol:"TS",
       
         return gain 
     },
-    
-   
-   
-    
-    layerShown() { return hasUpgrade('t',31)||player.ts.points.gte(1) },          // Returns a bool for if this layer's node should be visible in the tree.
+    milestones: {
+        0: {
+            requirementDescription: "8 timewall shrinker",
+            effectDescription: "keep timewall upgrade on reset",
+            done() { return player.ts.points.gte(8) }
+        },
+        1: {
+            requirementDescription: "50 timewall shrinker",
+            effectDescription: "keep timewall upgrade if you enter a challenge and unlock 1 challenge",
+            done() { return player.ts.points.gte(50) }
+        },
+    },
+    upgrades: {
+        
+        11: {
+            title:"Power boost",
+            description: "timewall boost timewall power gain and timewall power boost timewall instead of point.",
+            effect(){
 
+                return player.t.points.add(1).log(10).add(1).log(2).add(1).pow(new Decimal(3).pow(challengeCompletions('ts',21)))},
+            effectDisplay(){return format(upgradeEffect('ts',11))+"x"},
+            cost: new Decimal(3),
+        },
+        12: {
+            title:"True timewall",
+            description: "timewall power also boost point and base gain ^1.5.",
+            cost: new Decimal(4),
+        },
+        13: {
+            title:"challenge",
+            description: "unlock 3 challenge and timewall power gain ^2. You can buy max timewall shrinker.",
+            cost: new Decimal(10),
+        },
+        14: {
+            title:"booster",
+            description: "timewall power effect is greater.",
+            cost: new Decimal(12),
+        },
+        15: {
+            title:"timewall boost",
+            description: "timewall boost point gain.",
+            cost: new Decimal(15),
+            effect(){
+                if(hasUpgrade('ts',22))   return player.t.points.add(1).log(10).add(1).pow(3.14).add(1).pow(4)
+              else  return player.t.points.add(1).log(10).add(1).pow(3.14).add(1)},
+            effectDisplay(){return format(upgradeEffect('ts',15))+"x"},
+        },
+        21: {
+            title:"point boost",
+            description: "point ^1.25.",
+            cost: new Decimal(19),
+        }, 
+        22: {
+            title:"true timewall again",
+            description: "timewall boost effect ^4 and timewall ^1.25.",
+            cost: new Decimal(23),
+        },
+        23: {
+            title:"Boost effect",
+            description: "Boost timewall power effect.",
+            cost: new Decimal(87),
+        },
+        24: {
+            title:"Base boost",
+            description: "timewall power base gain ^3.",
+            cost: new Decimal(129),
+        },
+    },
+
+    canBuyMax(){return hasUpgrade('ts',13) },
+    tabFormat: {
+        
+        "normal":{
+       
+            content:[
+          "main-display",
+            "blank",
+          ["prestige-button",function(){return ""}],
+          "blank",
+          "resource-display",
+          "blank",
+          ["display-text",function(){
+
+            let s = ""
+
+            if(inChallenge('ts',22)) s+="You have " + format(player.ts.timewallpower) + " timewall power, which make Boost timewall and point gain by 1" 
+          else  if(hasUpgrade('ts',23)) s+="You have " + format(player.ts.timewallpower) + " timewall power, which make Boost timewall and point gain by " +  format(player.ts.timewallpower.add(1).add(1).pow(0.3))
+          else  if(hasUpgrade('ts',14)) s+="You have " + format(player.ts.timewallpower) + " timewall power, which make Boost timewall and point gain by " +  format(player.ts.timewallpower.add(1).log(2).add(1).pow(5))
+            else if(hasUpgrade('ts',12)) s+="You have " + format(player.ts.timewallpower) + " timewall power, which make Boost timewall and point gain by " +  format(player.ts.timewallpower.add(1).log(10).add(1).pow(5))
+          else  if(hasUpgrade('ts',11)) s+="You have " + format(player.ts.timewallpower) + " timewall power, which make Boost timewall gain by " +  format(player.ts.timewallpower.add(1).log(10).add(1).pow(5))
+        else  s+="You have " + format(player.ts.timewallpower) + " timewall power, which make Boost point gain by " +  format(player.ts.timewallpower.add(1).log(10).add(1).pow(5))
+            return s
+          }],
+          "blank",
+          "milestones",
+          "blank",
+          "upgrades",
+          "blank",
+          "challenges",
+            ]},
+      },
+   update(diff){player.ts.timewallpower=player.ts.timewallpower.add(tmp.ts.effect.times(diff))},
+    
+    layerShown() { return hasUpgrade('t',31)||player.ts.points.gte(1)||hasUpgrade('ts',11) },          // Returns a bool for if this layer's node should be visible in the tree.
+ challenges:{
+            11: {
+                name: "simple nerf",
+                completionLimit(){
+                    let limit=10;
+                    return limit;
+                },
+                challengeDescription(){
+                 return "point gain ^0.5. enter this challenge will reset T upgrade"+"<br>You have completed this challenge "+ challengeCompletions("ts",11)+"/10 times."  },
+                 goal: function(){
+     
+                    return [new Decimal("e20"),new Decimal("e28"),new Decimal("3e35"),new Decimal("e54"),new Decimal("e60"),new Decimal("e120"),new Decimal("e176"),new Decimal("eeeeeeeee10")][player.ts.challenges[11]];
+            },
+               
+                rewardDescription(){return "timewall shrinker cost /100 per Completions."},
+              unlocked(){return hasUpgrade("ts", 13)},
+              onEnter(){
+                if(!hasMilestone('ts',1))  player.t.upgrades=[]
+   
+            }
+            },
+            12: {
+                name: "No effect",
+                completionLimit(){
+                    let limit=10;
+                    return limit;
+                },
+                challengeDescription(){
+                 return "timewall has no effect. enter this challenge will reset T upgrade"+"<br>You have completed this challenge "+ challengeCompletions("ts",12)+"/10 times."  },
+                 goal: function(){
+     
+                    return [new Decimal("5e10"),new Decimal("e20"),new Decimal("e30"),new Decimal("3e41"),new Decimal("e90"),new Decimal("e145"),new Decimal("e200"),new Decimal("eeeeeeeee10")][player.ts.challenges[12]];
+            },
+               
+                rewardDescription(){return "timewall power gain x10 per Completions."},
+              unlocked(){return hasUpgrade("ts", 13)},
+              onEnter(){
+                if(!hasMilestone('ts',1))    player.t.upgrades=[]
+   
+            }
+            },
+            21: {
+                name: "Nerf effect",
+                completionLimit(){
+                    let limit=10;
+                    return limit;
+                },
+                challengeDescription(){
+                 return "2m timewall effect is / instead of x. enter this challenge will reset T upgrade except 2m timewall"+"<br>You have completed this challenge "+ challengeCompletions("ts",21)+"/10 times."  },
+                 goal: function(){
+     
+                    return [new Decimal("3.4e38"),new Decimal("e89"),new Decimal("e125"),new Decimal("e231"),new Decimal("eeeeeeeee10")][player.ts.challenges[21]];
+            },
+               
+                rewardDescription(){return "Power boost effect ^3 and point x10 per Completions."},
+              unlocked(){return hasUpgrade("ts", 13)},
+              onEnter(){
+                if(!hasMilestone('ts',1))    player.t.upgrades=[12]
+   
+            }
+            },
+            22: {
+                name: "No power",
+                
+                challengeDescription(){
+                 return "Timewall power effect has no effect."+"<br>You have completed this challenge "+ challengeCompletions("ts",22)+"/1 times."  },
+                 goal(){
+     
+                    return new Decimal("e97")
+            },
+               
+                rewardDescription(){return "simple nerf reward ^25 and No effect reward ^5"},
+              unlocked(){return hasMilestone("ts", 1)},
+             
+            },
+            
+        },
     branches:'p',
     hotkeys: [
         {key: "T", description: "Shift + T: Reset for timewall shrinker", onPress(){if (canReset(this.layer)) doReset(this.layer)},

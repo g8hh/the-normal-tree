@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "2.1",
-	name: "normal",
+	num: "2.2",
+	name: "True timewall",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v2.2</h3><br>
+- Added timewall shrinker.<br>
+- Added 18 upgrade.<br>
+- Added 2 milestone.<br>
+- Added 4 challenge.<br>
+- Endgame: 7 simple nerf Completions.<br>
 <h3>v2.1</h3><br>
 - Added 5 upgrade.<br>
 - Endgame: 1000 timewall.<br>
@@ -146,9 +152,20 @@ if(hasChallenge('cp',12))gain=gain.pow(player.cp.points.add(1).pow(player.cp.poi
 
 
 if(hasUpgrade('t',11)) gain=gain.times(tmp.t.effect)
-if(hasUpgrade('t',12)) gain=gain.times(upgradeEffect('t',12))  
+if(hasUpgrade('t',12)&&!inChallenge('ts',21)) gain=gain.times(upgradeEffect('t',12))  
+if(inChallenge('ts',21))gain=gain.div(upgradeEffect('t',12))  
 if(hasUpgrade('t',13)&&!player.points.gte(10)) gain=gain.times(3)
+if(hasUpgrade('ts',23)&&!inChallenge('ts',22))gain=gain.times(player.ts.timewallpower.add(1).add(1).pow(0.3))
+else if(hasUpgrade('ts',14)&&!inChallenge('ts',22)) gain=gain.times(player.ts.timewallpower.add(1).log(2).add(1).pow(5))
+else if((!hasUpgrade('ts',11)||hasUpgrade('ts',12))&&!inChallenge('ts',22))gain=gain.times(player.ts.timewallpower.add(1).log(10).add(1).pow(5))
+if(hasUpgrade('ts',15)) gain=gain.times(upgradeEffect('ts',15))
+gain=gain.times( new Decimal(10).pow(challengeCompletions('ts',21)))
 if(hasUpgrade('t',25))gain=gain.pow(1.5)
+if(hasUpgrade('ts',21))gain=gain.pow(1.25)
+if(hasUpgrade('t',34))gain=gain.pow(1.3)
+if(inChallenge('ts',11))gain=gain.pow(0.5)
+
+
 	return gain
 }
 
@@ -168,7 +185,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-return player.t.points.gte(1000)}
+return challengeCompletions('ts',11)>6}
 
 
 
