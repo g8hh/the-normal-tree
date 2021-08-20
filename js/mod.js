@@ -1,6 +1,6 @@
 let modInfo = {
-	name: "The normal tree",
-	id: "game",
+	name: "普通树 - The normal tree",
+	id: "the-normal-tree",
 	author: "3^3=7",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
