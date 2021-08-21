@@ -1,3 +1,4 @@
+//normal universe layer
 addLayer("p", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
@@ -199,7 +200,7 @@ addLayer("p", {
         },
         ],
         passiveGeneration(){return hasMilestone('c',0)? 100 : 0},
-})
+}) //prestige points
 
 addLayer("a", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
@@ -325,7 +326,8 @@ return player.a.points.add(2).pow(0.75)},
     },
     ], 
     passiveGeneration(){return hasMilestone('b',7)? 100 : 0},
-})
+}) //amoebas
+
 addLayer("b", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: false,                     // You can add more variables here to add them to your layer.
@@ -475,7 +477,8 @@ addLayer("b", {
         unlocked() {return hasUpgrade('p',33)} 
     },
     ], 
-})
+}) //boosters
+
 addLayer("c", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
@@ -511,7 +514,7 @@ addLayer("c", {
     },
     getNextAt: function(){
        if(!player.p.points.gte("1e5387"))  return new  Decimal("1e5387")
-        return formatWhole(Decimal.pow(10, new Decimal(tmp[this.layer].resetGain).add(5387)))
+      else  return formatWhole(Decimal.pow(10, new Decimal(tmp[this.layer].resetGain).add(5387)))
 	},
     prestigeButtonText(){
         if(player.p.points.gte("1e6387"))   return "Reset for " + tmp[this.layer].resetGain +" code."   
@@ -635,7 +638,8 @@ return player.c.points.add(10).log(10).pow(1.25)},
      update(diff){
          if(hasMilestone('d',0)) player.c.points=player.c.points.add(new Decimal(1000).times(tmp.c.resetGain))
      }
-})
+}) //codes
+
 addLayer("d", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
@@ -709,7 +713,9 @@ addLayer("d", {
     },
       
     passiveGeneration(){return hasMilestone('d',3)? 10 : 0},
-})
+}) //distance
+
+//challenge universe layer
 addLayer("cp", {
     symbol(){return"CP"},
     startData() { return {                  // startData is a function that returns default data for a layer. 
@@ -1221,7 +1227,8 @@ if(inChallenge('cc',21)) return new Decimal(1)
         },   
 
   
-})
+}) //challenge points
+
 addLayer("cc", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
@@ -1411,7 +1418,9 @@ branches:["cp"],
             },
         },
         passiveGeneration(){return hasUpgrade('cp',55)? 1 : 0},
-})
+}) //challenge coins
+
+//timewall universe layer
 addLayer("t", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
@@ -1548,6 +1557,16 @@ addLayer("t", {
             },
             description: "point ^1.3. you can buy this upgrade while you are in Simple Nerf.",
         },
+        35: {
+            title:"in challenge 3",
+            cost(){ 
+              
+                if(player.ts.activeChallenge!=22)return new Decimal(Infinity);
+                return new Decimal("3.33e330");
+            },
+            description: "point ^1.05 per No effect Completions. you can buy this upgrade while you are in No power.",
+               
+        },
     },
     doReset(resettingLayer) {
        
@@ -1562,11 +1581,12 @@ addLayer("t", {
         hotkeys: [
             {key: "t", description: "T: Reset for timewall", onPress(){if (canReset(this.layer)) doReset(this.layer)},
             onPress() { if (player.t.unlocked) doReset("t") },
-            unlocked() {return player.ach.uni.gte(2)} 
+            unlocked() {return player.ach.uni.gte(2)&&!player.ach.uni.gte(3)} 
         },
         ],
         branches:["ts"],
-})
+}) //timewall
+
 addLayer("ts", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: false,                     // You can add more variables here to add them to your layer.
@@ -1633,16 +1653,19 @@ if(hasChallenge('ts',22))  gain=gain.div(new Decimal(1e50).pow(challengeCompleti
             title:"True timewall",
             description: "timewall power also boost point and base gain ^1.5.",
             cost: new Decimal(4),
+            unlocked(){return hasUpgrade('ts',11)}
         },
         13: {
             title:"challenge",
             description: "unlock 3 challenge and timewall power gain ^2. You can buy max timewall shrinker.",
             cost: new Decimal(10),
+            unlocked(){return hasUpgrade('ts',12)}
         },
         14: {
             title:"booster",
             description: "timewall power effect is greater.",
             cost: new Decimal(12),
+            unlocked(){return hasUpgrade('ts',13)}
         },
         15: {
             title:"timewall boost",
@@ -1652,26 +1675,43 @@ if(hasChallenge('ts',22))  gain=gain.div(new Decimal(1e50).pow(challengeCompleti
                 if(hasUpgrade('ts',22))   return player.t.points.add(1).log(10).add(1).pow(3.14).add(1).pow(4)
               else  return player.t.points.add(1).log(10).add(1).pow(3.14).add(1)},
             effectDisplay(){return format(upgradeEffect('ts',15))+"x"},
+            unlocked(){return hasUpgrade('ts',14)}
         },
         21: {
             title:"point boost",
             description: "point ^1.25.",
             cost: new Decimal(19),
+            unlocked(){return hasUpgrade('ts',15)}
         }, 
         22: {
             title:"true timewall again",
             description: "timewall boost effect ^4 and timewall ^1.25.",
             cost: new Decimal(23),
+            unlocked(){return hasUpgrade('ts',21)}
         },
         23: {
             title:"Boost effect",
             description: "Boost timewall power effect.",
             cost: new Decimal(87),
+            unlocked(){return hasUpgrade('ts',22)}
         },
         24: {
             title:"Base boost",
             description: "timewall power base gain ^3.",
             cost: new Decimal(129),
+            unlocked(){return hasUpgrade('ts',23)}
+        },
+        25: {
+            title:"point boost",
+            description: "point ^1.05 per simple nerf Completions.",
+            cost: new Decimal(168),
+            unlocked(){return hasUpgrade('ts',24)}
+        },
+        31: {
+            title:"inflat",
+            description: "point ^^10.",
+            cost: new Decimal(15910),
+            unlocked(){return challengeCompletions('ts',21)>9}
         },
     },
 
@@ -1721,7 +1761,7 @@ if(hasChallenge('ts',22))  gain=gain.div(new Decimal(1e50).pow(challengeCompleti
                  return "point gain ^0.5. enter this challenge will reset T upgrade"+"<br>You have completed this challenge "+ challengeCompletions("ts",11)+"/10 times."  },
                  goal: function(){
      
-                    return [new Decimal("e20"),new Decimal("e28"),new Decimal("3e35"),new Decimal("e54"),new Decimal("e60"),new Decimal("e120"),new Decimal("e176"),new Decimal("eeeeeeeee10")][player.ts.challenges[11]];
+                    return [new Decimal("e20"),new Decimal("e28"),new Decimal("3e35"),new Decimal("e54"),new Decimal("e60"),new Decimal("e120"),new Decimal("e176"),new Decimal("e720"),new Decimal("e807"),new Decimal("e1917"),new Decimal("eeeeeeeee10")][player.ts.challenges[11]];
             },
                
                 rewardDescription(){return "timewall shrinker cost /100 per Completions."},
@@ -1741,7 +1781,7 @@ if(hasChallenge('ts',22))  gain=gain.div(new Decimal(1e50).pow(challengeCompleti
                  return "timewall has no effect. enter this challenge will reset T upgrade"+"<br>You have completed this challenge "+ challengeCompletions("ts",12)+"/10 times."  },
                  goal: function(){
      
-                    return [new Decimal("5e10"),new Decimal("e20"),new Decimal("e30"),new Decimal("3e41"),new Decimal("e90"),new Decimal("e145"),new Decimal("e200"),new Decimal("eeeeeeeee10")][player.ts.challenges[12]];
+                    return [new Decimal("5e10"),new Decimal("e20"),new Decimal("e30"),new Decimal("3e41"),new Decimal("e90"),new Decimal("e145"),new Decimal("e200"),new Decimal("e462"),new Decimal("e859"),new Decimal("e1452"),new Decimal(Infinity)][player.ts.challenges[12]];
             },
                
                 rewardDescription(){return "timewall power gain x10 per Completions."},
@@ -1761,7 +1801,7 @@ if(hasChallenge('ts',22))  gain=gain.div(new Decimal(1e50).pow(challengeCompleti
                  return "2m timewall effect is / instead of x. enter this challenge will reset T upgrade except 2m timewall"+"<br>You have completed this challenge "+ challengeCompletions("ts",21)+"/10 times."  },
                  goal: function(){
      
-                    return [new Decimal("3.4e38"),new Decimal("e89"),new Decimal("e125"),new Decimal("e231"),new Decimal("eeeeeeeee10")][player.ts.challenges[21]];
+                    return [new Decimal("3.4e38"),new Decimal("e89"),new Decimal("e125"),new Decimal("e231"),new Decimal("5e469"),new Decimal("e1599"),new Decimal("e3914"),new Decimal("e10800"),new Decimal("e32075"),new Decimal("9.7733e97733"),new Decimal("eeeeeeeee10")][player.ts.challenges[21]];
             },
                
                 rewardDescription(){return "Power boost effect ^3 and point x10 per Completions."},
@@ -1775,7 +1815,7 @@ if(hasChallenge('ts',22))  gain=gain.div(new Decimal(1e50).pow(challengeCompleti
                 name: "No power",
                 
                 challengeDescription(){
-                 return "Timewall power effect has no effect."+"<br>You have completed this challenge "+ challengeCompletions("ts",22)+"/1 times."  },
+                 return "Timewall power has no effect."+"<br>You have completed this challenge "+ challengeCompletions("ts",22)+"/1 times."  },
                  goal(){
      
                     return new Decimal("e97")
@@ -1794,7 +1834,233 @@ if(hasChallenge('ts',22))  gain=gain.div(new Decimal(1e50).pow(challengeCompleti
         unlocked() {return hasUpgrade('t',31)} 
     },
     ], 
+}) //timewall shrinker
+
+//milestone universe layer
+addLayer("m", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+
+    color: "#793784",                       // The color for this layer, which affects many elements.
+    resource: "milestones",            // The name of this layer's main prestige resource.
+    row: 0,                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "points",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.points },  // A function to return the current amount of baseResource.
+
+    requires: new Decimal(10),              // The amount of the base needed to  gain 1 of the prestige currency.
+                                            // Also the amount required to unlock the layer.
+
+    type: "static",                         // Determines the formula used for calculating prestige currency.
+    exponent:function(){
+        if(player.m.points.lt(15))return new Decimal(1.7)
+        var firstScaling=player.m.points.sub(tmp.m.getScalingStart).pow(0.8).div(player.m.points.add(1)).max(0);
+        if(player.m.points.gte(15))  return new Decimal(1.7).add(firstScaling)
+    } ,                     
+base:1.5,
+    gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
+        return new Decimal(1)               // Factor in any bonuses multiplying gain here.
+    },
+    gainExp() {                             // Returns the exponent to your gain of the prestige resource.
+        return new Decimal(1)
+    },
+
+    layerShown() { return true },          // Returns a bool for if this layer's node should be visible in the tree.
+
+    milestones: {
+        1: {
+            requirementDescription: "1st milestone",
+            unlocked() {return player[this.layer].points.gte(0)},
+            effectDescription() {return "Gain " +format(new Decimal(1).max(getPointGen()))+" points per second."},
+            done() { return player.m.points.gte(1) }
+        },
+        2: {
+            requirementDescription: "2nd milestone",
+            unlocked() {return player[this.layer].points.gte(1)},
+            effectDescription() {return "Quadruple first milestone's effect."},
+            done() { return player.m.points.gte(2) }
+        },
+        3: {
+            requirementDescription: "3rd milestone",
+            unlocked() {return player[this.layer].points.gte(2)},
+            effectDescription() {return "Double first milestone's effect per milestone."},
+            done() { return player.m.points.gte(3) }
+        },
+        4: {
+            requirementDescription: "4th milestone",
+            unlocked() {return player[this.layer].points.gte(3)},
+            effectDescription() {return "first milestone's effect is boosted based on your points. Currently: "+format(tmp.m.milestone4Effect)+"x"},
+            done() { return player.m.points.gte(4) }
+        },
+        5: {
+            requirementDescription: "5th milestone",
+            unlocked() {return player[this.layer].points.gte(4)},
+            effectDescription() {return "4th milestone effect is raise to the power of 1.5."},
+            done() { return player.m.points.gte(5) }
+        },
+        6: {
+            requirementDescription: "6th milestone",
+            unlocked() {return player[this.layer].points.gte(5)},
+            effectDescription() {return "4th milestone effect is raise to the power of 1.6."},
+            done() { return player.m.points.gte(6) }
+        },
+        7: {
+            requirementDescription: "7th milestone",
+            unlocked() {return player[this.layer].points.gte(6)},
+            effectDescription() {return "unlock a new layer. Milestones don't reset on all resets."},
+            done() { return player.m.points.gte(7) }
+        },
+        8: {
+            requirementDescription: "8th milestone",
+            unlocked() {return player[this.layer].points.gte(7)},
+            effectDescription() {return "boost prestige point gain based on your milestones. Currently: "+format(tmp.m.milestone8Effect)+"x"},
+            done() { return player.m.points.gte(8) }
+        },
+        9: {
+            requirementDescription: "9th milestone",
+            unlocked() {return player[this.layer].points.gte(8)},
+            effectDescription() {return "4th milestone effect is raise to the power of 1.29."},
+            done() { return player.m.points.gte(9) }
+        },
+        10: {
+            requirementDescription: "10th milestone",
+            unlocked() {return player[this.layer].points.gte(9)},
+            effectDescription() {return "unlock 1 prestige upgrade."},
+            done() { return player.m.points.gte(10) }
+        },
+        11: {
+            requirementDescription: "11th milestone",
+            unlocked() {return player[this.layer].points.gte(10)},
+            effectDescription() {return "current endgame"},
+            done() { return player.m.points.gte(11) }
+        },
+
+    },
+    doReset(resettingLayer) {
+     
+        let keep = [];
+        keep.push("milestones")
+
+        keep.push("points")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+       
+    },
+    milestone4Effect(){
+        var e=Decimal.log10(player.points.add(20)).pow(0.5);
+        var p=new Decimal(1);
+        if(player.m.points.gte(5))p=p.mul(1.5);
+        if(player.m.points.gte(6))p=p.mul(1.6);
+        if(player.m.points.gte(9))p=p.mul(1.29);
+        if(hasUpgrade('P',13))p=p.mul(upgradeEffect('P',13));
+    
+        if(player.m.points.gte(17))p=p.mul(1.17);
+        return Decimal.pow(e,p)
+
+    },
+    milestone8Effect(){
+        var e=player.m.points;
+        if(player.m.points.gte(15))e=e.mul(2.5);
+        var p=new Decimal(0.5);
+        if(player.m.points.gte(15))p=p.mul(2.5);
+
+        return Decimal.pow(e,p)
+
+    },
+    getScalingStart(){
+        let start = new Decimal(14);
+
+	return start
+    },
+    tabFormat: ["main-display","prestige-button","resource-display",
+    ["display-text",function(){return "Milestone cost scaling starts at "+format(tmp.m.getScalingStart,4)}],
+    ["display-text",function(){return "Milestone cost exponent is "+format(tmp.m.exponent,4)}],
+    "milestones"
+    ],
+    resetsNothing(){return true}
 })
+addLayer("P", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+
+    color: "#658091",                       // The color for this layer, which affects many elements.
+    resource: "prestige points",            // The name of this layer's main prestige resource.
+    row: 1,                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "points",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.points },  // A function to return the current amount of baseResource.
+
+    requires: new Decimal(30000),              // The amount of the base needed to  gain 1 of the prestige currency.
+     branches(){return ['m']}  ,                                  // Also the amount required to unlock the layer.
+
+    type: "normal",                         // Determines the formula used for calculating prestige currency.
+    exponent: 0.5,                          // "normal" prestige gain is (currency^exponent).
+
+    gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
+   let gain = new Decimal(1)      
+if(player.m.points.gte(8)) gain=gain.times(tmp.m.milestone8Effect)
+return gain
+    },
+    gainExp() {                             // Returns the exponent to your gain of the prestige resource.
+        return new Decimal(1)
+    },
+
+    layerShown() { return true },          // Returns a bool for if this layer's node should be visible in the tree.
+
+    upgrades: {
+        11: {
+			title: "Prestige Upgrade 11",
+            description: "First Milestone's effect is boosted by your prestige points.",
+            cost: new Decimal(1),
+            unlocked() { return true}, // The upgrade is only visible when this is true
+			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+				let base=new Decimal(4) 
+
+                let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.25).add(2)).add(1)).pow(0.55)
+                return ret;
+            },
+            effectDisplay() { return format(this.effect())+"x" }, // Add formatting to the effect
+        },
+        12: {
+			title: "Prestige Upgrade 12",
+            description: "First Milestone's effect is boosted by your prestige points.",
+            cost: new Decimal(50),
+            unlocked() { return true}, // The upgrade is only visible when this is true
+			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+				let base=new Decimal(2) 
+	
+			
+                let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.2).add(2)).add(1)).pow(0.7)
+                return ret;
+            },
+            effectDisplay() { return format(this.effect())+"x" }, // Add formatting to the effect
+        },
+        13: {
+			title: "Prestige Upgrade 13",
+            description: "Fourth Milestone's effect is is raise to the power based on your prestige points.",
+            cost: new Decimal(500),
+            unlocked() { return player.m.points.gte(10)}, // The upgrade is only visible when this is true
+			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+				let base=new Decimal(2) 
+		
+                let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.2).add(2)).add(1)).pow(0.2)
+                return ret;
+            },
+            effectDisplay() { return "^"+format(this.effect()) }, // Add formatting to the effect
+        },
+      
+       
+    },
+    passiveGeneration(){
+	
+		if(player.m.points.gte(16))return 0;
+		return 0;
+	},
+})
+
 addLayer("ach", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
@@ -1900,7 +2166,50 @@ tooltip(){return  "Achievements"},
         27: {
             name: "Inflating again",
             done(){return player.points.gte(new Decimal(10).tetrate(100))&&player.ach.uni.gte(1)},
-            tooltip:"Get 1F100 points."  
+            tooltip:"Get 1F100 points."  ,
+            unlocked(){return player.ach.uni.gte(1)}
+        },
+        31: {
+            name: "Again??????",
+            done(){return player.t.points.gte(1)},
+            tooltip:"Get 1 timewall.",
+            unlocked(){return player.ach.uni.gte(2)}
+        },
+        32: {
+            name: "Reality",
+            done(){return hasUpgrade('t',23)},
+            tooltip:"Get true 2m timewall",
+            unlocked(){return player.ach.uni.gte(2)}
+        },
+        33: {
+            name: "shrink the wall",
+            done(){return player.ts.points.gte(1)},
+            tooltip:"Get 1 timewall shrinker",
+            unlocked(){return player.ach.uni.gte(2)}
+        },
+        34: {
+            name: "challengeded",
+            done(){return hasUpgrade('ts',13)},
+            tooltip:"Unlock challenge",
+            unlocked(){return player.ach.uni.gte(2)}
+        },
+        35: {
+            name: "not power",
+            done(){return hasUpgrade('ts',13)},
+            tooltip:"Complete no power.",
+            unlocked(){return player.ach.uni.gte(2)}
+        },
+        36: {
+            name: "done",
+            done(){return challengeCompletions('ts',12)>9},
+            tooltip:"Complete No effect 10 times.",
+            unlocked(){return player.ach.uni.gte(2)}
+        },
+        37: {
+            name: "Inflating 3",
+            done(){return player.points.gte(new Decimal(10).tetrate(100))&&player.ach.uni.gte(2)},
+            tooltip:"Get 1F100 points."  ,
+            unlocked(){return player.ach.uni.gte(2)}
         },
     },
     clickables: {
@@ -1908,41 +2217,54 @@ tooltip(){return  "Achievements"},
             display() {return "Reset ALL progess but go to another universe. <br>Req: 1F100 points"},
             canClick(){return player.points.gte(new Decimal(10).tetrate(100))},
             onClick(){
-                player.ach.uni= player.ach.uni.add(1)
-            player.a.upgrades=[]
-            player.b.upgrades=[]
-            player.c.upgrades=[]
-            player.p.upgrades=[]
-            player.b.milestones=[]
-            player.c.milestones=[]
-            player.c.challenges[11]=0
-            player.d.milestones=[]
-            player.a.points=new Decimal(0)
-            player.b.points=new Decimal(0)
-            player.c.points=new Decimal(0)
-            player.d.points=new Decimal(0)
-            player.p.points=new Decimal(0)
-            player.t.points=new Decimal(0)
-            player.points=new Decimal(0)
-            player.cp.points=new Decimal(0)
-            player.cc.points=new Decimal(0)
-            player.cp.challenges[11]=0
-            player.cp.challenges[12]=0
-            player.cc.challenges[11]=0
-            player.cc.challenges[12]=0
-            player.cc.challenges[21]=0
-            player.cc.challenges[22]=0
-            player.cc.challenges[101]=0
-            player.cc.challenges[102]=0
-      
-            player.cp.upgrades=[]
-            player.cp.milestones=[]
-            player.cc.milestones=[]
-            player.cp.bank1=new Decimal(0)
-            player.cp.bank2=new Decimal(0)
-            player.cp.active=new Decimal(0)
-            player.cp.sbank=new Decimal(1)
-            player.cp.auto=new Decimal(0)
+//Go to another universe
+        player.ach.uni= player.ach.uni.add(1)
+        player.points=new Decimal(10)
+//Reset normal universe
+        player.a.upgrades=[]
+        player.b.upgrades=[]
+        player.c.upgrades=[]
+        player.p.upgrades=[]
+        player.b.milestones=[]
+        player.c.milestones=[]
+        player.c.challenges[11]=0
+        player.d.milestones=[]
+        player.a.points=new Decimal(0)
+        player.b.points=new Decimal(0)
+        player.c.points=new Decimal(0)
+        player.d.points=new Decimal(0)
+        player.p.points=new Decimal(0)
+//Reset challenge universe
+        player.cp.points=new Decimal(0)
+        player.cc.points=new Decimal(0)
+        player.cp.challenges[11]=0
+        player.cp.challenges[12]=0
+        player.cc.challenges[11]=0
+        player.cc.challenges[12]=0
+        player.cc.challenges[21]=0
+        player.cc.challenges[22]=0
+        player.cc.challenges[101]=0
+        player.cc.challenges[102]=0
+        player.cp.milestones=[]
+        player.cc.milestones=[]
+        player.cp.bank1=new Decimal(0)
+        player.cp.bank2=new Decimal(0)
+        player.cp.active=new Decimal(0)
+        player.cp.sbank=new Decimal(1)
+        player.cp.auto=new Decimal(0)
+        player.cp.upgrades=[]
+//Reset timewall universe
+        player.t.points=new Decimal(0)
+        player.ts.challenges[11]=0
+        player.ts.challenges[12]=0
+        player.ts.challenges[21]=0
+        player.ts.challenges[22]=0
+        player.ts.points=new Decimal(0)
+        player.ts.milestones=[]
+        player.ts.timewallpower=new Decimal(0)
+        player.t.upgrades=[]
+        player.ts.upgrades=[]
+           
         }
     },
   
