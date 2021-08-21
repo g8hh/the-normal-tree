@@ -1867,7 +1867,7 @@ base:1.5,
         return new Decimal(1)
     },
 
-    layerShown() { return true },          // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown() { return player.ach.uni.gte(3) },          // Returns a bool for if this layer's node should be visible in the tree.
 
     milestones: {
         1: {
@@ -2008,7 +2008,7 @@ return gain
         return new Decimal(1)
     },
 
-    layerShown() { return true },          // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown() { return player.m.points.gte(7)},          // Returns a bool for if this layer's node should be visible in the tree.
 
     upgrades: {
         11: {
