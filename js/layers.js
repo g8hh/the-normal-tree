@@ -2264,7 +2264,7 @@ tooltip(){return  "Achievements"},
         player.ts.timewallpower=new Decimal(0)
         player.t.upgrades=[]
         player.ts.upgrades=[]
-           
+
         }
     },
   
