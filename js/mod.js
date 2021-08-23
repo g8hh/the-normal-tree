@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "2.2",
-	name: "True timewall",
+	num: "3.0 Bugfix",
+	name: "milestone tree?",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v3.0</h3><br>
+- Added milestones.<br>
+- Added 6 upgrade.<br>
+- Added 11 milestone.<br>
+- Endgame: 11 milestones.<br>
 <h3>v2.2</h3><br>
 - Added timewall shrinker.<br>
 - Added 18 upgrade.<br>
@@ -101,8 +106,10 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
+		
+    let gain = new Decimal(1)
+//normal universe
 
-	let gain = new Decimal(1)
 if(hasUpgrade('p',11)) gain=gain.times(upgradeEffect('p',11))
 if(hasUpgrade('p',12)) gain=gain.pow(upgradeEffect('p',12))
 if(hasUpgrade('p',21)) gain=gain.times(upgradeEffect('p',21))
@@ -112,10 +119,7 @@ if(hasUpgrade('p',14)) gain=gain.times(1e10)
 if(hasUpgrade('p',41)) gain=gain.times(upgradeEffect('p',32))     
 if(hasUpgrade('a',11)) gain=gain.times(upgradeEffect('a',11))    
 if(hasMilestone('c',0))     gain=gain.times(100)
-
-
-
-
+//challenge universe
 
 if(hasUpgrade('cp',11)) gain=gain.times(upgradeEffect('cp',11))  
 if(hasUpgrade('cp',42))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(6).pow(upgradeEffect('cp',22)))
@@ -146,10 +150,7 @@ if(inChallenge('cc',11))gain=gain.pow(0.9)
 if(inChallenge('cc',101))gain=gain.pow(0.75) 
 if(inChallenge('cc',102))gain=gain.pow(0.4) 
 if(hasChallenge('cp',12))gain=gain.pow(player.cp.points.add(1).pow(player.cp.points))
-
-
-
-
+//timewall universe
 
 if(hasUpgrade('t',11)) gain=gain.times(tmp.t.effect)
 if(hasUpgrade('t',12)&&!inChallenge('ts',21)) gain=gain.times(upgradeEffect('t',12))  
@@ -164,8 +165,19 @@ if(hasUpgrade('t',25))gain=gain.pow(1.5)
 if(hasUpgrade('ts',21))gain=gain.pow(1.25)
 if(hasUpgrade('t',34))gain=gain.pow(1.3)
 if(inChallenge('ts',11))gain=gain.pow(0.5)
+if(hasUpgrade('ts',25)) gain=gain.pow(new Decimal(1.05).pow(challengeCompletions('ts',11)))
+if(hasUpgrade('t',35)) gain=gain.pow(new Decimal(1.05).pow(challengeCompletions('ts',12)))
+if(hasUpgrade('ts',31))gain=gain.tetrate(10)
+//milestone universe
 
-
+if(player.ach.uni.gte(3)) gain = new Decimal(0)
+if(player.m.points.gte(1)) gain = gain.add(1)
+if(player.m.points.gte(2)) gain = gain.times(4)
+if(player.m.points.gte(3)) gain = gain.times(new Decimal(2).pow(player.m.points))
+if(player.m.points.gte(4)) gain = gain.times(tmp.m.milestone4Effect)
+if(player.m.points.gte(4)) gain = gain.times(tmp.m.milestone4Effect)
+if(hasUpgrade('P',11)) gain = gain.times(upgradeEffect('P',11))
+if(hasUpgrade('P',12)) gain = gain.times(upgradeEffect('P',12))
 	return gain
 }
 
@@ -177,7 +189,8 @@ function addedPlayerData() { return {
 // Display extra things at the top of the page
 var displayThings = [
 	function(){
-	if(player.ach.uni.gte(2)) return "You are in timewall universe"
+		 if(player.ach.uni.gte(3)) return "You are in milestone universe"
+    else if(player.ach.uni.gte(2)) return "You are in timewall universe"
 	else if(player.ach.uni.gte(1)) return "You are in challenge universe"
 	else return "You are in normal universe"
 	}
@@ -185,7 +198,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-return challengeCompletions('ts',11)>6}
+return player.m.points.gte(11)}
 
 
 
@@ -204,4 +217,12 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+	if(!player.ach.uni.gte(3)){
+		player.m.points=new Decimal(0)
+		player.m.milestone=[]
+		player.p.points=new Decimal(0)
+		player.p.upgrades=[]
+
+	}
+
 }
