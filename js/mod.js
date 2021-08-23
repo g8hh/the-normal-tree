@@ -13,14 +13,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "3.0 Bugfix",
+	num: "3.20",
 	name: "milestone tree?",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v3.20</h3><br>
+- Added 9 milestone.<br>
+- Added 3 upgrade.<br>
+- Endgame: 20 milestones.<br>
 <h3>v3.0</h3><br>
 - Added milestones.<br>
-- Added 6 upgrade.<br>
+- Added 3 upgrade.<br>
 - Added 11 milestone.<br>
 - Endgame: 11 milestones.<br>
 <h3>v2.2</h3><br>
@@ -175,7 +179,7 @@ if(player.m.points.gte(1)) gain = gain.add(1)
 if(player.m.points.gte(2)) gain = gain.times(4)
 if(player.m.points.gte(3)) gain = gain.times(new Decimal(2).pow(player.m.points))
 if(player.m.points.gte(4)) gain = gain.times(tmp.m.milestone4Effect)
-if(player.m.points.gte(4)) gain = gain.times(tmp.m.milestone4Effect)
+if(player.m.points.gte(10)) gain = gain.times(new Decimal(1).add(player.P.upgrades.length))
 if(hasUpgrade('P',11)) gain = gain.times(upgradeEffect('P',11))
 if(hasUpgrade('P',12)) gain = gain.times(upgradeEffect('P',12))
 	return gain
@@ -198,7 +202,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-return player.m.points.gte(11)}
+return player.m.points.gte(20)}
 
 
 
