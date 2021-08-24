@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "3.20",
+	num: "3.41",
 	name: "milestone tree?",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v3.41</h3><br>
+- Added 2 layers.<br>
+- Added 21 milestone.<br>
+- Added 6 upgrade.<br>
+- Endgame: 41 milestones.<br>
 <h3>v3.20</h3><br>
 - Added 9 milestone.<br>
 - Added 3 upgrade.<br>
@@ -182,6 +187,8 @@ if(player.m.points.gte(4)) gain = gain.times(tmp.m.milestone4Effect)
 if(player.m.points.gte(10)) gain = gain.times(new Decimal(1).add(player.P.upgrades.length))
 if(hasUpgrade('P',11)) gain = gain.times(upgradeEffect('P',11))
 if(hasUpgrade('P',12)) gain = gain.times(upgradeEffect('P',12))
+if(hasUpgrade('sp',11)) gain = gain.times(upgradeEffect('sp',11))
+if(hasUpgrade('sp',12)) gain = gain.times(upgradeEffect('sp',12))
 	return gain
 }
 
@@ -202,7 +209,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-return player.m.points.gte(20)}
+return player.m.points.gte(41)}
 
 
 
@@ -224,8 +231,8 @@ function fixOldSave(oldVersion){
 	if(!player.ach.uni.gte(3)){
 		player.m.points=new Decimal(0)
 		player.m.milestone=[]
-		player.p.points=new Decimal(0)
-		player.p.upgrades=[]
+		player.P.points=new Decimal(0)
+		player.P.upgrades=[]
 
 	}
 
