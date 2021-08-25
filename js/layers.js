@@ -2291,7 +2291,7 @@ base:1.03,
             requirementDescription: "3rd meta milestone",
             unlocked() {return player[this.layer].points.gte(1)},
             effectDescription() {return "1st meta milestone effect ^1.25 per buyable"},
-            done() { return player.mm.points.gte(2) }
+            done() { return player.mm.points.gte(3) }
         },
     },
     milestone1Effect(){
