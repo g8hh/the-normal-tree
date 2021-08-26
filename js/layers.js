@@ -2170,8 +2170,26 @@ base:1.5,
         50: {
             requirementDescription: "50th milestone",
             unlocked() {return player[this.layer].points.gte(49)},
-            effectDescription() {return "current endgame"},
+            effectDescription() {return "auto buy milestone."},
             done() { return player.m.points.gte(50) }
+        },
+        51: {
+            requirementDescription: "51st milestone",
+            unlocked() {return player[this.layer].points.gte(50)},
+            effectDescription() {return "49th milestone effect ^1.51"},
+            done() { return player.m.points.gte(51) }
+        },
+        52: {
+            requirementDescription: "52nd milestone",
+            unlocked() {return player[this.layer].points.gte(51)},
+            effectDescription() {return "Gain 1e4% of Hyper Prestige Point gain per second."},
+            done() { return player.m.points.gte(52) }
+        },
+        53: {
+            requirementDescription: "53rd milestone",
+            unlocked() {return player[this.layer].points.gte(52)},
+            effectDescription() {return "unlock a layer"},
+            done() { return player.m.points.gte(53) }
         },
     },
 
@@ -2197,6 +2215,8 @@ base:1.5,
         if(player.m.points.gte(37))p=p.mul(1.37);
         if(player.m.points.gte(41))p=p.mul(1.0615);
         if(player.m.points.gte(42))p=p.mul(1.42);
+        if( player.mm.points.gte(4))p=p.mul(2);
+        if(hasUpgrade('P',34))p=p.mul(2);
         return Decimal.pow(e,p)
 
     },
@@ -2212,6 +2232,7 @@ base:1.5,
         if(player.m.points.gte(37))p=p.mul(1.047);
         if(player.m.points.gte(41))p=p.mul(1.0615);
         if(player.m.points.gte(44))p=p.mul(1.88);
+        if(player.mm.points.gte(5))p=p.mul(2);
         return Decimal.pow(e,p)
 
     },
@@ -2224,7 +2245,7 @@ base:1.5,
     milestone49Effect(){
         var e=player.pb.points.add(1);
         var p=new Decimal(1.25);
-    
+        if(player.m.points.gte(51)) p=p.mul(1.51)
         return Decimal.pow(e,p)
     },
     getScalingStart(){
@@ -2241,6 +2262,7 @@ start = start.add(buyableEffect('P',11));
     "milestones"
     ],
     resetsNothing(){return true},
+    autoPrestige(){return player.m.points.gte(50)},
     
 })
 addLayer("mm", {
@@ -2289,9 +2311,21 @@ base:1.03,
         },
         3: {
             requirementDescription: "3rd meta milestone",
-            unlocked() {return player[this.layer].points.gte(1)},
+            unlocked() {return player[this.layer].points.gte(2)},
             effectDescription() {return "1st meta milestone effect ^1.25 per buyable"},
             done() { return player.mm.points.gte(3) }
+        },
+        4: {
+            requirementDescription: "4th meta milestone",
+            unlocked() {return player[this.layer].points.gte(3)},
+            effectDescription() {return "4th milestone effect ^2."},
+            done() { return player.mm.points.gte(4) }
+        },
+        5: {
+            requirementDescription: "5th meta milestone",
+            unlocked() {return player[this.layer].points.gte(4)},
+            effectDescription() {return "8th milestone effect ^2."},
+            done() { return player.mm.points.gte(5) }
         },
     },
     milestone1Effect(){
@@ -2454,8 +2488,29 @@ if(player.m.points.gte(48)) ret = (player[this.layer].points.add(1).log(10).add(
         },
         32: {
 			title: "Prestige Upgrade 32",
-            description: "milestones cost exponent /1.018  and meta milestone cost exponent /1.05",
+            description: "milestones cost exponent /1.018 and meta milestone cost exponent /1.05",
             cost: new Decimal("1e6000"),
+            unlocked() { return player.m.points.gte(48)}, // The upgrade is only visible when this is true
+		
+        },
+        33: {
+			title: "Prestige Upgrade 33",
+            description: "prestige boost divide their cost.",
+            cost: new Decimal("1e7400"),
+            effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+				let base=new Decimal(1e30) 
+                let ret = base.pow(player.pb.points.add(1))
+                return ret;
+            },
+            effectDisplay() { return "/"+format(this.effect())}, // Add formatting to the effect
+            unlocked() { return player.m.points.gte(48)}, // The upgrade is only visible when this is true
+		
+        },
+        34: {
+			title: "Prestige Upgrade 34",
+            description: "4th milestone effect ^2",
+            cost: new Decimal("1e8444"),
+            
             unlocked() { return player.m.points.gte(48)}, // The upgrade is only visible when this is true
 		
         },
@@ -2658,6 +2713,7 @@ base(){
     gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
         let gain=new Decimal(1)  
         if(player.m.points.gte(46))  gain=gain.div("1e450")
+        if(hasUpgrade('P',33))  gain=gain.div(upgradeEffect('P',33))
         return gain
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
@@ -2783,7 +2839,46 @@ addLayer("hp", {
                     effectDisplay() { return format(this.effect())+"x" }, // Add formatting to the effect
                 },
             },
+            passiveGeneration(){
+	
+                if(player.m.points.gte(52))return 1e4;
+                return 0;
+            },
+   
+        }) 
+        addLayer("ap", {
+            startData() { return {                  // startData is a function that returns default data for a layer. 
+                unlocked: true,                     // You can add more variables here to add them to your layer.
+                points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
+            }},
+            position:-100,
+        symbol:"AP",
+            color: "#A0E0E0",                       // The color for this layer, which affects many elements.
+            resource: "atomic prestige points",            // The name of this layer's main prestige resource.
+            row: 4,                                 // The row this layer is on (0 is the first row).
+        
+            baseResource: "Hyper prestige points",                 // The name of the resource your prestige gain is based on.
+            baseAmount() { return player.hp.points },  // A function to return the current amount of baseResource.
+        
+            requires: new Decimal(3e66),              // The amount of the base needed to  gain 1 of the prestige currency.
+             branches(){return ['hp']},                                  // Also the amount required to unlock the layer.
+        
+            type: "normal",                         // Determines the formula used for calculating prestige currency.
+            exponent(){
+              
+                return new Decimal(0.04)},                      // "normal" prestige gain is (currency^exponent).
+        
+            gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
+           let gain = new Decimal(1)  
+      
+        return gain
+            },
+            gainExp() {                             // Returns the exponent to your gain of the prestige resource.
+                return new Decimal(1)
+            },
 
+            layerShown() { return player.m.points.gte(52)},  
+          
    
         }) 
 addLayer("ach", {
