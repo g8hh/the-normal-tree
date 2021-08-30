@@ -13,11 +13,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1.6",
-	name: "Start from 0",
+	num: "0.3.1.7",
+	name: "AGAIN",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.1.7</h3><br>
+- No because I am lazy.<br>
+- Endgame: 4 Infinity and 1 ???.<br>
+<h3>v0.3.1.6</h3><br>
+- No because I am lazy.<br>
+- Endgame: 3 Infinity and 1 ???.<br>
 <h3>v0.3.1.5</h3><br>
 - Added 4 UF clickable.<br>
 - Added 3 UF challenge.<br>
@@ -359,6 +365,7 @@ function getPointGen() {
 	if (hasMilestone('I', 1)) gain = gain.times(100)
 	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
 	if(hasMilestone('F', 19))gain = gain.times(100)
+	if(inChallenge('UF', 201))gain = new Decimal(1)
 	gain = gain.pow(getPointGenExp())
 	return gain
 }
@@ -393,7 +400,7 @@ var displayThings = [
 	function(){
      
    
-		if (player.X.best.gte(1)&&player.I.points.gte(3))  return "Congratulations, You reach the endgame."
+		if (player.X.best.gte(1)&&player.I.points.gte(4))  return "Congratulations, You reach the endgame."
 if (player.X.best.gte(1))  return "You have 0 layers left to unlock."
 		
 		if (player.S.best.gte(1))  return "You have 1 layers left to unlock.<br> Next layer at '1.798F308' upgrade (Just a upgrade name)."
@@ -416,7 +423,7 @@ if (player.X.best.gte(1))  return "You have 0 layers left to unlock."
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.X.points.gte(1)&&player.I.points.gte(3)
+	return player.X.points.gte(1)&&player.I.points.gte(4)
 }
 
 

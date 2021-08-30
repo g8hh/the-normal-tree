@@ -36,6 +36,7 @@ addLayer("N", {
         if (hasAchievement("A", 12)) mult = mult.times(3)
         if (hasAchievement("A", 45)) mult = mult.times(1e5)
         if (hasUpgrade('F',12)) mult = mult.times(upgradeEffect('F', 12))
+        if(inChallenge('UF', 202))mult = mult.div(upgradeEffect('F', 12).pow(2))
         if (inChallenge('F', 11)) mult = mult.times(0.3)
         if (inChallenge('F', 13)) mult = mult.times(0.3)
         if (hasChallenge('F', 12)) mult = mult.times(3)
@@ -61,7 +62,7 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
   else if(hasUpgrade('N',15)&&player.X.points.gte(1))  mult = mult.times( player.N.points.tetrate(0.1).add(1))
   if(hasUpgrade('F',14)&&player.X.points.gte(1)) mult = mult.times(2.5)
 
-    if(hasUpgrade('F',102))mult = mult.times(player.F.FP)
+    if(hasUpgrade('F',102))mult = mult.times(player.F.FP.add(1))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -146,6 +147,7 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
       if(inChallenge('E',21)) mult = mult.times(new Decimal(1).div(player.N.points.add(1).pow(0.5)))
       if(inChallenge('E',22)) mult = mult.times(1e-50)
       if(hasUpgrade('MS',83))mult = mult.times(10)
+      if(hasUpgrade('F',104))mult = mult.times(1.0777)
       mult = mult.times(new Decimal(1).minus(player.X.points.times(0.05)))
    
         return mult
@@ -1272,6 +1274,13 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
        canup4: new Decimal(0),
        canup5: new Decimal(0),
        canup6: new Decimal(0),
+       canupa: new Decimal(0),
+       canupb: new Decimal(0),
+       page: new Decimal(1),   
+     CP: new Decimal(0),
+     CPgain: new Decimal(0),
+
+
     }},
     color: "#FF0000",
     requires() {
@@ -1557,7 +1566,7 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
     canComplete(){return player.N.points.gte("1e135")},
         goalDescription: "1e135 Numbers",
 rewardDescription(){return "Boost '1'"},
-  unlocked(){return hasMilestone('UF', 16)&&player.X.points.gte(1)},
+  unlocked(){return hasMilestone('UF', 16)&&player.X.points.gte(1)&&player.UF.page==1},
   onEnter(){
     player.N.points=new  Decimal(0)
     player.points=new  Decimal(0)
@@ -1572,7 +1581,7 @@ rewardDescription(){return "Boost '1'"},
     canComplete(){return player.N.points.gte("1e171")},
         goalDescription: "1e171 Numbers",
 rewardDescription(){return "Boost '2'"},
-  unlocked(){return player.UF.canup2.gte(1)},
+  unlocked(){return player.UF.canup2.gte(1)&&player.UF.page==1},
   onEnter(){
       player.N.points=new  Decimal(0)
       player.points=new  Decimal(0)
@@ -1587,7 +1596,7 @@ rewardDescription(){return "Boost '2'"},
     canComplete(){return player.N.points.gte("1e416")},
         goalDescription: "1e416 Numbers",
 rewardDescription(){return "Boost '3'"},
-  unlocked(){return player.UF.canup3.gte(1)},
+  unlocked(){return player.UF.canup3.gte(1)&&player.UF.page==1},
   onEnter(){
       player.N.points=new  Decimal(0)
       player.points=new  Decimal(0)
@@ -1602,7 +1611,7 @@ rewardDescription(){return "Boost '3'"},
     canComplete(){return player.N.points.gte("1e155")},
         goalDescription: "1e155 Numbers",
 rewardDescription(){return "Boost '4'"},
-  unlocked(){return player.UF.canup4.gte(1)},
+  unlocked(){return player.UF.canup4.gte(1)&&player.UF.page==1},
   onEnter(){
       player.N.points=new  Decimal(0)
       player.points=new  Decimal(0)
@@ -1617,7 +1626,7 @@ rewardDescription(){return "Boost '4'"},
     canComplete(){return player.N.points.gte("1e337")},
         goalDescription: "1e337 Numbers",
 rewardDescription(){return "Boost '5'"},
-  unlocked(){return player.UF.canup5.gte(1)},
+  unlocked(){return player.UF.canup5.gte(1)&&player.UF.page==1},
   onEnter(){
       player.N.points=new  Decimal(0)
       player.points=new  Decimal(0)
@@ -1631,8 +1640,38 @@ rewardDescription(){return "Boost '5'"},
     challengeDescription: "Number ^0.1",
     canComplete(){return player.N.points.gte("1e12")},
         goalDescription: "1e12 Numbers",
-rewardDescription(){return "'2' - '5' effect is locked ."},
-  unlocked(){return player.UF.canup6.gte(1)},
+rewardDescription(){return "'2' - '5' effect is always best."},
+  unlocked(){return player.UF.canup6.gte(1)&&player.UF.page==1},
+  onEnter(){
+      player.N.points=new  Decimal(0)
+      player.points=new  Decimal(0)
+      setBuyableAmount('N',11,new Decimal(0))
+      setBuyableAmount('N',12,new Decimal(0)) 
+      setBuyableAmount('N',21,new Decimal(0))
+    },
+},
+201: {  
+    name: "Upgrader alpha",
+    challengeDescription: "Point gain is always 1.",
+    canComplete(){return player.N.points.gte(new Decimal("1e777").pow(new Decimal(1).div(player.UF.CP.add(5).log(5).pow(0.15))))},
+        goalDescription(){return format(new Decimal("1e777").pow(new Decimal(1).div(player.UF.CP.add(5).log(5).pow(0.15))))+ " Numbers"},
+rewardDescription(){return "Factor alpha is greater."},
+  unlocked(){return player.UF.canupa.gte(1)&&player.UF.page==2},
+  onEnter(){
+      player.N.points=new  Decimal(0)
+      player.points=new  Decimal(0)
+      setBuyableAmount('N',11,new Decimal(0))
+      setBuyableAmount('N',12,new Decimal(0)) 
+      setBuyableAmount('N',21,new Decimal(0))
+    },
+},
+202: {  
+    name: "Upgrader beta",
+    challengeDescription: "Factor beta effect is divide instead of multiple.",
+    canComplete(){return player.N.points.gte(new Decimal("1e715").pow(new Decimal(1).div(player.UF.CP.add(5).log(5).pow(0.15))))},
+        goalDescription(){return format(new Decimal("1e715").pow(new Decimal(1).div(player.UF.CP.add(5).log(5).pow(0.15))))+ " Numbers"},
+rewardDescription(){return "Factor beta is greater."},
+  unlocked(){return player.UF.canupb.gte(1)&&player.UF.page==2},
   onEnter(){
       player.N.points=new  Decimal(0)
       player.points=new  Decimal(0)
@@ -2247,7 +2286,15 @@ update(diff){
     let mpgain = new Decimal(buyableEffect('UF',11))
     let cost1  = new Decimal("ee20")
     let base1  = new Decimal("2")
+    let CPgain= new Decimal("0")
+    let CPgainstart = new Decimal("1e46")
+    let CPgainbase = new Decimal("10")
+    let bestN= new Decimal("0")
    player.UF.mp=player.UF.mp.plus(mpgain.times(diff))
+   if(inChallenge('UF',122)&&player.N.points.gte(bestN)) bestN=player.N.points
+   if(bestN.gte(1e46)) CPgain=bestN.div(CPgainstart).times(10).log(CPgainbase)
+player.UF.CP=player.UF.CP.add(CPgain.times(diff))
+player.UF.CPgain=CPgain
    if(hasUpgrade('UF',33))  player.UF.cost1 = new Decimal("ee20").pow(new Decimal(1).div(player.E.points.add(1).log(10).add(1).log(10).add(1).times(2).pow(1.25)).pow(new Decimal(1).div(buyableEffect('UF',21))))
    else if(hasMilestone('MS',600))  player.UF.cost1 = new Decimal("ee20").pow(new Decimal(1).div(player.E.points.add(1).log(10).add(1).log(10).add(1).times(2).pow(1.25)))
    else if(hasMilestone('UF',585555)) player.UF.cost1 = new Decimal("ee20").pow(new Decimal(1).div(player.E.points.add(1).log(10).add(1).log(10).add(1)))
@@ -2271,7 +2318,7 @@ clickables:{
          
             player.UF.canup2=new Decimal(1) 
         },
-        unlocked(){return hasUpgrade('N',34)&&!player.UF.canup2.gte(1)},
+        unlocked(){return hasUpgrade('N',34)&&!player.UF.canup2.gte(1)&&player.UF.page==1},
         style() { return {
             "font-size": "15px",
             "height": "300px",
@@ -2287,7 +2334,7 @@ clickables:{
          
             player.UF.canup3=new Decimal(1) 
         },
-        unlocked(){return hasUpgrade('N',34)&&!player.UF.canup3.gte(1)},
+        unlocked(){return hasUpgrade('N',34)&&!player.UF.canup3.gte(1)&&player.UF.page==1},
         style() { return {
             "font-size": "15px",
             "height": "300px",
@@ -2298,7 +2345,7 @@ clickables:{
     },
     112:{
         display() {return "Explore A New Challenge.<br>Req: Reach 1e314 Numbers in No factor factor."},
-        canClick(){return hasUpgrade('N',34)&&inChallenge('F',22)},
+        canClick(){return hasUpgrade('N',34)&&inChallenge('F',22)&&player.UF.page==1},
         onClick(){
          
             player.UF.canup4=new Decimal(1) 
@@ -2314,7 +2361,7 @@ clickables:{
     },
     121:{
         display() {return "Explore A New Challenge.<br>Req: 500 Factors."},
-        canClick(){return player.F.points.gte(500)},
+        canClick(){return player.F.points.gte(500)&&player.UF.page==1},
         onClick(){
          
             player.UF.canup5=new Decimal(1) 
@@ -2331,7 +2378,7 @@ clickables:{
 
     122:{
         display() {return "Explore A New Challenge.<br>Req: Complete 5 upgrader."},
-        canClick(){return hasChallenge('UF',101)&&hasChallenge('UF',102)&&hasChallenge('UF',102)&&hasChallenge('UF',111)&&hasChallenge('UF',112)&&hasChallenge('UF',121)},
+        canClick(){return hasChallenge('UF',101)&&hasChallenge('UF',102)&&hasChallenge('UF',102)&&hasChallenge('UF',111)&&hasChallenge('UF',112)&&hasChallenge('UF',121)&&player.UF.page==1},
         onClick(){
          
             player.UF.canup6=new Decimal(1) 
@@ -2344,7 +2391,56 @@ clickables:{
             }
         
         }
+    },   
+    201:{
+        display() {return "Explore A New Challenge.<br>Req: Gain 1.5 chllenge point per second."},
+        canClick(){return player.N.points.gte("3.16e46")&&inChallenge('UF',122)},
+        onClick(){
+         
+            player.UF.canupa=new Decimal(1) 
+        },
+        unlocked(){return hasMilestone('I',3)&&!player.UF.canupa.gte(1)&&player.UF.page==2},
+        style() { return {
+            "font-size": "15px",
+            "height": "300px",
+            "width": "300px"
+            }
+        
+        }
     },
+    202:{
+        display() {return "Explore A New Challenge.<br>Req: Gain 1e730 Number in no factor factor."},
+        canClick(){return player.N.points.gte("1e730")&&inChallenge('F',22)},
+        onClick(){
+         
+            player.UF.canupb=new Decimal(1) 
+        },
+        unlocked(){return hasMilestone('I',3)&&!player.UF.canupb.gte(1)&&player.UF.page==2},
+        style() { return {
+            "font-size": "15px",
+            "height": "300px",
+            "width": "300px"
+            }
+        
+        }
+    },
+    10001:{
+        display() {return "<"},
+        canClick(){return player.UF.page.gte(2)},
+        onClick(){
+            player.UF.page= player.UF.page.minus(1)
+        },
+        unlocked(){return hasMilestone('I',3)},     
+    },
+    10002:{
+        display() {return ">"},
+        canClick(){return !player.UF.page.gte(2)},
+        onClick(){
+            player.UF.page= player.UF.page.add(1)
+        },
+        unlocked(){return hasMilestone('I',3)},     
+    },
+    
 },
 tabFormat: {
     "Milestones":{
@@ -2434,6 +2530,25 @@ tabFormat: {
       "challenges",
     ]
   },
+  "Challenge point":{
+    unlocked(){return hasMilestone('I',3)&&player.X.points.gte(1)},
+    content:[
+  "main-display",
+    "blank",
+  ["prestige-button",function(){return ""}],
+  "blank",
+  "resource-display",
+  "blank",
+  ["display-text",function(){
+
+    let s = ""
+    s+="You are gaining " + format(player.UF.CPgain) + " Challenge point per second (based on current Number in Meta upgrader.)<br>" 
+    s+="You have " + format(player.UF.CP) + " Challenge point, which make second page challenge req ^" + format(new Decimal(1).div(player.UF.CP.add(5).log(5).pow(0.15)))+"<br>" 
+    return s
+  }],
+  "blank",
+
+    ]},
 
 },
 microtabs: {
@@ -2482,9 +2597,12 @@ microtabs: {
         },
         "Upgrade challenge": {
             content: [
-                ["row",[ ["challenge",101], ["clickable",102],["challenge",102],]],
-                ["row",[ ["challenge",111], ["clickable",111],["challenge",112],["clickable",112],]],
-                ["row",[ ["challenge",121], ["clickable",121],["challenge",122], ["clickable",122],]],
+                ["row",[["challenge",101], ["clickable",102],["challenge",102],]],
+                ["row",[["challenge",111], ["clickable",111],["challenge",112],["clickable",112],]],
+                ["row",[["challenge",121], ["clickable",121],["challenge",122], ["clickable",122],]],
+                ["row",[["challenge",201], ["clickable",201],["challenge",202], ["clickable",202],]],
+                ["row",[["clickable",10001],"blank",["clickable",10002]]],
+
             ],
             unlocked(){
                     return player.X.points.gte(1)
@@ -2708,7 +2826,8 @@ addLayer("F", {
             title: "Factor Alpha",
             description: "Boost points and numbers based on factors.",
             effect() {
-                if(player.X.points.gte(1)&&hasMilestone('F',56))  return player.F.points.pow(1.5).add(1)
+                if(player.X.points.gte(1)&&hasChallenge('UF',201))  return player.F.points.pow(player.F.points.pow(0.2)).add(1)
+              else  if(player.X.points.gte(1)&&hasMilestone('F',56))  return player.F.points.pow(1.5).add(1)
                 if(player.F.points.pow(player.F.points.pow(0.02)).add(1).gte("ee18"))return new Decimal("ee18")
                 if (hasUpgrade('UF',71)&&challengeCompletions('UF',21)>1) return player.F.points.pow(player.F.points.pow(0.02)).add(1)
                 if (hasUpgrade('UF',71))  return player.F.points.pow(1e6).add(1)
@@ -2734,6 +2853,7 @@ addLayer("F", {
             effect() {
            
                 if (inChallenge('F',22)) return 1 
+                if(player.X.points.gte(1)&&hasChallenge('UF',202)) return player.N.points.pow(0.22).add(1)
                 if(player.X.points.gte(1)&&hasUpgrade('N',32)) return player.N.points.pow(0.16).add(1)
                 if(player.X.points.gte(1)&&hasUpgrade('F',24)) return player.N.points.pow(0.12).add(1)
                 if(player.X.points.gte(1)) return player.N.points.pow(0.1).add(1)
@@ -3004,6 +3124,14 @@ addLayer("F", {
                 return hasMilestone('I',1)&&player.X.points.gte(1)
             },
             },
+            104: {
+                title: "Number booster",
+                description: "Number ^1.0777" ,
+                cost: new Decimal(781.25),
+                unlocked(){
+                    return hasMilestone('I',3)&&player.X.points.gte(1)
+                },
+                },
 },
     challenges: {
         11: {
