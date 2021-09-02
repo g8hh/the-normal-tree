@@ -204,34 +204,21 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
                 if(player.X.points.gte(1)) return new Decimal(2e6)
             else    return new Decimal(5)},
             effect() {
-                if(hasChallenge('UF',122))return new Decimal("1e75")
-                if (player.N.points.gte("1e325")&&player.X.points.gte(1)&&hasChallenge('UF',102))return new Decimal("1e65")
-                if(hasChallenge('UF',102))  return player.N.points.tetrate(0.4).pow(0.5).add(1)
-                if (inChallenge("F",32)) return 1
-                if (inChallenge("F",13)) return 1
-                if (inChallenge("F",12)) return 1
-                if (player.N.points.gte( 1e200)&&player.X.points.gte(1))return new Decimal("1e40")
-                if(player.X.points.gte(1)&&hasUpgrade("F",23))  return player.N.points.tetrate(0.4).pow(0.5).add(1)
-                if (player.N.points.gte( 1.9306977e34)&&player.X.points.gte(1))return new Decimal("1e12")
-                if(player.X.points.gte(1)&&hasUpgrade("N",21))  return player.N.points.tetrate(0.7).pow(0.5).add(1)
+                if(hasChallenge('UF',122)) return new Decimal("1e75")
+                if(hasChallenge('UF',102)) return player.N.points.tetrate(0.4).pow(0.5).add(1).min(1e65)
+                if (inChallenge("F",32)||inChallenge("F",13)||inChallenge("F",12)) return 1
+                if(player.X.points.gte(1)&&hasUpgrade("F",23))  return player.N.points.tetrate(0.4).pow(0.5).add(1).min(1e40)
+                if(player.X.points.gte(1)&&hasUpgrade("N",21))  return player.N.points.tetrate(0.7).pow(0.5).add(1).min(1e12)
                 if(player.X.points.gte(1)) return player.N.points.tetrate(0.5).pow(0.5).add(1)
                 if(inChallenge('NN',11)||hasChallenge('NN',11))return new Decimal("1")
                 if(hasUpgrade("NN",15)) return 1e70
-                if (inChallenge("F",33)) return 1
-                if (inChallenge("F",32)) return 1
-                if (inChallenge("F",23)) return 1
                 if (inChallenge("F",21)) return 1000
-                if (inChallenge("F",12)) return 1
-                if (inChallenge("F",13)) return 1
+                if (inChallenge("F",12)||inChallenge("F",13)||inChallenge("F",23)||inChallenge("F",32)||inChallenge("F",33)) return 1
                 if (inChallenge("F",41)|inChallenge('F',43)) return 10
-                if (player.N.points >=1e56&&hasUpgrade("F",23)&& !inChallenge('F',42)&& !inChallenge('F',43)) return 1e35
-                if(hasUpgrade("F",23)&& !inChallenge('F',42)&& !inChallenge('F',43)) return player.N.points.pow(0.625).add(1)
-                if (player.N.points >=1e24) return 1e15
-                if(hasUpgrade("N",24)) return player.N.points.pow(0.625).add(1)
-                if (player.N.points >=20235209214) return 5000000
-                if(hasUpgrade("N",22)) return player.N.points.pow(0.65).add(1)
-                if (player.N.points >=4641588) return 100000
-                if(hasUpgrade("N",21)) return player.N.points.pow(0.75).add(1)
+                if(hasUpgrade("F",23)&&!inChallenge('F',42)&&!inChallenge('F',43)) return player.N.points.pow(0.625).add(1).min(1e35)
+                if(hasUpgrade("N",24)) return player.N.points.pow(0.625).add(1).min(1e15)
+                if(hasUpgrade("N",22)) return player.N.points.pow(0.65).add(1).min(5e6)
+                if(hasUpgrade("N",21)) return player.N.points.pow(0.75).add(1).min(1e5)
                 if(hasUpgrade("N",15)) return 1000
                 else return player.N.points.pow(0.5).add(1)
             },
@@ -249,28 +236,20 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
           
             effect() {
                 if(hasChallenge('UF',122))return new Decimal("1e100")
-                if (player.points.gte(6.579332e181)&&player.X.points.gte(1)&&hasChallenge('UF',111))return new Decimal("1e100")
-                if(hasChallenge('UF',111))  return player.points.tetrate(0.55).add(1)
+                if(hasChallenge('UF',111))  return player.points.tetrate(0.55).add(1).min(1e100)
                 if (inChallenge("F",32)) return 1
-                if (player.points.gte( 8.1113083e90)&&player.X.points.gte(1))return new Decimal("1e50")
-                if(player.X.points.gte(1)&&hasUpgrade("N",25))  return player.points.tetrate(0.55).add(1)
+                if(player.X.points.gte(1)&&hasUpgrade("N",25))  return player.points.tetrate(0.55).add(1).min(1e50)
                 if(player.X.points.gte(1)&&hasUpgrade("N",22))  return player.points.tetrate(0.7).pow(0.5).add(1)
                 if(player.X.points.gte(1)) return player.points.tetrate(0.5).pow(0.5).add(1)
                 if(inChallenge('NN',11)||hasChallenge('NN',11))return new Decimal("1")
                 if(hasUpgrade("NN",15)) return 1e70
-                if (inChallenge("F",33)) return 1
-                if (inChallenge("F",32)) return 1
-                if (inChallenge("F",23)) return 30
-                if (inChallenge("F",21)) return 30
+                if (inChallenge("F",33)||inChallenge("F",32)) return 1
+                if (inChallenge("F",21)||inChallenge("F",23)) return 30
                 if (inChallenge("F",41)|inChallenge('F',43)) return 10
-                if (player.points >= 2.91e111&&!inChallenge('F',42)&& !inChallenge('F',43)) return 1e35
-                if(hasUpgrade("N",35)) return player.points.pow(0.314).add(1)
-                if (player.points >= 7.0328889e+31&&!inChallenge('F',42)&& !inChallenge('F',43)) return 1e10
-                if(hasUpgrade("F",14) && !inChallenge('F',42)) return player.points.pow(0.314).add(1)
-                if (player.points >= 4.60e15) return 50000
-        if(hasUpgrade("N",23)) return player.points.pow(0.3).add(1)
-        if(hasUpgrade("N",15)) return 30
-        else return player.points.pow(0.25).add(1)
+        if(hasUpgrade("N",35)) return player.points.pow(0.314).add(1).min(1e35)
+        if(hasUpgrade("F",14) && !inChallenge('F',42)) return player.points.pow(0.314).add(1).min(1e10)
+        if(hasUpgrade("N",23)) return player.points.pow(0.3).add(1).min(5e4)
+        else return player.points.pow(0.25).add(1).min(30)
 
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
@@ -289,24 +268,17 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
                 if (player.N.points.gte("1e130")&&player.X.points.gte(1)&&hasChallenge('UF',112))return new Decimal("1e65")
                 if(hasChallenge('UF',112))  return player.points.tetrate(0.5).add(1)
                 if (inChallenge("F",32)) return 1
-                if (player.points.gte(1e125)&&player.X.points.gte(1))return new Decimal("1e50")
-                if(player.X.points.gte(1)&&hasUpgrade("N",23))  return player.points.tetrate(0.4).add(1)
+                if(player.X.points.gte(1)&&hasUpgrade("N",23))  return player.points.tetrate(0.4).add(1).min(1e50)
                 if(player.X.points.gte(1)) return player.points.tetrate(0.25).add(1)
                 if(inChallenge('NN',11)||hasChallenge('NN',11))return new Decimal("1")
                 if(hasUpgrade("NN",15)) return 1e50
-                if (inChallenge("F",33)) return 1
-                if (inChallenge("F",32)) return 1
-                if (inChallenge("F",21)) return 20
-                if (inChallenge("F",23)) return 20
+                if (inChallenge("F",32)||inChallenge("F",33)) return 1
+                if (inChallenge("F",23)||inChallenge("F",21)) return 20
                 if (inChallenge("F",41)|inChallenge('F',43)) return 10
-                if (player.points >= 2.15e83) return 1e25
-                if(hasUpgrade("N",34)) return player.points.pow(0.3).add(1)
-                if (player.points >= 4.64e26) return 1e8
-                if(hasUpgrade("N",25)) return player.points.pow(0.3).add(1)
-                if (player.points >= 471556031) return 400
-                if(hasUpgrade("N",21)) return player.points.pow(0.3).add(1)
-                if(hasUpgrade("N",15)) return 20
-                else return player.points.add(1).pow(0.2)
+                if(hasUpgrade("N",34)) return player.points.pow(0.3).add(1).min(1e25)
+                if(hasUpgrade("N",25)) return player.points.pow(0.3).add(1).min(1e8)
+                if(hasUpgrade("N",21)) return player.points.pow(0.3).add(1).min(400)
+                else return player.points.add(1).pow(0.2).min(20)
               
 
             },
@@ -6386,10 +6358,8 @@ addLayer("M", {
     baseAmount() { return player.E.points },  // A function to return the current amount of baseResource.
 
     requires(){if(player.O.points.gte(1)&&!player.M.points.gte(1)) return new Decimal("1e20")
-    else return new Decimal("1e15")} ,              // The amount of the base needed to  gain 1 of the prestige currency.
-                                            // Also the amount required to unlock the layer.
-
-    type: "static",                         // Determines the formula used for calculating prestige currency.
+    else return new Decimal("1e15")}, 
+    type: "static",                      
     exponent(){
         if(hasMilestone('O',369))   return 1.9
         else return 1.95 } ,     
@@ -6407,26 +6377,10 @@ addLayer("M", {
     layerShown() { return hasMilestone('E',1e15) },          // Returns a bool for if this layer's node should be visible in the tree.
 
     milestones: {
-        1: {
-            requirementDescription: "1 Mathematician",
-            effectDescription: "Keep Negative numbers, Infinity challenge, UF upgrade on reset. Unlock new UF upgrade.",
-            done() { return player.M.points.gte(1) },
-        },
-        2: {
-            requirementDescription: "2 Mathematician",
-            effectDescription: "Keep IP content on reset.",
-            done() { return player.M.points.gte(2) },
-        },
-        3: {
-            requirementDescription: "3 Mathematician",
-            effectDescription: "Factor are cheaper.",
-            done() { return player.M.points.gte(3) },
-        },
-        4: {
-            requirementDescription: "4 Mathematician",
-            effectDescription: "Keep UF buyable on row 4 reset .",
-            done() { return player.M.points.gte(4) },
-        },
+        1: {requirementDescription: "1 Mathematician", effectDescription: "Keep Negative numbers, Infinity challenge, UF upgrade on reset. Unlock new UF upgrade.", done() {return player.M.points.gte(1)},},
+        2: {requirementDescription: "2 Mathematician", effectDescription: "Keep IP content on reset.", done() {return player.M.points.gte(2)}},
+        3: {requirementDescription: "3 Mathematician", effectDescription: "Factor are cheaper.", done() {return player.M.points.gte(3)}},
+        4: {requirementDescription: "4 Mathematician", effectDescription: "Keep UF buyable on row 4 reset .", done() { return player.M.points.gte(4) },},
         },
         challenges:{
             11: {
