@@ -2188,8 +2188,14 @@ base:1.5,
         53: {
             requirementDescription: "53rd milestone",
             unlocked() {return player[this.layer].points.gte(52)},
-            effectDescription() {return "unlock a layer"},
+            effectDescription() {return "First row super prestige upgrade is boosted."},
             done() { return player.m.points.gte(53) }
+        },
+        54: {
+            requirementDescription: "54th milestone",
+            unlocked() {return player[this.layer].points.gte(52)},
+            effectDescription() {return "Prestige boost is cheaper and unlock 2 super prestige upgrade.."},
+            done() { return player.m.points.gte(54) }
         },
     },
 
@@ -2275,7 +2281,7 @@ addLayer("mm", {
     resource: "meta milestones",            // The name of this layer's main prestige resource.
     row: 1,                                 // The row this layer is on (0 is the first row).
 symbol:"MM",
-    baseResource: "points",                 // The name of the resource your prestige gain is based on.
+    baseResource: "milestones",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.m.points },  // A function to return the current amount of baseResource.
 
     requires: new Decimal(43),              // The amount of the base needed to  gain 1 of the prestige currency.
@@ -2383,6 +2389,7 @@ return gain
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
         let gain = new Decimal(1) 
         gain=gain.times(tmp.pb.effect)
+        if(hasUpgrade('sp',23))   gain=gain.times(1.01)
         return gain
     },
 
@@ -2605,6 +2612,7 @@ return gain
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=new Decimal(50) 
 if(player.m.points.gte(31)) base=new Decimal(75) 
+if(player.m.points.gte(53)) base=new Decimal(100) 
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(2)).pow(0.9).add(1))
                 return ret;
             },
@@ -2617,7 +2625,7 @@ if(player.m.points.gte(31)) base=new Decimal(75)
             unlocked() { return true}, // The upgrade is only visible when this is true
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=new Decimal(15) 
-
+                if(player.m.points.gte(53)) base=new Decimal(22.5) 
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(2)).pow(0.8).add(1))
                 return ret;
             },
@@ -2630,7 +2638,7 @@ if(player.m.points.gte(31)) base=new Decimal(75)
             unlocked() { return player.m.points.gte(30)}, // The upgrade is only visible when this is true
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=new Decimal(3) 
-
+                if(player.m.points.gte(53)) base=new Decimal(3.3) 
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(2)).pow(0.8).add(1))
                 return ret;
             },
@@ -2645,6 +2653,7 @@ if(player.m.points.gte(31)) base=new Decimal(75)
 				let base=new Decimal(1.1) 
                 if(player.m.points.gte(35)) base=new Decimal(1.2) 
                 if(player.m.points.gte(45)) base=new Decimal(1.5) 
+                if(player.m.points.gte(53)) base=new Decimal(1.75) 
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(2)).pow(0.8).add(1))
                 return ret;
             },
@@ -2662,7 +2671,12 @@ if(player.m.points.gte(31)) base=new Decimal(75)
             description: "Milestone cost scaling start 0.6 later.",
             cost: new Decimal("1e363"),
             unlocked() { return player.m.points.gte(43)}, // The upgrade is only visible when this is true
-	
+        }, 
+        23: {
+			title: "Super Prestige Upgrade 23",
+            description: "Prestige point gain is raise to a power of 1.01.",
+            cost: new Decimal("1e2660"),
+            unlocked() { return player.m.points.gte(54)}, // The upgrade is only visible when this is true
         }, 
     },
     doReset(resettingLayer) {    
@@ -2701,10 +2715,14 @@ effect(){
 effectDescription(){return "prestige points is powered by "+format(tmp.pb.effect,4)},
     type: "static",                         // Determines the formula used for calculating prestige currency.
     exponent:function(){
-        if(player.pb.points.gte(13))       return new Decimal(1.16).add(player.pb.points.times(player.pb.points.times(0.0022))).pow(1.2)
-        if(player.pb.points.gte(9))       return new Decimal(1.16).add(player.pb.points.times(0.02)).pow(1.2)
-        if(player.pb.points.gte(7))       return new Decimal(1.16).add(player.pb.points.times(0.02))
-      return new Decimal(1.16)
+        let exponent=new Decimal(1.16)
+        let div=new Decimal(1)
+        if(player.pb.points.gte(7))      exponent= new Decimal(1.16).add(player.pb.points.times(0.02))
+        if(player.pb.points.gte(9))      exponent= new Decimal(1.16).add(player.pb.points.times(0.02)).pow(1.2)
+        if(player.pb.points.gte(13))     exponent= new Decimal(1.16).add(player.pb.points.times(player.pb.points.times(0.0022))).pow(1.2)
+        if(player.m.points.gte(54))     div= div.times(1.025)
+       
+      return exponent.div(div)
 },  
     branches(){return ['P']},                       
 base(){
