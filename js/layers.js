@@ -2846,41 +2846,7 @@ addLayer("hp", {
             },
    
         }) 
-        addLayer("ap", {
-            startData() { return {                  // startData is a function that returns default data for a layer. 
-                unlocked: true,                     // You can add more variables here to add them to your layer.
-                points: new Decimal(0),             // "points" is the internal name for the main resource of the layer.
-            }},
-            position:-100,
-        symbol:"AP",
-            color: "#A0E0E0",                       // The color for this layer, which affects many elements.
-            resource: "atomic prestige points",            // The name of this layer's main prestige resource.
-            row: 4,                                 // The row this layer is on (0 is the first row).
-        
-            baseResource: "Hyper prestige points",                 // The name of the resource your prestige gain is based on.
-            baseAmount() { return player.hp.points },  // A function to return the current amount of baseResource.
-        
-            requires: new Decimal(3e66),              // The amount of the base needed to  gain 1 of the prestige currency.
-             branches(){return ['hp']},                                  // Also the amount required to unlock the layer.
-        
-            type: "normal",                         // Determines the formula used for calculating prestige currency.
-            exponent(){
-              
-                return new Decimal(0.04)},                      // "normal" prestige gain is (currency^exponent).
-        
-            gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
-           let gain = new Decimal(1)  
-      
-        return gain
-            },
-            gainExp() {                             // Returns the exponent to your gain of the prestige resource.
-                return new Decimal(1)
-            },
-
-            layerShown() { return player.m.points.gte(52)},  
-          
-   
-        }) 
+  
 addLayer("ach", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
