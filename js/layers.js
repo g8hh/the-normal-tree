@@ -2194,7 +2194,7 @@ base:1.5,
         54: {
             requirementDescription: "54th milestone",
             unlocked() {return player[this.layer].points.gte(52)},
-            effectDescription() {return "Prestige boost is cheaper and unlock 2 super prestige upgrade.."},
+            effectDescription() {return "Prestige boost is cheaper and unlock 2 super prestige upgrade."},
             done() { return player.m.points.gte(54) }
         },
         55: {
@@ -2410,6 +2410,7 @@ return gain
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=new Decimal(4) 
                 if(player.m.points.gte(26))base=new Decimal(8.25) 
+                if(inChallenge('hp',11))base=new Decimal(1) 
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.25).add(2)).add(1)).pow(0.55)
             if(player.m.points.gte(11)) ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.5).add(2)).add(1)).pow(0.55)
             if(player.m.points.gte(48)) ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.5).add(2)).add(1)).pow(0.55).pow(1.05)
@@ -2425,6 +2426,7 @@ return gain
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=new Decimal(2) 
                 if(player.m.points.gte(27))base=new Decimal(2.5) 
+                if(inChallenge('hp',11))base=new Decimal(1) 
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.2).add(2)).add(1)).pow(0.7)
                 if(player.m.points.gte(12)) ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.6).add(2)).add(1))
                 if(player.m.points.gte(48)) ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(0.6).add(2)).add(1)).pow(1.05)
@@ -2617,8 +2619,10 @@ return gain
             unlocked() { return true}, // The upgrade is only visible when this is true
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=new Decimal(50) 
+               
 if(player.m.points.gte(31)) base=new Decimal(75) 
 if(player.m.points.gte(53)) base=new Decimal(100) 
+if(inChallenge('hp',11))base=new Decimal(1) 
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(2)).pow(0.9).add(1))
                 return ret;
             },
@@ -2631,7 +2635,9 @@ if(player.m.points.gte(53)) base=new Decimal(100)
             unlocked() { return true}, // The upgrade is only visible when this is true
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=new Decimal(15) 
+        
                 if(player.m.points.gte(53)) base=new Decimal(22.5) 
+                if(inChallenge('hp',11))base=new Decimal(1) 
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(2)).pow(0.8).add(1))
                 return ret;
             },
@@ -2682,6 +2688,12 @@ if(player.m.points.gte(53)) base=new Decimal(100)
 			title: "Super Prestige Upgrade 23",
             description: "Prestige point gain is raise to a power of 1.003 per prestige buyable.",
             cost: new Decimal("1e2660"),
+            unlocked() { return player.m.points.gte(54)}, // The upgrade is only visible when this is true
+        }, 
+        24: {
+			title: "Super Prestige Upgrade 24",
+            description: "Unlock hyper challenge.",
+            cost: new Decimal("1e2880"),
             unlocked() { return player.m.points.gte(54)}, // The upgrade is only visible when this is true
         }, 
     },
@@ -2821,6 +2833,7 @@ addLayer("hp", {
                     unlocked() { return true}, // The upgrade is only visible when this is true
                     effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
                         let base=new Decimal(80) 
+                        if(inChallenge('hp',11))base=new Decimal(1) 
                         let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(1.5).add(12)).pow(0.9).add(1))
                         return ret;
                     },
@@ -2833,6 +2846,7 @@ addLayer("hp", {
                     unlocked() { return true}, // The upgrade is only visible when this is true
                     effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
                         let base=new Decimal(1e6) 
+                        if(inChallenge('hp',11))base=new Decimal(1) 
                         let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.pow(2).add(12)).pow(0.92).add(1))
                         return ret;
                     },
@@ -2868,7 +2882,15 @@ addLayer("hp", {
                 if(player.m.points.gte(52))return 1e4;
                 return 0;
             },
-   
+            challenges: {
+                11: {
+                    name: "Two upgradeless",
+                    challengeDescription: "First two upgrade in all prestige layer are disabled.",
+                    canComplete: function() {return player.points.gte(1e196)},
+                    goalDescription: "1e196 point",
+                },
+             
+            }
         }) 
   
 addLayer("ach", {
