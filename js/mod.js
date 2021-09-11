@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "3.50",
+	num: "3.55",
 	name: "milestone tree?",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v3.55</h3><br>
+- Added 5 milestone.<br>
+- Added 1 upgrade.<br>
+- Endgame: 55 milestones.<br>
 <h3>v3.50</h3><br>
 - Added 11 milestone.<br>
 - Added 4 upgrade.<br>
@@ -215,7 +219,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-return player.m.points.gte(50)}
+return player.m.points.gte(55)}
 
 
 

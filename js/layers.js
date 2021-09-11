@@ -2197,6 +2197,12 @@ base:1.5,
             effectDescription() {return "Prestige boost is cheaper and unlock 2 super prestige upgrade.."},
             done() { return player.m.points.gte(54) }
         },
+        55: {
+            requirementDescription: "55th milestone",
+            unlocked() {return player[this.layer].points.gte(53)},
+            effectDescription() {return "Current endgame."},
+            done() { return player.m.points.gte(55) }
+        },
     },
 
     doReset(resettingLayer) {
@@ -2389,7 +2395,7 @@ return gain
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
         let gain = new Decimal(1) 
         gain=gain.times(tmp.pb.effect)
-        if(hasUpgrade('sp',23))   gain=gain.times(1.01)
+        if(hasUpgrade('sp',23))   gain=gain.times(new Decimal(1.003).pow(getBuyableAmount("P", 11)))
         return gain
     },
 
@@ -2674,7 +2680,7 @@ if(player.m.points.gte(53)) base=new Decimal(100)
         }, 
         23: {
 			title: "Super Prestige Upgrade 23",
-            description: "Prestige point gain is raise to a power of 1.01.",
+            description: "Prestige point gain is raise to a power of 1.003 per prestige buyable.",
             cost: new Decimal("1e2660"),
             unlocked() { return player.m.points.gte(54)}, // The upgrade is only visible when this is true
         }, 
