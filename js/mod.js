@@ -13,11 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1.7",
+	num: "0.3.1.7.1",
 	name: "AGAIN",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.3.1.7.1</h3><br>
+- Rewrite 3 upgrade after 1 ???<br>
+- Endgame: 1.8e308 points and 1 ???.<br>
 <h3>v0.3.1.7</h3><br>
 - No because I am lazy.<br>
 - Endgame: 4 Infinity and 1 ???.<br>
@@ -365,6 +368,7 @@ function getPointGen() {
 	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
 	if(hasMilestone('F', 19))gain = gain.times(100)
 	if(inChallenge('UF', 201))gain = new Decimal(1)
+	if (hasMilestone('I', 4)) gain = gain.times(player.UF.CP.pow(4).add(1))
 	gain = gain.pow(getPointGenExp())
 	return gain
 }
@@ -419,7 +423,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.X.points.gte(1)&&player.I.points.gte(4)
+	return player.X.points.gte(1)&&player.points.gte(1.79e308)
 }
 
 

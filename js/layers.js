@@ -866,31 +866,30 @@ else return new Decimal("1e450000") },
         11: {
             title: "-1",
             description: "Number gain x1e4.",
-            cost: new Decimal(2),
+            cost(){
+                if(player.X.points.gte(1)) return new Decimal(200)
+            else    return new Decimal(2)},
+   
         },
         12: {
             title: "-2",
             description:"Negative numbers boost point gain.",
-            cost: new Decimal(5),
+            cost(){
+                if(player.X.points.gte(1)) return new Decimal(666)
+            else    return new Decimal(5)},
             effect() {
                 if(inChallenge('NN',11)||hasChallenge('NN',11))return new Decimal("1")
                 if(inChallenge('IP',32))return new Decimal("1")
                 if(inChallenge('IP',22))return new Decimal("1")
-                else if (player.NN.points.gte("1e1000")) return new Decimal("1e5000")
-                else if(hasUpgrade('IP',22)) return player.NN.points.add(1).pow(5)
-                else if (player.NN.points >=1e250) return new Decimal("1e1500")
-                else if(hasUpgrade('NN',34)) return player.NN.points.add(1).pow(6)
-                else if (player.NN.points >=1e40) return new Decimal("1e600")
-                else if(hasUpgrade('NN',24)) return player.NN.points.add(1).pow(15)
-                else if (player.NN.points >=1e24) return 1e300
-                else if(hasUpgrade('NN',23)) return player.NN.points.add(1).pow(12.5)
-                else if (player.NN.points >=1e15) return 1e150
-                else if(hasUpgrade('NN',22)) return player.NN.points.add(1).pow(10)
-                else if (player.NN.points >=3981071705.53) return 1e72
+                if(player.X.points.gte(1))return player.NN.points.add(1).pow(3.1415926)
+                else if(hasUpgrade('IP',22)) return player.NN.points.add(1).pow(5).min("1e5000")
+                else if(hasUpgrade('NN',34)) return player.NN.points.add(1).pow(6).min("1e1500")
+                else if(hasUpgrade('NN',24)) return player.NN.points.add(1).pow(15).min("1e600")
+                else if(hasUpgrade('NN',23)) return player.NN.points.add(1).pow(12.5).min(1e300)
+                else if(hasUpgrade('NN',22)) return player.NN.points.add(1).pow(10).min(1e150)
                 
-                else if(hasUpgrade('NN',21)) return player.NN.points.pow(0.75).add(1).pow(10)
-                else if (player.NN.points >=1000000) return 1e30
-                else    return player.NN.points.pow(0.5).add(1).pow(10)
+                else if(hasUpgrade('NN',21)) return player.NN.points.pow(0.75).add(1).pow(10).min(1e72)
+                else    return player.NN.points.pow(0.5).add(1).pow(10).min(1e30)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
             unlocked(){
@@ -900,7 +899,8 @@ else return new Decimal("1e450000") },
         13: {
             title: "-3",
             description: " Points boost themselves",
-            cost: new Decimal(25),
+            cost(){
+            return new Decimal(25)},
             effect() {
                 if(inChallenge('NN',11)||hasChallenge('NN',11))return new Decimal("1")
                 if(inChallenge('IP',32))return new Decimal("1")
@@ -917,7 +917,9 @@ else return new Decimal("1e450000") },
     14: {
         title: "-4",
         description: "Negative Numbers boost themselves",
-        cost: new Decimal(15),
+        cost(){
+            if(player.X.points.gte(1)) return new Decimal(1e25)
+        else    return new Decimal(15)},
         effect() {
             if(inChallenge('NN',11)||hasChallenge('NN',11))return new Decimal("1")
             if(inChallenge('IP',32))return new Decimal("1")
@@ -1042,9 +1044,8 @@ else return new Decimal("1e450000") },
     milestones: {
         3: {
             requirementDescription: "3 Negative numbers",
-            effectDescription(){ "'+' effect is always 1e50, '-' effect is always 1e30 and '/' effect is always 1.5"} , 
-            effectDescription: "Keep master +, -, x, /, '2', '3', '4' and '19' on ALL resets.",
-            done() { return player.NN.points.gte(3)},
+            effectDescription(){ return"Keep master +, -, x, /, '2', '3', '4' and '19' on ALL resets.<br> '+' effect is always 1e50, '-' effect is always 1e30 and '/' effect is always 1.5"} ,             done() { return player.NN.points.gte(3)&&!player.x.points.gte(1)},
+            done() { return player.NN.points.gte(3) }
 
         },
         4e21: {
@@ -1334,6 +1335,8 @@ else return  "Upgrade Factor"}, // This is optional, only used in a few places, 
         if (hasMilestone('I',2)&&player.X.points.gte(1)&& resettingLayer=="I") keep.push("canup4")
         if (hasMilestone('I',2)&&player.X.points.gte(1)&& resettingLayer=="I") keep.push("canup5")
         if (hasMilestone('I',2)&&player.X.points.gte(1)&& resettingLayer=="I") keep.push("canup6")
+        if (hasMilestone('I',2)&&player.X.points.gte(1)&& resettingLayer=="I") keep.push("canupa")
+        if (hasMilestone('I',2)&&player.X.points.gte(1)&& resettingLayer=="I") keep.push("canupb")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
     },
     milestones: {
@@ -3508,7 +3511,9 @@ addLayer("I", {
         },
         4: {
             requirementDescription: "4 Infinity",
-            effectDescription: "keep Factor Upgrade, Negative number Upgrade and Negative number milestone on reset, Negative number x10.",
+            effectDescription() {
+                if(player.X.points.gte(1))    return "keep Factor Upgrade, Negative number Upgrade and Negative number milestone on reset, challenge point boost point gain."
+                else  return "keep Factor Upgrade, Negative number Upgrade and Negative number milestone on reset, Negative number x10."},
             done() { return player.I.points.gte(4) }
         },
         5: {
@@ -3558,7 +3563,7 @@ addLayer("I", {
         },
         12: {
             name: "IC2",
-            challengeDescription: "Number buyable is no effect. ",
+            challengeDescription: "Number buyable have no effect. ",
             canComplete(){return player.N.points.gte("1.8e308")},
             goalDescription: "1.80e308 Numbers",
             rewardDescription(){return "Number ^1.2."},
@@ -3824,6 +3829,7 @@ addLayer("A", {
                 if (hasMilestone('UF',1)) return true
             }
         },
+  
         21: {
             name: "Base++",
             tooltip:"Get 12 Number upgrade.",
@@ -3881,7 +3887,7 @@ addLayer("A", {
                 if (hasUpgrade('N',43)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },
         32:{
@@ -3891,7 +3897,7 @@ addLayer("A", {
                 if (hasMilestone('I',2)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },
         33:{
@@ -3901,7 +3907,7 @@ addLayer("A", {
                 if (hasMilestone('I',3)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },
         34:{
@@ -3911,7 +3917,7 @@ addLayer("A", {
                 if (player.points.gte(1.79e308)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },
         35:{
@@ -3921,7 +3927,7 @@ addLayer("A", {
                 if (player.N.points.gte(1.79e258)&&inChallenge('I',12)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },  
         36:{
@@ -3931,7 +3937,7 @@ addLayer("A", {
                 if (player.FS.points.gte(1)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },  
         37:{
@@ -3941,7 +3947,7 @@ addLayer("A", {
                 if (hasUpgrade('NN',13)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },  
         41:{
@@ -3951,7 +3957,7 @@ addLayer("A", {
                 if (player.NN.points.gte(1e50)&&inChallenge('I',31)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },  
         42:{
@@ -3961,7 +3967,7 @@ addLayer("A", {
                 if (player.IP.points.gte(1)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },  
         43:{
@@ -3971,7 +3977,7 @@ addLayer("A", {
                 if (hasChallenge('IP',11)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },  
         44:{
@@ -3981,7 +3987,7 @@ addLayer("A", {
                 if (hasUpgrade('IP',33)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         },  
         45:{
@@ -3991,7 +3997,7 @@ addLayer("A", {
                 if (hasUpgrade('F',36)) return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         }, 
         46:{
@@ -4001,7 +4007,7 @@ addLayer("A", {
                 if (player.N.points.gte("1e25000")&&inChallenge('I',21))  return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         }, 
         47:{
@@ -4011,7 +4017,7 @@ addLayer("A", {
                 if (hasMilestone('MS',1))  return true
             },
             unlocked(){
-                return (hasMilestone('I',1)||hasMilestone('MS',1))
+                return (hasMilestone('I',1)||hasMilestone('MS',1)||player.X.points.gte(1))
             }
         }, 
         51:{
@@ -4021,7 +4027,7 @@ addLayer("A", {
                 if (player.IP.points.gte("1e11111"))  return true
             },
             unlocked(){
-                return hasMilestone('MS',1)
+                return hasMilestone('MS',1)||player.X.points.gte(1)
             }
         }, 
         52:{
@@ -4031,7 +4037,7 @@ addLayer("A", {
                 if (player.MS.Prestige.gte("1"))  return true
             },
             unlocked(){
-                return hasMilestone('MS',1)
+                return hasMilestone('MS',1)||player.X.points.gte(1)
             }
         }, 
         53:{
@@ -4041,7 +4047,7 @@ addLayer("A", {
                 if (hasChallenge('NN',22))  return true
             },
             unlocked(){
-                return hasMilestone('MS',1)
+                return hasMilestone('MS',1)||player.X.points.gte(1)
             }
         }, 
         54:{
@@ -4051,7 +4057,7 @@ addLayer("A", {
                 if (player.MS.Prestige2.gte("1"))  return true
             },
             unlocked(){
-                return hasMilestone('MS',1)
+                return hasMilestone('MS',1)||player.X.points.gte(1)
             }
         },
             55:{
@@ -4061,7 +4067,7 @@ addLayer("A", {
                     if (player.E.points.gte("1"))  return true
                 },
                 unlocked(){
-                    return hasMilestone('MS',1)
+                    return hasMilestone('MS',1)||player.X.points.gte(1)
                 }
         }, 
         56:{
@@ -4071,7 +4077,7 @@ addLayer("A", {
                 if (hasChallenge('NN',32))  return true
             },
             unlocked(){
-                return hasMilestone('MS',1)
+                return hasMilestone('MS',1)||player.X.points.gte(1)
             }
     }, 
     57:{
@@ -4081,7 +4087,7 @@ addLayer("A", {
             if (hasUpgrade('UF',32))  return true
         },
         unlocked(){
-            return hasMilestone('MS',1)
+            return hasMilestone('MS',1)||player.X.points.gte(1)
         }
 },
 61:{
@@ -4091,7 +4097,7 @@ addLayer("A", {
         if (hasMilestone('O',1))  return true
     },
     unlocked(){
-        return hasMilestone('O',1)||hasMilestone('M',1)
+        return hasMilestone('O',1)||hasMilestone('M',1)||player.X.points.gte(1)
     }
 },
 62:{
@@ -4101,7 +4107,7 @@ addLayer("A", {
         if (hasMilestone('M',1))  return true
     },
     unlocked(){
-        return hasMilestone('O',1)||hasMilestone('M',1)
+        return hasMilestone('O',1)||hasMilestone('M',1)||player.X.points.gte(1)
     }
 },
 63:{
@@ -4111,7 +4117,7 @@ addLayer("A", {
         if (hasMilestone('M',1)&&hasMilestone('O',1))  return true
     },
     unlocked(){
-        return hasMilestone('O',1)||hasMilestone('M',1)
+        return hasMilestone('O',1)||hasMilestone('M',1)||player.X.points.gte(1)
     }
 },
 
@@ -4122,7 +4128,7 @@ addLayer("A", {
         if (hasMilestone('M',1)&&hasMilestone('O',1))  return true
     },
     unlocked(){
-        return hasMilestone('O',1)||hasMilestone('M',1)
+        return hasMilestone('O',1)||hasMilestone('M',1)||player.X.points.gte(1)
     }
 },
 65:{
@@ -4132,7 +4138,7 @@ addLayer("A", {
         if (hasMilestone('MS',8e29))  return true
     },
     unlocked(){
-        return hasMilestone('O',1)||hasMilestone('M',1)
+        return hasMilestone('O',1)||hasMilestone('M',1)||player.X.points.gte(1)
     }
 },
 66:{
@@ -4142,7 +4148,7 @@ addLayer("A", {
         if (hasUpgrade('UF',43))  return true
     },
     unlocked(){
-        return hasMilestone('O',1)||hasMilestone('M',1)
+        return hasMilestone('O',1)||hasMilestone('M',1)||player.X.points.gte(1)
     }
 },
 67:{
@@ -4152,7 +4158,17 @@ addLayer("A", {
         if (hasMilestone('S',1))  return true
     },
     unlocked(){
-        return hasMilestone('O',1)||hasMilestone('M',1)
+        return hasMilestone('O',1)||hasMilestone('M',1)||player.X.points.gte(1)
+    }
+},
+71:{
+    name: "A new game",
+    tooltip:"Get 1 ???.",
+    done()  {
+        if (player.X.points.gte(1))  return true
+    },
+    unlocked(){
+        return player.X.points.gte(1)
     }
 },
     }
