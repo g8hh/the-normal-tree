@@ -189,17 +189,17 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
         11: {
             title: "1",
             description(){ 
-                if(hasChallenge('UF',101)) return "Points gain ^1.14"
-                if(hasUpgrade('UF',11)&&challengeCompletions('UF',21)>=1)  return "Points gain ^40."
-                if(hasUpgrade('UF',11))  return "Points gain ^4."
-                else return "Points gain x4."},
+                if(hasChallenge('UF',101)) return "Raise point gain to 1.14."
+                if(hasUpgrade('UF',11)&&challengeCompletions('UF',21)>=1)  return "Raise point gain to 40."
+                if(hasUpgrade('UF',11))  return "Raise point gain to 4."
+                else return "Quadruple point gain."},
                 cost(){
                     if(player.X.points.gte(1)) return new Decimal(1e6)
                 else    return new Decimal(2)},
         },
         12: {
             title: "2",
-            description:"Numbers boost point gain.",
+            description:"Gain more points based on numbers.",
             cost(){
                 if(player.X.points.gte(1)) return new Decimal(2e6)
             else    return new Decimal(5)},
@@ -229,7 +229,7 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
         },
         13: {
             title: "3",
-            description: "Points boost themselves",
+            description: "Points boost itself.",
             cost(){
                 if(player.X.points.gte(1)) return new Decimal(8e6)
             else    return new Decimal(20)},
@@ -259,7 +259,7 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
         },
         14: {
             title: "4",
-            description: "Points boost Numbers gain.",
+            description: "Gain more numbers based on points.",
             cost(){
                 if(player.X.points.gte(1)) return new Decimal(5e7)
             else    return new Decimal(60)},
@@ -291,10 +291,10 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
         15: {
             title: "5",
             description(){
-                if(player.N.points.gte("1e857")||(hasChallenge('UF',122)))   return "Number boost themselves.<br> Currently: 1.00e150x"
-                if(hasChallenge('UF',121))  return "Number boost themselves.<br> Currently: "+format(player.N.points.tetrate(0.175).add(1))+"x"
-                if(hasUpgrade('N',24))    return "Number boost themselves.<br> Currently: "+format(player.N.points.tetrate(0.15).add(1))+"x"
-                if(player.X.points.gte(1))   return "Number boost themselves.<br> Currently: "+format(player.N.points.tetrate(0.1).add(1))+"x"
+                if(player.N.points.gte("1e857")||(hasChallenge('UF',122)))   return "Numbers boost itself.<br> Currently: 1.00e150x"
+                if(hasChallenge('UF',121))  return "Numbers boost itself.<br> Currently: "+format(player.N.points.tetrate(0.175).add(1))+"x"
+                if(hasUpgrade('N',24))    return "Numbers boost itself.<br> Currently: "+format(player.N.points.tetrate(0.15).add(1))+"x"
+                if(player.X.points.gte(1))   return "Numbers boost itself.<br> Currently: "+format(player.N.points.tetrate(0.1).add(1))+"x"
               else  return "Boost '2', '3' and '4'."},
               cost(){
                 if(player.X.points.gte(1)) return new Decimal(5e8)
@@ -352,8 +352,8 @@ else if(hasUpgrade('N',24)&&player.X.points.gte(1)&&!inChallenge('UF',121))mult 
         24: {
             title: "9",
             description(){
-                if(player.X.points.gte(1))   return "Boost '5' and keep upgrade on reset. You can buy this upgrade while you are in Factor Challenge 1."
-              else  return "Remove the third hardcap of '2'.You can buy this upgrade while you are in Factor Challenge 4."},
+                if(player.X.points.gte(1))   return "Boost '5' and keep all number upgrade on reset. You can buy this upgrade while you are in Factor Challenge 1."
+              else  return "Remove the third hardcap of '2'. You can buy this upgrade while you are in Factor Challenge 4."},
          
             cost(){ 
                 if(player.F.activeChallenge!=11&&player.X.points.gte(1))return new Decimal(Infinity);
@@ -2671,58 +2671,58 @@ addLayer("F", {
     milestones: {
         1: {
             requirementDescription: "1 factor",
-            effectDescription: "Unlock 1 more number upgrade and factors boost numbers and points gain.",
+            effectDescription: "Unlock a new upgrade and Factors boost number and point gain.",
             done() { return player.F.points.gte(1) }
         },
         2: {
             requirementDescription: "2 factors",
-            effectDescription: "Unlock the first factor challenge",
+            effectDescription: "Unlock the first Factor challenge",
             done() { return player.F.points.gte(2)}
         },
        3: {
             requirementDescription: "3 factors",
-            effectDescription: "Unlock 2 more Number upgrade.",
+            effectDescription: "Unlock 2 more Number upgrades.",
             done() { return player.F.points.gte(3)&&player.X.points.gte(1)},
             unlocked() { return player.X.points.gte(1)}
         },
 
         4: {
             requirementDescription: "4 factors",
-            effectDescription: "Unlock 1 more Number upgrade.",
+            effectDescription: "Unlock another Number upgrade.",
             done() { return player.F.points.gte(4)&&!player.X.points.gte(1)},
             unlocked() { return !player.X.points.gte(1)}
         },
         5: {
             requirementDescription: "5 factors",
-            effectDescription: "Unlock factors upgrades and gain 100% of numbers on reset per second",
+            effectDescription: "Unlock Factor upgrades and gain 100% of numbers on reset per second",
             done() { return player.F.points.gte(5)||hasMilestone("MS", 2)}
         },
         8: {
             requirementDescription: "8 factors",
-            effectDescription: "Unlock another factor challenge and Number x2.",
+            effectDescription: "Unlock another Factor challenge and double number gain.",
             done() { return player.F.points.gte(8)}
         },
         12: {
             requirementDescription: "12 factors",
-            effectDescription: "Unlock another factor challenge",
+            effectDescription: "Unlock another Factor challenge",
             done() { return player.F.points.gte(12)}
         },
     
         19: {
             requirementDescription: "19 factors",
-            effectDescription: "Unlock another factor challenge, points x100",
+            effectDescription: "Unlock another Factor challenge and multiply point gain by 100.",
             done() { return player.F.points.gte(19)&&player.X.points.gte(1)},
             unlocked() { return player.X.points.gte(1)}
         },
         44: {
             requirementDescription: "44 factors",
-            effectDescription: "Unlock another factor challenge",
+            effectDescription: "Unlock another Factor challenge",
             done() { return player.F.points.gte(44)&&!player.X.points.gte(1)},
             unlocked() { return !player.X.points.gte(1)}
         },
         56: {
             requirementDescription: "56 factors",
-            effectDescription: "Boost factor alpha and factor alpha also affect factor point gain.",
+            effectDescription: "Boost 'Factor alpha' and it also affect Factor Point gain.",
             done() { return player.F.points.gte(56)&&player.X.points.gte(1)},
             unlocked() { return player.X.points.gte(1)}
         },
@@ -2733,7 +2733,7 @@ addLayer("F", {
         },
         108: {
             requirementDescription: "108 factors",
-            effectDescription: "Unlock another factor challenge",
+            effectDescription: "Unlock another Factor challenge",
             done() { return player.F.points.gte(108)&&!player.X.points.gte(1)},
             unlocked() { return !player.X.points.gte(1)}
         },
@@ -2745,7 +2745,7 @@ addLayer("F", {
         },
         240: {
             requirementDescription: "240 factors",
-            effectDescription: "/ effect base +0.005 and unlock a upgrade.",
+            effectDescription: "Increase '/' effect base by 0.005 and unlock an upgrade.",
             done() { return player.F.points.gte(240)&&player.X.points.gte(1)},
             unlocked() { return player.X.points.gte(1)}
         },
@@ -2761,7 +2761,7 @@ addLayer("F", {
         },
         1100: {
             requirementDescription: "1100 factors",
-            effectDescription: "Factor Milestone 1 is better.",
+            effectDescription: "The first Factor milestone is better.",
             done() { return player.F.points.gte(1100)}
         },  
         1333: {
@@ -2771,12 +2771,12 @@ addLayer("F", {
         },     
         1580: {
             requirementDescription: "1580 factors",
-            effectDescription: "Unlock 1 number buyable",
+            effectDescription: "Unlock a number buyable",
             done() { return player.F.points.gte(1580)}
         },  
         6000: {
             requirementDescription: "6000 factors",
-            effectDescription: "Remove the first hardcap of '+', auto buy factor, and factor reset nothing",
+            effectDescription: "Remove the first hardcap of '+', auto buy Factors, and Factors resets nothing",
             done() { return player.F.points.gte(6000)||(hasMilestone("I", 1)&&!player.X.points.gte(1))||hasMilestone("MS", 2)}
         },  
         12500: {
@@ -2786,12 +2786,12 @@ addLayer("F", {
         },  
         1.25e40: {
             requirementDescription: "1.25e40 factors",
-            effectDescription: "IP gain x 1e15.",
+            effectDescription: "Multiply IP gain by 1e15.",
             done() { return player.F.points.gte(1.25e40)}
         },
         1e100: {
             requirementDescription: "1e1000 factors",
-            effectDescription: "O gain ^ 1.5.",
+            effectDescription: "Raise O gain to 1.5.",
             done() { return player.F.points.gte('1e1000')}
         },
 
@@ -2799,7 +2799,7 @@ addLayer("F", {
     upgrades: {
         11: {
             title: "Factor Alpha",
-            description: "Boost points and numbers based on factors.",
+            description: "Boost point and number gain based on Factors.",
             effect() {
                 if(player.X.points.gte(1)&&hasChallenge('UF',201))  return player.F.points.pow(player.F.points.pow(0.2)).add(1)
               else  if(player.X.points.gte(1)&&hasMilestone('F',56))  return player.F.points.pow(1.5).add(1)
@@ -2824,7 +2824,7 @@ addLayer("F", {
         },
         12: {
             title: "Factor Beta",
-            description: "Number boost themselves.",
+            description: "Numbers boost itself.",
             effect() {
            
                 if (inChallenge('F',22)) return 1 
@@ -2863,9 +2863,9 @@ addLayer("F", {
     13: {
         title: "Factor Gamma",
         description(){
-            if(player.X.points.gte(1)) return "Unlock 1 challenge, you can buy max factor."
+            if(player.X.points.gte(1)) return "Unlock a challenge, you can buy max factor."
           else  if(hasUpgrade('UF',11))  return "Unlock 3 Number upgrades."
-        else return "Unlock 2 Number upgrades and 2 challenges, you can buy max factor."},
+        else return "Unlock 2 Number upgrades, 2 Factor challenges and you can buy max factor."},
         cost(){
             if(player.X.points.gte(1)) return new Decimal(9)
         else    return new Decimal(15)},
@@ -2876,7 +2876,7 @@ addLayer("F", {
 14: {
     title: "Factor Delta",
     description(){
-        if(player.X.points.gte(1)) return "Unlock factor point. Number x2.5"
+        if(player.X.points.gte(1)) return "Unlock factor point. multiply number gain by 2.5."
     
     else return "Remove the second hardcap of '3'"},
 
