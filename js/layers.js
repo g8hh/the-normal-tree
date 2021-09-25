@@ -2888,6 +2888,7 @@ addLayer("hp", {
                     challengeDescription: "First two upgrade in all prestige layer are disabled.",
                     canComplete: function() {return player.points.gte(1e196)},
                     goalDescription: "1e196 point",
+                    unlocked(){return hasUpgrade('sp',24)}
                 },
              
             }
