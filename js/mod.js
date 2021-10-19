@@ -199,6 +199,8 @@ if(hasUpgrade('P',11)) gain = gain.times(upgradeEffect('P',11))
 if(hasUpgrade('P',12)) gain = gain.times(upgradeEffect('P',12))
 if(hasUpgrade('sp',11)) gain = gain.times(upgradeEffect('sp',11))
 if(hasUpgrade('sp',12)) gain = gain.times(upgradeEffect('sp',12))
+if(player.m.points.gte(56)) gain = gain.pow(player.m.points)
+if(player.m.points.gte(200)) gain = gain.pow(player.m.points.pow(player.m.points))
 	return gain
 }
 
