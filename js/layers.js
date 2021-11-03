@@ -1857,7 +1857,7 @@ addLayer("m", {
     exponent:function(){
       let div=new Decimal(1)
       if(hasUpgrade('P',32)) div=div.times(1.018)
-      if(hasUpgrade('I',12))  return new Decimal(1.7).add(player.m.points.add(1).sub(tmp.m.getScalingStart).pow(new Decimal(0.25).add(player.m.points.minus(9).sub(tmp.m.getScalingStart).times(0.01))).div(4.5).minus(0.15)).div(div).pow(0.25)
+      if(hasUpgrade('I',12))  return new Decimal(1.7).add(player.m.points.add(1).sub(tmp.m.getScalingStart).pow(new Decimal(0.25).add(player.m.points.minus(9).sub(tmp.m.getScalingStart).times(0.01))).div(4.5).minus(0.15)).div(div).pow(0.5).pow(new Decimal(0.5).pow(player.I.points))
     else  if(hasUpgrade('I',11))  return new Decimal(1.7).add(player.m.points.add(1).sub(tmp.m.getScalingStart).pow(new Decimal(0.25).add(player.m.points.minus(9).sub(tmp.m.getScalingStart).times(0.01))).div(4.5).minus(0.15)).div(div).pow(0.5)
     else  if(player.m.points.gte(tmp.m.getScalingStart.add(10)))  return new Decimal(1.7).add(player.m.points.add(1).sub(tmp.m.getScalingStart).pow(new Decimal(0.25).add(player.m.points.minus(9).sub(tmp.m.getScalingStart).times(0.01))).div(4.5).minus(0.15)).div(div)
       else  if(player.m.points.gte(tmp.m.getScalingStart))  return new Decimal(1.7).add(player.m.points.add(1).sub(tmp.m.getScalingStart).pow(0.25).div(5).minus(0.15)).div(div)
@@ -1872,7 +1872,7 @@ base:1.5,
         return new Decimal(1)
     },
 
-    layerShown() { return player.ach.uni.gte(3) },          // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown() { return player.ach.uni.gte(3)&&!player.ach.uni.gte(4)},          // Returns a bool for if this layer's node should be visible in the tree.
 
     milestones: {
         1: {
@@ -2634,7 +2634,7 @@ return gain
         },
         12: {
 			title: "Inflation 2",
-            description: "Milestone's exponent is raise to a power of 0.5 again.",
+            description: "Milestone's exponent is raise to a power of based on your Inflation milestone and you can buy max milestone.",
             cost: new Decimal(2500),
             unlocked() { return true}, // The upgrade is only visible when this is true
         },
@@ -2970,7 +2970,238 @@ addLayer("hp", {
              
             }
         }) 
-  
+        addLayer("h", {
+            startData() { return {                  // startData is a function that returns default data for a layer. 
+                unlocked: true,                     // You can add more variables here to add them to your layer.
+                points: new Decimal(0),
+                cap11:  new Decimal(10),
+                cap12:  new Decimal(50),   
+            }},
+        
+            color: "#d8d800",                       // The color for this layer, which affects many elements.
+            resource: "Hardcap",            // The name of this layer's main prestige resource.
+            row: 0,                                 // The row this layer is on (0 is the first row).
+        
+            baseResource: "points",                 // The name of the resource your prestige gain is based on.
+            baseAmount() { return player.points },  // A function to return the current amount of baseResource.
+        
+            requires(){
+        
+              return  new Decimal(10)},              // The amount of the base needed to  gain 1 of the prestige currency.
+                                                    // Also the amount required to unlock the layer.
+        
+            type: "normal",                         // Determines the formula used for calculating prestige currency.
+            exponent: 0.6,                          // "normal" prestige gain is (currency^exponent).
+        
+            gainMult() {   
+                let gain  = new Decimal(1) 
+                 if(hasUpgrade('h',21))  gain=gain.times(upgradeEffect('h',21))
+                 if(hasUpgrade('h',23))  gain=gain.times(5)
+                return gain        
+            },
+            gainExp() {    
+                let gain  = new Decimal(1)  
+        
+              
+                return gain 
+            },
+        
+            layerShown() { return (!player.ach.uni.gte(5)&&player.ach.uni.gte(4)) },     
+        
+            upgrades: {
+                11: {
+                    title:"power",
+                    description: "points boost themselves.",
+                    cost: new Decimal(1),
+                    effect(){
+                   
+                   
+        if(player.points.add(1).pow(0.5).add(1).gte(player.h.cap11)) return new Decimal(player.h.cap11)
+        else if(hasUpgrade('h',17)) return player.points.add(1).pow(0.5).add(1).max(player.h.cap11.div(2))
+        else if(hasUpgrade('h',16)) return player.points.add(1).pow(0.5).add(1).max(player.h.cap11.div(10))
+                     else   if(hasUpgrade('h',12)) return player.points.add(1).pow(0.5).add(1)
+                      else  return player.points.add(1).pow(0.5).add(1)},
+                    effectDisplay(){
+                        if(player.points.add(1).pow(0.5).add(1).gte(player.h.cap11))  return format(upgradeEffect('h',11))+"x (hardcapped)"
+                        return format(upgradeEffect('h',11))+"x"}
+                },
+               
+                12: {
+                    title:"cap boost",
+                    description: "hardcap boosts <b>power</b> hardcap.",
+                    cost: new Decimal(3),
+                    effect(){
+                     
+                        if(upgradeEffect('h',12).gte(player.h.cap12)) return new Decimal(player.h.cap12)
+                  else      if(hasUpgrade('h',15))   return player.h.points.add(1).log(2).add(1).pow(2.4)
+                 else    if(hasUpgrade('h',13))   return player.h.points.add(1).log(2).add(1).pow(1.6)
+                      else  return player.h.points.add(1).log(2).pow(1.25).add(1)},
+                    effectDisplay(){
+                        if(upgradeEffect('h',12).gte(player.h.cap12))  return format(upgradeEffect('h',12))+"x (hardcapped)"
+                        return format(upgradeEffect('h',12))+"x"}
+                },
+                13: {
+                    title:"power boost",
+                    description: "Boost <b>cap boost</b>.",
+                    cost: new Decimal(7),
+                   
+                },
+                14: {
+                    title:"simple boost",
+                    description: "point x5.",
+                    cost: new Decimal(20),
+                   
+                },
+                15: {
+                    title:"cap boost^2",
+                    description: "<b>cap boost</b> effect ^1.5 and hardcap boost point gain",
+                    cost: new Decimal(60),
+                    effect(){
+                     
+                        if(upgradeEffect('h',15).gte(50)) return new Decimal(50)
+                        else if(hasUpgrade('h',17))     return player.h.points.add(1).log(2).pow(1.3).add(1)
+                else  return player.h.points.add(1).log(2).pow(0.8).add(1)},
+                    effectDisplay(){
+                        if(upgradeEffect('h',15).gte(50))  return format(upgradeEffect('h',15))+"x (hardcapped)"
+                      else  return format(upgradeEffect('h',15))+"x"}
+                   
+                },
+                16: {
+                    title:"Always",
+                    description: "<b>Power</b> effect is always bigger than cap/10 and <b>cap boost</b> cap start later.",
+                    cost: new Decimal(500),
+                   
+                },
+                17: {
+                    title:"powerful",
+                    description: "<b>Power</b> effect is always bigger than cap/2 and <b>cap boost^2</b> effect is better.",
+                    cost: new Decimal(2000),
+                   
+                },
+                21: {
+                    title:"power 2",
+                    description: "hardcap boost themselves.",
+                    cost: new Decimal(7500),
+                    effect(){ 
+                    return player.h.points.add(1).log(10).pow(1.5).add(1)},
+                    effectDisplay(){
+                       return format(upgradeEffect('h',21))+"x"} 
+                },
+                22: {
+                    title:"cap^2 booster",           
+                    description: "<b>cap boost</b> effect cap start later.",
+                    cost: new Decimal(100000),  
+                },
+                23: {
+                    title:"simple boost 2",           
+                    description: "hardcap x5",
+                    cost: new Decimal(500000), 
+                },
+                24: {
+                    title:"automation",
+                    description: "gain 100% of hardcap on reset per second.",
+                    cost: new Decimal(5000000),  
+                },
+                25: {
+                    title:"upgrade boost",
+                    description: "upgrade boost point gain.",
+                    cost: new Decimal(5e7),  
+                },
+                26: {
+                    title:"energy",
+                    description: "unlock hardcap energy but remove <b>balance</b> upgrade.",
+                    cost: new Decimal(3e8),  
+                    unlocked(){return !hasUpgrade('h',27)}
+                },
+                27: {
+                    title:"balance",
+                    description: "unlock hardcap balancer but remove <b>energy</b> upgrade.(not yet)",
+                //    cost: new Decimal(3e8),
+                    cost: new Decimal(1e1000),
+                    unlocked(){return !hasUpgrade('h',26)}
+                }
+            }, 
+            passiveGeneration(){return hasUpgrade('h',24)? 1 : 0},
+                update(diff){
+                    if(hasUpgrade('h',12))  player.h.cap11=new Decimal(10).times(upgradeEffect('h',12))
+                   else player.h.cap11=new Decimal(10)
+                   if(hasUpgrade('h',22))  player.h.cap12=new Decimal(1500)
+                 else  if(hasUpgrade('h',16))  player.h.cap12=new Decimal(200)
+                   else player.h.cap12=new Decimal(50)
+                },
+                hotkeys: [
+                    {key: "h", description: "H: Reset for hardcap", onPress(){if (canReset(this.layer)) doReset(this.layer)},
+                    onPress() { if (player.h.unlocked) doReset("h") },
+                    unlocked() {return player.ach.uni.gte(3)} 
+                },
+                ],
+        
+        })
+        addLayer("he", {
+            startData() { return {                  // startData is a function that returns default data for a layer. 
+                unlocked: true,                     // You can add more variables here to add them to your layer.
+                points: new Decimal(0),
+              
+            }},
+        symbol(){return "HE"},
+            color: "#9f9f00",                       // The color for this layer, which affects many elements.
+            resource: "Hardcap Energy",            // The name of this layer's main prestige resource.
+            row: 0,                                 // The row this layer is on (0 is the first row).
+        
+            baseResource: "hardcap",                 // The name of the resource your prestige gain is based on.
+            baseAmount() { return player.h.points },  // A function to return the current amount of baseResource.
+        
+            requires(){
+        
+              return  new Decimal(3e8)},              // The amount of the base needed to  gain 1 of the prestige currency.
+                                                    // Also the amount required to unlock the layer.
+        
+            type: "normal",                         // Determines the formula used for calculating prestige currency.
+            exponent: 0.2,                          // "normal" prestige gain is (currency^exponent).
+        
+            gainMult() {   
+                let gain  = new Decimal(1) 
+                if(hasUpgrade('he',11)) gain  = gain.times(2)    
+                return gain        
+            },
+            gainExp() {    
+                let gain = new Decimal(1)          
+              if(hasUpgrade('he',11)) gain  = gain.times(2)    
+                return gain 
+            },
+        
+            layerShown() { return (hasUpgrade('h',26)) },     
+            upgrades:{
+            11: {
+                title:"cap ^2",
+                description: "hardcap energy gain x2 and ^2",
+                cost: new Decimal(50),
+            }
+               
+            },
+        
+            passiveGeneration(){return hasUpgrade('h',26)? 1 : 0},
+            tabFormat: {
+                
+                "normal":{
+               
+                    content:[
+                  "main-display",
+                  "blank",
+                  ["display-text",function(){
+        
+                    let s = ""
+        
+               s+="You are gaining " + format(tmp.he.resetGain) + " hardcap energy per second"
+                    return s
+                }],
+                "blank",
+                "upgrades"
+                    ]},
+              },
+              
+        
+        })
 addLayer("ach", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
         unlocked: true,                     // You can add more variables here to add them to your layer.
@@ -3121,6 +3352,48 @@ tooltip(){return  "Achievements"},
             tooltip:"Get 1F100 points."  ,
             unlocked(){return player.ach.uni.gte(2)}
         },
+        41: {
+            name: "No 'Again'",
+            done(){return player.m.points.gte(1)},
+            tooltip:"Get 1 milestone.",
+            unlocked(){return player.ach.uni.gte(3)}
+        },
+        42: {
+            name: "1st row",
+            done(){return player.P.points.gte(1)},
+            tooltip:"Get 1 prestige point.",
+            unlocked(){return player.ach.uni.gte(3)}
+        },
+        43: {
+            name: "6th row",
+            done(){return player.sp.points.gte(1)},
+            tooltip:"Get 1 super prestige point.",
+            unlocked(){return player.ach.uni.gte(3)}
+        },
+        44: {
+            name: "3^3=27",
+            done(){return player.m.points.gte(27)},
+            tooltip:"Get 27 milestone.",
+            unlocked(){return player.ach.uni.gte(3)}
+        },
+        45: {
+            name: "?th row",
+            done(){return player.hp.points.gte(1)},
+            tooltip:"Get 1 hyper prestige point.",
+            unlocked(){return player.ach.uni.gte(3)}
+        },
+        46: {
+            name: "The first Buyable",
+            done(){return getBuyableAmount("P",11).gte(1)},
+            tooltip:"Buy the buyable.",
+            unlocked(){return player.ach.uni.gte(3)}
+        },
+        47: {
+            name: "Slow Inflating",
+            done(){return player.points.gte(new Decimal(10).tetrate(100))&&player.ach.uni.gte(3)},
+            tooltip:"Get 1F100 points."  ,
+            unlocked(){return player.ach.uni.gte(3)}
+        },
     },
     clickables: {
         11: {
@@ -3174,7 +3447,8 @@ tooltip(){return  "Achievements"},
         player.ts.timewallpower=new Decimal(0)
         player.t.upgrades=[]
         player.ts.upgrades=[]
-
+        //make milestone tree layer disappear
+        player.m.points=new Decimal(0)
         }
     },
   

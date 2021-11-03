@@ -13,11 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "3.55",
-	name: "milestone tree?",
+	num: "4.0",
+	name: "XXX",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v4.0</h3><br>
+- Added 3 milestone.<br>
+- Added 1 layer.<br>
 <h3>v3.55</h3><br>
 - Added 5 milestone.<br>
 - Added 1 upgrade.<br>
@@ -187,8 +190,8 @@ if(hasUpgrade('ts',25)) gain=gain.pow(new Decimal(1.05).pow(challengeCompletions
 if(hasUpgrade('t',35)) gain=gain.pow(new Decimal(1.05).pow(challengeCompletions('ts',12)))
 if(hasUpgrade('ts',31))gain=gain.tetrate(10)
 //milestone universe
-
-if(player.ach.uni.gte(3)) gain = new Decimal(0)
+if(player.ach.uni.gte(3)&&!player.ach.uni.gte(4)){
+if(player.ach.uni.gte(3)&&!player.ach.uni.gte(4)) gain = new Decimal(0)
 if(player.m.points.gte(1)) gain = gain.add(1)
 if(player.m.points.gte(2)) gain = gain.times(4)
 if(hasUpgrade('P',31))gain = gain.times(new Decimal(2).add(buyableEffect('P',11).times(5)).pow(player.m.points))
@@ -201,6 +204,11 @@ if(hasUpgrade('sp',11)) gain = gain.times(upgradeEffect('sp',11))
 if(hasUpgrade('sp',12)) gain = gain.times(upgradeEffect('sp',12))
 if(player.m.points.gte(56)) gain = gain.pow(player.m.points)
 if(player.m.points.gte(200)) gain = gain.pow(player.m.points.pow(player.m.points))
+}
+if(hasUpgrade("h",11))  gain = gain.times(upgradeEffect('h',11))
+if(hasUpgrade("h",14))  gain = gain.times(5)
+if(hasUpgrade("h",15))  gain = gain.times(upgradeEffect('h',15))
+if(hasUpgrade("h",25))  gain = gain.times(player.h.upgrades.length)
 	return gain
 }
 
@@ -212,7 +220,8 @@ function addedPlayerData() { return {
 // Display extra things at the top of the page
 var displayThings = [
 	function(){
-		 if(player.ach.uni.gte(3)) return "You are in milestone universe"
+	if(player.ach.uni.gte(4)) return "You are in hardcap universe"
+	else if(player.ach.uni.gte(3)) return "You are in milestone universe"
     else if(player.ach.uni.gte(2)) return "You are in timewall universe"
 	else if(player.ach.uni.gte(1)) return "You are in challenge universe"
 	else return "You are in normal universe"
