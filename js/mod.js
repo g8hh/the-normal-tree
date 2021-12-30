@@ -13,60 +13,87 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1.7.1",
-	name: "AGAIN",
+	num: "4.0",
+	name: "XXX",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-<h3>v0.3.1.7.1</h3><br>
-- Rewrite 3 upgrade after 1 ???<br>
-- Endgame: 1.8e308 points and 1 ???.<br>
-<h3>v0.3.1.7</h3><br>
-- No because I am lazy.<br>
-- Endgame: 4 Infinity and 1 ???.<br>
-<h3>v0.3.1.6</h3><br>
-- No because I am lazy.<br>
-- Endgame: 3 Infinity and 1 ???.<br>
-<h3>v0.3.1.5</h3><br>
-- Added 4 UF clickable.<br>
-- Added 3 UF challenge.<br>
-- Added 1 F milestone.<br>
-- Rewrite 2 upgrade after 1 ???<br>
-<h3>v0.3.1.4</h3><br>
-- Rewrite 3 upgrade after 1 ???<br>
-- Rewrite 1 challenge after 1 ???<br>
-- Rewrite 1 buyable after 1 ???<br>
-- Endgame: 1 Infinity and 1 ???.<br>
-<h3>v0.3.1.3</h3><br>
-- Rewrite 5 upgrade after 1 ???<br>
-- Rewrite 3 challenge after 1 ???<br>
-- Rewrite 2 buyable after 1 ???<br>
-- Endgame: 56 Factors and 1 ???.<br>
-<h3>v0.3.1.2</h3><br>
-- Rewrite 3 upgrade after 1 ???<br>
-- Rewrite 2 challenge after 1 ???<br>
-- Added Factor point.<br>
-- Added 1 F upgrade.<br>
-- Endgame: 19 Factors and 1 ???.<br>
-<h3>v0.3.1.1</h3><br>
-- Added ???.<br>
-- Rewrite 11 upgrade after 1 ???<br>
-- Rewrite 2 challenge after 1 ???<br>
-- Rewrite 1 milestone after 1 ???<br>
-- Endgame: 9 Factors and 1 ???.<br>
-<h3>v0.3.1</h3><br>
-- Added 4 MS buyable.<br>
-- Added 6 MS upgrade.<br>
-- Added 2 E upgrade.<br>
-- Endgame: True^2 Math upgrade.<br>
-<h3>v0.3.0.2</h3><br>
-- Added 1 O milestone.<br>
-- Added 1 E clickable.<br>
-- Endgame: ee12 Shapes.<br>
-<h3>v0.3.0.1</h3><br>
-- Added 1 O milestone.<br>
-- Added a effect for S milestone.<br>
-- Endgame: 69 ω completions.<br>
+<h3>v4.0</h3><br>
+- Added 3 milestone.<br>
+- Added 1 layer.<br>
+<h3>v3.55</h3><br>
+- Added 5 milestone.<br>
+- Added 1 upgrade.<br>
+- Endgame: 55 milestones.<br>
+<h3>v3.50</h3><br>
+- Added 11 milestone.<br>
+- Added 4 upgrade.<br>
+- Added 1 buyable.<br>
+- Endgame: 50 milestones.<br>
+<h3>v3.41</h3><br>
+- Added 2 layers.<br>
+- Added 21 milestone.<br>
+- Added 6 upgrade.<br>
+- Endgame: 41 milestones.<br>
+<h3>v3.20</h3><br>
+- Added 9 milestone.<br>
+- Added 3 upgrade.<br>
+- Endgame: 20 milestones.<br>
+<h3>v3.0</h3><br>
+- Added milestones.<br>
+- Added 3 upgrade.<br>
+- Added 11 milestone.<br>
+- Endgame: 11 milestones.<br>
+<h3>v2.2</h3><br>
+- Added timewall shrinker.<br>
+- Added 18 upgrade.<br>
+- Added 2 milestone.<br>
+- Added 4 challenge.<br>
+- Endgame: 7 simple nerf Completions.<br>
+<h3>v2.1</h3><br>
+- Added 5 upgrade.<br>
+- Endgame: 1000 timewall.<br>
+<h3>v2.0</h3><br>
+- Added 8 upgrade.<br>
+- Added 4 challenge.<br>
+- Endgame: Go to timewall universe.<br>
+<h3>v1.2.1</h3><br>
+- Added 2 upgrade.<br>
+- Added 3 challenge.<br>
+- Endgame: 4900 challenge point.<br>
+<h3>v1.2</h3><br>
+- Added challenge coin.<br>
+- Added 5 upgrade.<br>
+- Added 7 milestone.<br>
+- Endgame: C2 - C6 upgrade.<br>
+<h3>v1.1.1</h3><br>
+- Added 6 upgrade.<br>
+- Added 2 clickable.<br>
+- Added 3 milestone.<br>
+- Added 1 challenge.<br>
+- Endgame: 25 challenge point.<br>
+<h3>v1.1</h3><br>
+- Added challenge point.<br>
+- Added 4 upgrade.<br>
+- Added 1 buyable.<br>
+- Added 4 clickable.<br>
+- Endgame: 8 challenge point.<br>
+<h3>v1.0</h3><br>
+- Added distance.<br>
+- Added achievement.<br>
+- Added 2 upgrade.<br>
+- Added 6 milestone.<br>
+- Endgame: 1F100 point.<br>
+<h3>v0.4.1</h3><br>
+- Added 5 upgrade.<br>
+- Added 3 milestone.<br>
+- Added 1 challenge.<br>
+- Endgame: 1e66666 presstige point.<br>
+<h3>v0.4</h3><br>
+- Added code.<br>
+- Added 4 upgrade.<br>
+- Added 4 milestone.<br>
+- Endgame: 1e80 Amoebas.<br>
 <h3>v0.3</h3><br>
 - Added shapes.<br>
 - Added 4 S milestone.<br>
@@ -328,47 +355,88 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
+		
+    let gain = new Decimal(1)
+//normal universe
 
-	let gain = new Decimal(1)
-	if (hasChallenge('F',31)&&(!inChallenge("NN", 21)&&!hasChallenge("NN", 21))) gain = gain.times(buyableEffect('N',12))
-	if (hasUpgrade('N',44)&&(!inChallenge("NN", 21)&&!hasChallenge("NN", 21))) gain = gain.times(buyableEffect('F',12))
-	if (inChallenge('F', 33)|inChallenge('F',43)) gain = gain.times(0.000001)
-	if (inChallenge('F', 31)) gain = gain.times(0.000001)
-	if (hasMilestone('UF', 1)) gain = gain.times(2)
-	if (hasMilestone('MS', 1)) gain = gain.times(1e20)
-	if (hasChallenge('F', 22)) gain = gain.times(2)
-	if (hasChallenge('F', 12)) gain = gain.times(3)
-	if (inChallenge('F', 11)) gain = gain.times(0.3)
-	if (inChallenge('F', 13)) gain = gain.times(0.3)
-	if (inChallenge('F', 23)) gain = gain.times(0.3)
-	if (hasChallenge('F', 11)) gain = gain.times(3)
-	if (hasUpgrade('N', 11)&&(!hasUpgrade('UF',11))&&(!inChallenge('UF',101))) gain = gain.times(4)
-	if (hasAchievement("A", 11)) gain = gain.times(1.25)
-	if (hasUpgrade('N', 12)&&!inChallenge('UF',102)) gain = gain.times(upgradeEffect('N', 12))
-	if(inChallenge('UF',102)) gain = gain.div(upgradeEffect('N', 12))
-	if (hasUpgrade('UF', 12)) gain = gain.times(upgradeEffect('UF', 12))
-	if (hasUpgrade('UF', 13)) gain = gain.times(upgradeEffect('UF', 13))
-	if (hasUpgrade('NN', 12)) gain = gain.times(upgradeEffect('NN', 12))
-	if (hasUpgrade('NN', 13)) gain = gain.times(upgradeEffect('NN', 13))
-	if (hasUpgrade('N', 13)&&!inChallenge('UF',111)) gain = gain.times(upgradeEffect('N', 13))
-	if(inChallenge('UF',111)) gain = gain.div(upgradeEffect('N', 13))
-	if (hasMilestone('F', 1)) gain = gain.times(player.F.points.add(1))
-	if (hasMilestone('MS', 3)&&(!player.IP.points.gte("e1.5e13"))) gain = gain.times(player.IP.points.add(1))
-	else if (hasMilestone('MS', 3)&&(player.IP.points.gte("e1.5e13"))) gain = gain.times("e1.5e13")
-	if (hasUpgrade('MS', 25)&&(!player.MS.Exponentiation.gte("ee10"))) gain = gain.times(player.MS.Exponentiation.pow(100).add(1))	
-	else if(player.MS.Exponentiation.gte("ee10")) gain = gain.times("ee12")	
-	if (hasMilestone('UF', 35)) gain = gain.times(player.UF.points.pow(8).add(1))
-	if (hasMilestone('UF', 52)) gain = gain.times(player.UF.points.pow(3).add(1))
-	if (hasMilestone('UF', 128)) gain = gain.times(player.UF.points.pow(3).add(1))
-	
-	if (hasMilestone('F', 1100)) gain = gain.times(player.F.points.add(1))
-	if (hasMilestone('UF', 10)) gain = gain.times(10000)
-	if (hasMilestone('I', 1)) gain = gain.times(100)
-	if (hasUpgrade('F',11)) gain = gain.times(upgradeEffect('F', 11))
-	if(hasMilestone('F', 19))gain = gain.times(100)
-	if(inChallenge('UF', 201))gain = new Decimal(1)
-	if (hasMilestone('I', 4)) gain = gain.times(player.UF.CP.pow(4).add(1))
-	gain = gain.pow(getPointGenExp())
+if(hasUpgrade('p',11)) gain=gain.times(upgradeEffect('p',11))
+if(hasUpgrade('p',12)) gain=gain.pow(upgradeEffect('p',12))
+if(hasUpgrade('p',21)) gain=gain.times(upgradeEffect('p',21))
+if(hasUpgrade('p',22)) gain=gain.pow(upgradeEffect('p',22))
+if(hasUpgrade('p',31)) gain=gain.times(upgradeEffect('p',31))
+if(hasUpgrade('p',14)) gain=gain.times(1e10)
+if(hasUpgrade('p',41)) gain=gain.times(upgradeEffect('p',32))     
+if(hasUpgrade('a',11)) gain=gain.times(upgradeEffect('a',11))    
+if(hasMilestone('c',0))     gain=gain.times(100)
+//challenge universe
+
+if(hasUpgrade('cp',11)) gain=gain.times(upgradeEffect('cp',11))  
+if(hasUpgrade('cp',42))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(6).pow(upgradeEffect('cp',22)))
+else if(hasUpgrade('cp',22))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2).pow(upgradeEffect('cp',22))) 
+else if(hasUpgrade('cp',14))gain=gain.times(player.cp.bank1.add(1).log(2).add(1).pow(2))   
+else if(hasUpgrade('cp',12))gain=gain.times(player.cp.bank1.add(1).log(10).add(1).pow(2))   
+if(hasUpgrade('cp',43)) gain=gain.times(player.cp.bank2.add(1).pow(0.3).pow(upgradeEffect('cp',25)))
+else if(hasUpgrade('cp',25))gain=gain.times(player.cp.bank2.add(1).pow(0.2).pow(upgradeEffect('cp',25)))
+else if(hasUpgrade('cp',23))gain=gain.times(player.cp.bank2.add(1).pow(0.2))
+if(hasUpgrade('cp',13))gain=gain.times(buyableEffect('cp',11))  
+if(hasUpgrade('cp',35))     gain=gain.times(100) 
+if(hasMilestone('cc',0))     gain=gain.times(3) 
+if(hasMilestone('cc',1))     gain=gain.times(3) 
+if(hasMilestone('cc',2))     gain=gain.times(3) 
+if(hasMilestone('cc',3))     gain=gain.times(3) 
+if(hasMilestone('cc',4))     gain=gain.times(3) 
+if(hasMilestone('cc',5))     gain=gain.times(3) 
+if(hasMilestone('cc',6))     gain=gain.times(3) 
+if(hasMilestone('cc',6))     gain=gain.times(player.cc.points.add(1).pow(0.85)) 
+if(hasUpgrade('cp',41))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',42))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',43))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',44))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',44))gain=gain.pow(1.25) 
+if(hasUpgrade('cp',45))gain=gain.pow(1.01) 
+if(hasUpgrade('cp',45))gain=gain.pow(1.5) 
+if(inChallenge('cc',11))gain=gain.pow(0.9) 
+if(inChallenge('cc',101))gain=gain.pow(0.75) 
+if(inChallenge('cc',102))gain=gain.pow(0.4) 
+if(hasChallenge('cp',12))gain=gain.pow(player.cp.points.add(1).pow(player.cp.points))
+//timewall universe
+
+if(hasUpgrade('t',11)) gain=gain.times(tmp.t.effect)
+if(hasUpgrade('t',12)&&!inChallenge('ts',21)) gain=gain.times(upgradeEffect('t',12))  
+if(inChallenge('ts',21))gain=gain.div(upgradeEffect('t',12))  
+if(hasUpgrade('t',13)&&!player.points.gte(10)) gain=gain.times(3)
+if(hasUpgrade('ts',23)&&!inChallenge('ts',22))gain=gain.times(player.ts.timewallpower.add(1).add(1).pow(0.3))
+else if(hasUpgrade('ts',14)&&!inChallenge('ts',22)) gain=gain.times(player.ts.timewallpower.add(1).log(2).add(1).pow(5))
+else if((!hasUpgrade('ts',11)||hasUpgrade('ts',12))&&!inChallenge('ts',22))gain=gain.times(player.ts.timewallpower.add(1).log(10).add(1).pow(5))
+if(hasUpgrade('ts',15)) gain=gain.times(upgradeEffect('ts',15))
+gain=gain.times( new Decimal(10).pow(challengeCompletions('ts',21)))
+if(hasUpgrade('t',25))gain=gain.pow(1.5)
+if(hasUpgrade('ts',21))gain=gain.pow(1.25)
+if(hasUpgrade('t',34))gain=gain.pow(1.3)
+if(inChallenge('ts',11))gain=gain.pow(0.5)
+if(hasUpgrade('ts',25)) gain=gain.pow(new Decimal(1.05).pow(challengeCompletions('ts',11)))
+if(hasUpgrade('t',35)) gain=gain.pow(new Decimal(1.05).pow(challengeCompletions('ts',12)))
+if(hasUpgrade('ts',31))gain=gain.tetrate(10)
+//milestone universe
+if(player.ach.uni.gte(3)&&!player.ach.uni.gte(4)){
+if(player.ach.uni.gte(3)&&!player.ach.uni.gte(4)) gain = new Decimal(0)
+if(player.m.points.gte(1)) gain = gain.add(1)
+if(player.m.points.gte(2)) gain = gain.times(4)
+if(hasUpgrade('P',31))gain = gain.times(new Decimal(2).add(buyableEffect('P',11).times(5)).pow(player.m.points))
+else if(player.m.points.gte(3)) gain = gain.times(new Decimal(2).pow(player.m.points))
+if(player.m.points.gte(4)) gain = gain.times(tmp.m.milestone4Effect)
+if(player.m.points.gte(10)) gain = gain.times(new Decimal(1).add(player.P.upgrades.length))
+if(hasUpgrade('P',11)) gain = gain.times(upgradeEffect('P',11))
+if(hasUpgrade('P',12)) gain = gain.times(upgradeEffect('P',12))
+if(hasUpgrade('sp',11)) gain = gain.times(upgradeEffect('sp',11))
+if(hasUpgrade('sp',12)) gain = gain.times(upgradeEffect('sp',12))
+if(player.m.points.gte(56)) gain = gain.pow(player.m.points)
+if(player.m.points.gte(200)) gain = gain.pow(player.m.points.pow(player.m.points))
+}
+if(hasUpgrade("h",11))  gain = gain.times(upgradeEffect('h',11))
+if(hasUpgrade("h",14))  gain = gain.times(5)
+if(hasUpgrade("h",15))  gain = gain.times(upgradeEffect('h',15))
+if(hasUpgrade("h",25))  gain = gain.times(player.h.upgrades.length)
 	return gain
 }
 function getPointGenExp(){
@@ -400,31 +468,18 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function(){	
-		let s=""
-		if (player.X.best.gte(1)&&player.I.points.gte(4))  s+= "Congratulations, You reach the endgame."
-		else if (player.X.best.gte(1))  s+= "You have 0 layers left to unlock."					
-		else if (player.S.best.gte(1))  s+= "You have 1 layer left to unlock.<br> Next layer at '1.798F308' upgrade (Just a upgrade name)."
-		else if (player.M.best.gte(1)&&player.O.best.gte(1))  s+="You have 2 layers left to unlock.<br> Next layer at 1.80e308 Infinity."
-		else if (player.M.best.gte(1))  s+= "You have 3 layers left to unlock.<br> Next layer at 1.80e312 Factors."
-		else if (player.O.best.gte(1))  s+= "You have 3 layers left to unlock.<br> Next layer at 1.00e20 Eternity points."
-		else if (player.E.best.gte(1))  s+= "You have 4 layers left to unlock.<br> Next layer at 1.00e15 Eternity points."
-		else if (player.MS.best.gte(1)) s+= "You have 5 layers left to unlock. <br>Next layer at complete Boost or nerf 4."
-		else if (player.IP.best.gte(1)) s+= "You have 6 layers left to unlock.<br> Next layer at 1.00e1800 Infinity points."
-		else if (player.FS.best.gte(1)) s+= "You have 7 layers left to unlock.<br> Next layer at 1.80e308 Negative Number."
-		else if (player.NN.best.gte(1)) s+= "You have 8 layers left to unlock.<br> Next layer at 1.00e8 Factors."
-		else if (player.I.best.gte(1))  s+= "You have 9 layers left to unlock.<br> Next layer at 3 Infinity."
-		else if (player.UF.best.gte(1)) s+= "You have 10 layers left to unlock.<br> Next layer at 1.8e308 Numbers."
-		else if (player.F.points.gte(1))s+= "You have 11 layers left to unlock.<br> Next layer at 5 Factor challenge"
-		else s+=                            "You have 12 layers left to unlock.<br>Next layer at 5 Number upgrade"		   
-		return s
-	},  
+	function(){
+	if(player.ach.uni.gte(4)) return "You are in hardcap universe"
+	else if(player.ach.uni.gte(3)) return "You are in milestone universe"
+    else if(player.ach.uni.gte(2)) return "You are in timewall universe"
+	else if(player.ach.uni.gte(1)) return "You are in challenge universe"
+	else return "You are in normal universe"
+	}
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.X.points.gte(1)&&player.points.gte(1.79e308)
-}
+return hasUpgrade("he",11)}
 
 
 
@@ -443,8 +498,12 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
-	if(player.NN.points.gte(1)&&player.X.points.gte(1)&&oldVersion=="0.3.1.6")
-	player.NN.points=new  Decimal(0)
-	player.NN.upgrades=[]
-	player.NN.milestones=[]
+	if(!player.ach.uni.gte(3)){
+		player.m.points=new Decimal(0)
+		player.m.milestone=[]
+		player.P.points=new Decimal(0)
+		player.P.upgrades=[]
+
+	}
+
 }
